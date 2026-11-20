@@ -2,10 +2,16 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-green-500: #6b866c;
+  --color-green-50: #f5f7f5;
+  --color-green-100: #ebf0eb;
+  --color-green-200: #d6e0d7;
+  --color-green-300: #b6c8b8;
+  --color-green-400: #58745a;
+  --color-green-500: #58745a;
   --color-green-600: #58745a;
   --color-green-700: #58745a;
   --color-green-800: #435944;
+  --color-green-900: #334735;
   --font-poppins: 'IBM Plex Sans', sans-serif;
   --font-sans: 'IBM Plex Sans', sans-serif;
 }
