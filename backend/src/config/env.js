@@ -31,33 +31,9 @@ const env = {
   JWT_ACCESS_TTL_SECONDS: parseInt(process.env.JWT_ACCESS_TTL_SECONDS || '1800', 10),
   JWT_REFRESH_TTL_SECONDS: parseInt(process.env.JWT_REFRESH_TTL_SECONDS || '1209600', 10),
 
-  SMTP_HOST: process.env.SMTP_HOST || '',
-  SMTP_PORT: parseInt(process.env.SMTP_PORT || '587', 10),
-  SMTP_SECURE: process.env.SMTP_SECURE === 'true',
-  SMTP_USER: process.env.SMTP_USER || '',
-  SMTP_PASS: process.env.SMTP_PASS || '',
-  SMTP_FROM_EMAIL: process.env.SMTP_FROM_EMAIL || 'no-reply@housebank.local',
-  SMTP_FROM_NAME: process.env.SMTP_FROM_NAME || 'HouseBank',
-  BREVO_SENDER_EMAIL: (process.env.BREVO_SENDER_EMAIL || process.env.SMTP_FROM_EMAIL || '').trim(),
-  BREVO_SENDER_NAME: process.env.BREVO_SENDER_NAME || process.env.SMTP_FROM_NAME || 'HouseBank',
-
-  BREVO_API_KEY: (process.env.BREVO_API_KEY || '').trim(),
-  MAIL_DRIVER: (() => {
-    const driver = (process.env.MAIL_DRIVER || '').toLowerCase().trim();
-    const brevoKeyPresent = !!(process.env.BREVO_API_KEY || '').trim();
-    // Diagnostic log to help identify why the wrong transport is selected
-    if (process.env.NODE_ENV !== 'test') {
-      // eslint-disable-next-line no-console
-      console.log('[HouseBank] Mail driver decision:', {
-        BREVO_API_KEY_present: brevoKeyPresent,
-        MAIL_DRIVER_env: process.env.MAIL_DRIVER || '(not set)',
-        selected: brevoKeyPresent ? 'brevo' : (driver === 'brevo' ? 'brevo' : 'smtp'),
-      });
-    }
-    if (brevoKeyPresent) return 'brevo';
-    if (driver === 'brevo') return 'brevo';
-    return 'smtp';
-  })(),
+  BREVO_API_KEY: required('BREVO_API_KEY'),
+  BREVO_SENDER_EMAIL: required('BREVO_SENDER_EMAIL'),
+  BREVO_SENDER_NAME: process.env.BREVO_SENDER_NAME || 'HouseBank',
 
   // Twilio SMS (Joan, Sep 2026: "sms notification is on payments,
   // bookings and approvals only") -- see src/utils/sms.js. Optional: if
