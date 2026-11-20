@@ -44,7 +44,17 @@ const env = {
   BREVO_API_KEY: (process.env.BREVO_API_KEY || '').trim(),
   MAIL_DRIVER: (() => {
     const driver = (process.env.MAIL_DRIVER || '').toLowerCase().trim();
-    if ((process.env.BREVO_API_KEY || '').trim()) return 'brevo';
+    const brevoKeyPresent = !!(process.env.BREVO_API_KEY || '').trim();
+    // Diagnostic log to help identify why the wrong transport is selected
+    if (process.env.NODE_ENV !== 'test') {
+      // eslint-disable-next-line no-console
+      console.log('[HouseBank] Mail driver decision:', {
+        BREVO_API_KEY_present: brevoKeyPresent,
+        MAIL_DRIVER_env: process.env.MAIL_DRIVER || '(not set)',
+        selected: brevoKeyPresent ? 'brevo' : (driver === 'brevo' ? 'brevo' : 'smtp'),
+      });
+    }
+    if (brevoKeyPresent) return 'brevo';
     if (driver === 'brevo') return 'brevo';
     return 'smtp';
   })(),
