@@ -1,5 +1,5 @@
 import DashboardSidebar from "../../components/dashboards/DashboardSidebar";
-import AgentSettings from '../../components/dashboards/agent-dashboard/AgentSettings';
+import AgentSettings from '../../components/dashboards/company-dashboard/agent-dashboard/AgentSettings';
 
 export default function AgentSettingsPage() {
   return (

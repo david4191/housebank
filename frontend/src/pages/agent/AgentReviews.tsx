@@ -1,5 +1,5 @@
 import DashboardSidebar from "../../components/dashboards/DashboardSidebar";
-import AgentReviewPage from '../../components/dashboards/agent-dashboard/AgentReviews';
+import AgentReviewPage from '../../components/dashboards/company-dashboard/agent-dashboard/AgentReviews';
 
 
 

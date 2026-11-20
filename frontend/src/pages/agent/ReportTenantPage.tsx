@@ -1,5 +1,5 @@
 import DashboardSidebar from "../../components/dashboards/DashboardSidebar";
-import ReportTenantPage from '../../components/dashboards/agent-dashboard/ReportTenant';
+import ReportTenantPage from '../../components/dashboards/company-dashboard/agent-dashboard/ReportTenant';
 
 
 export default function AgentReportTenant() {

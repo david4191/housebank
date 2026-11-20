@@ -1,5 +1,5 @@
 import DashboardSidebar from "../../components/dashboards/DashboardSidebar";
-import RentChartDetailsPage from '../../components/dashboards/agent-dashboard/RentDetails';
+import RentChartDetailsPage from '../../components/dashboards/company-dashboard/agent-dashboard/RentDetails';
 
 export default function AgentRentDetailsChart() {
 

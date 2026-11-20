@@ -1,5 +1,5 @@
 import DashboardSidebar from "../../components/dashboards/DashboardSidebar";
-import ActiveCustomersPage from '../../components/dashboards/agent-dashboard/Customers';
+import ActiveCustomersPage from '../../components/dashboards/company-dashboard/agent-dashboard/Customers';
 
 export default function AgentActiveCustomers() {
 

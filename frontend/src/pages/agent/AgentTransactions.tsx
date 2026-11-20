@@ -1,5 +1,5 @@
 import DashboardSidebar from "../../components/dashboards/DashboardSidebar";
-import EarningsCommissionPage from '../../components/dashboards/agent-dashboard/Transactions';
+import EarningsCommissionPage from '../../components/dashboards/company-dashboard/agent-dashboard/Transactions';
 
 
 export default function AgentTransactions() {

@@ -1,5 +1,5 @@
 import DashboardSidebar from "../../components/dashboards/DashboardSidebar";
-import ApprovedProperties from '../../components/dashboards/agent-dashboard/ApprovedProperties';
+import ApprovedProperties from '../../components/dashboards/company-dashboard/agent-dashboard/ApprovedProperties';
 
 export default function ApprovedPropertiesPage() {
 

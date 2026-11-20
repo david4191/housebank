@@ -1,5 +1,5 @@
 import DashboardSidebar from "../../components/dashboards/DashboardSidebar";
-import AgentNotifications from '../../components/dashboards/agent-dashboard/AgentNotifications';
+import AgentNotifications from '../../components/dashboards/company-dashboard/agent-dashboard/AgentNotifications';
 
 export default function AgentNotificationsPage() {
   return (

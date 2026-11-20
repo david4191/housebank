@@ -1,5 +1,5 @@
 import DashboardSidebar from "../../components/dashboards/DashboardSidebar";
-import SoldPropertyDocumentsPage from '../../components/dashboards/agent-dashboard/SoldDocument';
+import SoldPropertyDocumentsPage from '../../components/dashboards/company-dashboard/agent-dashboard/SoldDocument';
 
 
 

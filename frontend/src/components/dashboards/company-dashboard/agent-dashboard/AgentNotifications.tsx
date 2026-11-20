@@ -1,4 +1,4 @@
-// src/components/dashboards/agent-dashboard/AgentNotifications.tsx
+// src/components/dashboards/company-dashboard/agent-dashboard/AgentNotifications.tsx
 import { useState } from 'react';
 import { Search, SlidersHorizontal, ChevronDown, ChevronUp } from 'lucide-react';
 import CustomerHeader from './CustomerHeader';

@@ -1,5 +1,5 @@
 import DashboardSidebar from "../../components/dashboards/DashboardSidebar";
-import DocumentComplaince from '../../components/dashboards/agent-dashboard/DocumentCompliance';
+import DocumentComplaince from '../../components/dashboards/company-dashboard/agent-dashboard/DocumentCompliance';
 
 
 export default function DocumentCOmpliancePage() {

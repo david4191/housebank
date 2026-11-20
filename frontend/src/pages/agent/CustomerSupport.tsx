@@ -1,5 +1,5 @@
 import DashboardSidebar from "../../components/dashboards/DashboardSidebar";
-import AgentHelpSupport from '../../components/dashboards/agent-dashboard/HelpSupport';
+import AgentHelpSupport from '../../components/dashboards/company-dashboard/agent-dashboard/HelpSupport';
 
 export default function AgentCustomerSupportPage() {
 

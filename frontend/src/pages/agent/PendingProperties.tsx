@@ -1,5 +1,5 @@
 import DashboardSidebar from "../../components/dashboards/DashboardSidebar";
-import PendingProperties from '../../components/dashboards/agent-dashboard/PendingProperties';
+import PendingProperties from '../../components/dashboards/company-dashboard/agent-dashboard/PendingProperties';
 
 export default function PendingPropertiesPage() {
 

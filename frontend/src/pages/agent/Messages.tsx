@@ -1,5 +1,5 @@
 import DashboardSidebar from "../../components/dashboards/DashboardSidebar";
-import AgentMessagesChatPage from '../../components/dashboards/agent-dashboard/Messages';
+import AgentMessagesChatPage from '../../components/dashboards/company-dashboard/agent-dashboard/Messages';
 
 
 

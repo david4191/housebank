@@ -1,5 +1,5 @@
 import DashboardSidebar from "../../components/dashboards/DashboardSidebar";
-import AgentAddListPropertyPage from '../../components/dashboards/agent-dashboard/AddProperty';
+import AgentAddListPropertyPage from '../../components/dashboards/company-dashboard/agent-dashboard/AddProperty';
 
 export default function AgentAddPropertyPage() {
 

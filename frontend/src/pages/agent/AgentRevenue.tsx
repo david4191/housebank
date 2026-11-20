@@ -1,5 +1,5 @@
 import DashboardSidebar from "../../components/dashboards/DashboardSidebar";
-import AgentRevenueDashboard from '../../components/dashboards/agent-dashboard/AgentRevenue';
+import AgentRevenueDashboard from '../../components/dashboards/company-dashboard/agent-dashboard/AgentRevenue';
 
 
 export default function AgentRevenueDashboardPage() {

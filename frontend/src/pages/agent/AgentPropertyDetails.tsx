@@ -1,5 +1,5 @@
 import DashboardSidebar from "../../components/dashboards/DashboardSidebar";
-import AgentAvailablePropertyDetails from '../../components/dashboards/agent-dashboard/PropertyDetails';
+import AgentAvailablePropertyDetails from '../../components/dashboards/company-dashboard/agent-dashboard/PropertyDetails';
 
 export default function AgentPropertiesDetailsPage() {
 

@@ -1,5 +1,5 @@
 import DashboardSidebar from "../../components/dashboards/DashboardSidebar";
-import AgentRejectedPropertyDetailsPage from '../../components/dashboards/agent-dashboard/RejectedProperty';
+import AgentRejectedPropertyDetailsPage from '../../components/dashboards/company-dashboard/agent-dashboard/RejectedProperty';
 
 export default function AgentRejectedPropertyPage() {
 
