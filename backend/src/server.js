@@ -217,11 +217,10 @@ app.get('/debug/mail-status', async (req, res) => {
     const { logger } = require('./utils/logger');
 
     const status = {
-      mail_driver: env.MAIL_DRIVER,
+      mail_provider: 'brevo',
       brevo_configured: !!env.BREVO_API_KEY,
       brevo_sender_email: env.BREVO_SENDER_EMAIL,
       brevo_sender_name: env.BREVO_SENDER_NAME,
-      smtp_configured: !!env.SMTP_HOST,
       node_env: env.NODE_ENV,
     };
 

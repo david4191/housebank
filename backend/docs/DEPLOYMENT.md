@@ -7,10 +7,9 @@ no equivalent reason to hand-roll everything here).
 
 ## 0. Requirements
 
-- **Node.js 20 or newer**, selected in cPanel's Node.js Selector. Two of
-  the security-critical dependencies (`file-type`, `nodemailer`) ship as
-  ESM-only packages on their current, patched major versions and require
-  Node ≥20 — see `docs/SECURITY.md` for why those versions matter.
+- **Node.js 20 or newer**, selected in cPanel's Node.js Selector.
+  `file-type` requires Node ≥20 — see `docs/SECURITY.md` for why its
+  patched version matters.
 - MySQL 5.7+ or 8.0 (same as any other cPanel MySQL database).
 
 ## 1. Create the MySQL database
@@ -70,20 +69,10 @@ so you don't lose track of what's set where):
   `node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"`
 - `FRONTEND_URL` — your deployed frontend's exact origin, used for CORS
   (comma-separate multiple origins if needed)
-- Mail delivery (required for email OTPs). Choose one provider and set
-  its values in cPanel's **Environment Variables**:
-  - **Brevo API**: set `BREVO_API_KEY` and `BREVO_SENDER_EMAIL` to a
-    sender address verified in Brevo. Optionally set
-    `BREVO_SENDER_NAME` (defaults to `HouseBank`). When the API key is
-    present, it takes precedence over `MAIL_DRIVER` and all SMTP values;
-    no SMTP credentials are needed.
-  - **cPanel SMTP**: create a mailbox under **Email Accounts** and use
-    the exact settings shown under **Connect Devices**:
-    `MAIL_DRIVER=smtp`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`,
-    `SMTP_USER` (full mailbox address), `SMTP_PASS`, and
-    `SMTP_FROM_EMAIL` (a sender accepted by that mailbox's provider).
-    Typically port 465 uses `SMTP_SECURE=true`; port 587 uses
-    `SMTP_SECURE=false`.
+- Email delivery uses **Brevo only**. Set `BREVO_API_KEY` and
+  `BREVO_SENDER_EMAIL` to an address verified in Brevo. Optionally set
+  `BREVO_SENDER_NAME` (defaults to `HouseBank`). SMTP is not supported
+  and is never used as a fallback.
 - For a `.env`-file deployment using Brevo, the mail-specific entries
   look like this:
 
@@ -94,11 +83,9 @@ so you don't lose track of what's set where):
   ```
 
 - After saving mail settings, restart the Node.js app. Check its startup
-  logs for `Brevo API key verified OK` (Brevo) or
-  `SMTP connection and login verified OK` (SMTP). Missing configuration,
-  rejected credentials, or a sender not verified in Brevo means OTP
-  emails will not be delivered. Do not put provider credentials in
-  source control.
+  logs for `Brevo API key verified OK`. Rejected credentials or a sender
+  not verified in Brevo means OTP emails will not be delivered. Do not
+  put provider credentials in source control.
 - OTP diagnostics are written to `storage/logs/app.log`. Look for
   `OTP generation and storage started`, `OTP generated and stored`,
   `OTP email dispatch started`, and `Brevo accepted email request`.

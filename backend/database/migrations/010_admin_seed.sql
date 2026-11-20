@@ -18,7 +18,7 @@
 -- default. The plaintext password is NOT stored anywhere in this repo
 -- or in the database; it was given to Joan directly in chat. Change it
 -- any time via Forgot Password on the sign-in screen (once outbound
--- mail is working -- see the OTP/SMTP section of the project status
+-- email delivery is working -- see the OTP/Brevo section of the project status
 -- doc) or by asking for a fresh migration to rotate the hash.
 --
 -- Safe to run once. Re-running will fail on users.email's unique

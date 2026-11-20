@@ -4,28 +4,10 @@ const { env } = require('../config/env');
 const { logger } = require('./logger');
 
 /**
- * Brevo is selected whenever BREVO_API_KEY is set; SMTP is used only
- * when no Brevo key is configured. Every call site uses sendMail() or
- * sendOtp() without needing to know which transport is active.
- *
- * SMTP via nodemailer: on Namecheap cPanel, the simplest setup is to
- * create a mailbox (cPanel → Email Accounts) for your domain and point
- * SMTP_HOST/USER/PASS at it. nodemailer 10 is ESM-only, loaded via
- * dynamic import() and cached (see the matching comment in
- * utils/fileUpload.js for why this project stays CommonJS overall).
- * This version is deliberate, not incidental: nodemailer <=9 carries
- * several disclosed high-severity issues (SMTP command injection via
- * CRLF, SSRF via the raw-message option) that are fixed in 10.
- *
- * Brevo (formerly Sendinblue) via their transactional-email HTTP API:
- * one POST per email, authenticated with an API key over HTTPS —
- * there's no SMTP handshake/login to get wrong, which is exactly the
- * class of problem (`535 Incorrect authentication data`) that's been
- * blocking real signups on the SMTP path. Uses Node's built-in fetch
- * (Node 18+, no new dependency). Set BREVO_API_KEY and the verified
- * BREVO_SENDER_EMAIL identity in .env.
+ * All outbound mail uses Brevo's transactional-email API. There is no
+ * SMTP transport or fallback: configure the API key and verified sender
+ * identity before starting the backend.
  */
-let transporterPromise = null;
 
 function maskEmail(email) {
   const [localPart, domain] = String(email).split('@');
@@ -33,68 +15,11 @@ function maskEmail(email) {
   return `${localPart[0]}***@${domain}`;
 }
 
-async function getSmtpTransporter() {
-  if (transporterPromise) return transporterPromise;
-
-  if (!env.SMTP_HOST) {
-    logger.warning('SMTP_HOST not configured — emails will be logged, not sent.');
-    return null;
-  }
-
-  transporterPromise = import('nodemailer').then(({ default: nodemailer }) =>
-    nodemailer.createTransport({
-      host: env.SMTP_HOST,
-      port: env.SMTP_PORT,
-      secure: env.SMTP_SECURE,
-      auth: env.SMTP_USER ? { user: env.SMTP_USER, pass: env.SMTP_PASS } : undefined,
-    })
-  );
-  return transporterPromise;
-}
-
-async function sendViaSmtp(toEmail, subject, html) {
-  const t = await getSmtpTransporter();
-  if (!t) {
-    logger.info('Email not sent (no SMTP configured) — logging instead', { to: toEmail, subject });
-    return false;
-  }
-  try {
-    const info = await t.sendMail({
-      from: `"${env.SMTP_FROM_NAME}" <${env.SMTP_FROM_EMAIL}>`,
-      to: toEmail,
-      subject,
-      html,
-    });
-    logger.info('SMTP accepted email request', {
-      recipient: maskEmail(toEmail),
-      message_id: info.messageId,
-    });
-    return true;
-  } catch (err) {
-    logger.error('Failed to send email via SMTP', { to: maskEmail(toEmail), error: err.message });
-    return false;
-  }
-}
-
 async function sendViaBrevo(toEmail, subject, html) {
-  if (!env.BREVO_API_KEY) {
-    logger.warning('BREVO_API_KEY not configured — emails will be logged, not sent.');
-    return false;
-  }
-  if (!env.BREVO_SENDER_EMAIL) {
-    logger.error('BREVO_SENDER_EMAIL is not configured — Brevo cannot send email.', {
-      recipient: maskEmail(toEmail),
-    });
-    return false;
-  }
-
-  // Detailed debug logging for tracking email flow
   logger.info('Brevo email dispatch started', {
     recipient: maskEmail(toEmail),
     subject,
     sender: { name: env.BREVO_SENDER_NAME, email: env.BREVO_SENDER_EMAIL },
-    api_key_prefix: env.BREVO_API_KEY.slice(0, 10) + '...',
-    driver: env.MAIL_DRIVER,
   });
 
   try {
@@ -167,7 +92,7 @@ async function sendViaBrevo(toEmail, subject, html) {
 }
 
 async function sendMail(toEmail, subject, html) {
-  return env.MAIL_DRIVER === 'brevo' ? sendViaBrevo(toEmail, subject, html) : sendViaSmtp(toEmail, subject, html);
+  return sendViaBrevo(toEmail, subject, html);
 }
 
 async function sendOtp(toEmail, code, purposeLabel, metadata = {}) {
@@ -175,7 +100,7 @@ async function sendOtp(toEmail, code, purposeLabel, metadata = {}) {
     user_id: metadata.userId,
     purpose: metadata.purpose || purposeLabel,
     recipient: maskEmail(toEmail),
-    mail_driver: env.MAIL_DRIVER,
+    mail_driver: 'brevo',
   };
   logger.info('OTP email dispatch started', logContext);
 
@@ -204,54 +129,24 @@ async function sendOtp(toEmail, code, purposeLabel, metadata = {}) {
 }
 
 /**
- * Boot-time mail transport check (Joan, Sep 2026 -- "fix the email
- * issues"). The SMTP 535 auth failure documented in
- * claude/backend-status.md was only ever discovered by a real user
- * hitting a real signup and the OTP never arriving -- buried in
- * app.log until someone went looking for it. This runs once at server
- * startup and logs a clear pass/fail up front instead. It does not
- * block the server from starting -- a broken mail transport shouldn't
- * take the whole API down, everything else still works without it.
+ * Check Brevo connectivity and credentials once at startup. A failure is
+ * logged clearly; email requests still use Brevo only and report delivery
+ * failure to the caller.
  */
 async function verifyMailTransport() {
-  if (env.MAIL_DRIVER === 'brevo') {
-    if (!env.BREVO_API_KEY) {
-      logger.warning('Mail transport: MAIL_DRIVER=brevo but BREVO_API_KEY is not set -- emails will not send.');
-      return;
-    }
-    if (!env.BREVO_SENDER_EMAIL) {
-      logger.error('Mail transport: BREVO_SENDER_EMAIL is not configured -- Brevo emails will not send.');
-      return;
-    }
-    try {
-      const res = await fetch('https://api.brevo.com/v3/account', {
-        headers: { 'api-key': env.BREVO_API_KEY, Accept: 'application/json' },
-      });
-      if (res.ok) {
-        logger.info('Mail transport: Brevo API key verified OK.');
-      } else {
-        logger.error('Mail transport: Brevo API key rejected at boot -- emails will not send until this is fixed.', {
-          status: res.status,
-        });
-      }
-    } catch (err) {
-      logger.error('Mail transport: Brevo verification request failed', { error: err.message });
-    }
-    return;
-  }
-
-  const t = await getSmtpTransporter();
-  if (!t) {
-    logger.warning('Mail transport: SMTP_HOST is not configured -- emails will not send.');
-    return;
-  }
   try {
-    await t.verify();
-    logger.info('Mail transport: SMTP connection and login verified OK.');
-  } catch (err) {
-    logger.error('Mail transport: SMTP verification failed at boot -- emails will not send until this is fixed.', {
-      error: err.message,
+    const res = await fetch('https://api.brevo.com/v3/account', {
+      headers: { 'api-key': env.BREVO_API_KEY, Accept: 'application/json' },
     });
+    if (res.ok) {
+      logger.info('Mail transport: Brevo API key verified OK.');
+    } else {
+      logger.error('Mail transport: Brevo API key rejected at boot -- emails will not send until this is fixed.', {
+        status: res.status,
+      });
+    }
+  } catch (err) {
+    logger.error('Mail transport: Brevo verification request failed', { error: err.message });
   }
 }
 
