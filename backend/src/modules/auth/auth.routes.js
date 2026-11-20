@@ -8,7 +8,12 @@ const { logger } = require('../../utils/logger');
 const { signAccessToken, signPendingTwoFactorToken, verifyPendingTwoFactorToken } = require('../../utils/jwt');
 const { enforce, attempt: rateAttempt, reset: rateReset } = require('../../utils/rateLimiter');
 const { requireAuth } = require('../../middleware/auth');
-const { cookieValue, setAuthCookies, clearAuthCookies } = require('../../utils/authCookies');
+const {
+  cookieValue,
+  setAuthCookies,
+  sessionResponseData,
+  clearAuthCookies,
+} = require('../../utils/authCookies');
 const { upload, storeDocument } = require('../../utils/fileUpload');
 const bcrypt = require('bcryptjs');
 const { sendOtp } = require('../../utils/mailer');
@@ -209,7 +214,11 @@ router.post(
     const displayName = await User.getDisplayName(refreshedUser);
 
     setAuthCookies(req, res, accessToken, refreshToken);
-    return response.success(res, { user: User.toPublicObject(refreshedUser, displayName) }, 'Account verified successfully.');
+    return response.success(
+      res,
+      sessionResponseData(req, { user: User.toPublicObject(refreshedUser, displayName) }, accessToken, refreshToken),
+      'Account verified successfully.'
+    );
   })
 );
 
@@ -312,7 +321,11 @@ router.post(
     const displayName = await User.getDisplayName(user);
 
     setAuthCookies(req, res, accessToken, refreshToken);
-    return response.success(res, { user: User.toPublicObject(user, displayName) }, 'Signed in successfully.');
+    return response.success(
+      res,
+      sessionResponseData(req, { user: User.toPublicObject(user, displayName) }, accessToken, refreshToken),
+      'Signed in successfully.'
+    );
   })
 );
 
@@ -387,7 +400,12 @@ router.post(
     setAuthCookies(req, res, accessToken, refreshToken);
     return response.success(
       res,
-      { user: User.toPublicObject(user, displayName), used_recovery_code: usedRecoveryCode },
+      sessionResponseData(
+        req,
+        { user: User.toPublicObject(user, displayName), used_recovery_code: usedRecoveryCode },
+        accessToken,
+        refreshToken
+      ),
       'Signed in successfully.'
     );
   })
@@ -533,7 +551,11 @@ router.post(
     const { accessToken, refreshToken } = await issueTokens(user, req);
 
     setAuthCookies(req, res, accessToken, refreshToken);
-    return response.success(res, null, 'Token refreshed.');
+    return response.success(
+      res,
+      sessionResponseData(req, null, accessToken, refreshToken),
+      'Token refreshed.'
+    );
   })
 );
 
@@ -605,7 +627,11 @@ router.post(
     );
 
     setAuthCookies(req, res, accessToken, refreshToken);
-    return response.success(res, null, 'Password changed.');
+    return response.success(
+      res,
+      sessionResponseData(req, null, accessToken, refreshToken),
+      'Password changed.'
+    );
   })
 );
 

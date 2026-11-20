@@ -59,7 +59,9 @@ Configure a mail provider before deploying (see `docs/DEPLOYMENT.md`).
 
 ### `POST /auth/verify-otp`
 Body: `{ userId, code }` — 6-digit code, expires in 10 minutes.
-Response `200`: `{ user }`. Sets the HttpOnly access and refresh cookies.
+Browser response `200`: `{ user }`. Sets the HttpOnly access and refresh cookies.
+Requests without an `Origin` header receive `{ token, refreshToken, user }`
+for non-browser API clients.
 
 ### `POST /auth/resend-otp`
 Body: `{ userId, purpose }` — `signup_verification` or `password_reset`.
@@ -68,21 +70,25 @@ Rate-limited. Always returns a generic success message.
 ### `POST /auth/signin`
 Body: `{ userName, password }` — `userName` accepts an email **or** a
 phone number (kept as `userName` to match `AuthContext.tsx`'s existing contract).
-Response `200`: `{ user }`. Sets the HttpOnly access and refresh cookies.
+Browser response `200`: `{ user }`. Sets the HttpOnly access and refresh cookies.
+Requests without an `Origin` header receive `{ token, refreshToken, user }`
+for non-browser API clients.
 `403` with `{ requires_verification: true, user_id }` if unverified.
 `423` if temporarily locked from repeated failed logins.
 
 ### `POST /auth/refresh`
 The browser sends the HttpOnly refresh cookie automatically; non-browser
 clients may send `{ refreshToken }`. Rotates the token and updates the
-HttpOnly cookies. Response `200`: `data: null`.
+HttpOnly cookies. Browser response `200`: `data: null`; requests without an
+`Origin` header receive `{ token, refreshToken }` for non-browser API clients.
 
 ### `POST /auth/logout` (protected)
 Revokes all refresh tokens for the user and clears the browser's auth cookies.
 
 ### `POST /auth/change-password` (protected)
 Rotates the current browser session cookies after a successful password
-change. Response `200`: `data: null`.
+change. Browser response `200`: `data: null`; requests without an `Origin`
+header receive `{ token, refreshToken }` for non-browser API clients.
 
 ### `GET /auth/me` (protected)
 

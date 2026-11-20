@@ -21,7 +21,7 @@ function cookieOptions(req, maxAge) {
     secure,
     sameSite: secure ? 'none' : 'lax',
     path: '/',
-    maxAge: maxAge * 1000,
+    ...(Number.isFinite(maxAge) ? { maxAge: maxAge * 1000 } : {}),
   };
 }
 
@@ -34,6 +34,10 @@ function setAuthCookies(req, res, accessToken, refreshToken) {
   res.cookie(ACCESS_COOKIE, accessToken, accessOptions);
   res.cookie(REFRESH_COOKIE, refreshToken, refreshOptions);
   res.cookie(REMEMBER_COOKIE, rememberMe ? '1' : '0', refreshOptions);
+}
+
+function sessionResponseData(req, data, accessToken, refreshToken) {
+  return req.get('origin') ? data : { ...data, token: accessToken, refreshToken };
 }
 
 function clearAuthCookies(req, res) {
@@ -50,5 +54,6 @@ module.exports = {
   REMEMBER_COOKIE,
   cookieValue,
   setAuthCookies,
+  sessionResponseData,
   clearAuthCookies,
 };
