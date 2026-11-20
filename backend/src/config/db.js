@@ -85,7 +85,12 @@ async function withTransaction(callback) {
     await connection.commit();
     return result;
   } catch (err) {
-    await connection.rollback();
+    try {
+      await connection.rollback();
+    } catch (rollbackErr) {
+      // eslint-disable-next-line no-console
+      console.error('[HouseBank] Transaction rollback failed:', rollbackErr.message);
+    }
     throw err;
   } finally {
     connection.release();
