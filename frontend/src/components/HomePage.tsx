@@ -17,6 +17,13 @@ import companyFour from '../assets/company4.png';
 import { MapPin, Search, ChevronDown } from 'lucide-react';
 import { useGetPropertyTypesQuery } from '../redux/housebank.ts';
 
+const partners = [
+  { image: companyOne, name: "Check D'Deck Homes" },
+  { image: companyTwo, name: 'Lane*Wey' },
+  { image: companyThree, name: 'Telos Properties' },
+  { image: companyFour, name: 'Golden Partner' },
+];
+
 const MainContent = () => {
   const navigate = useNavigate();
   const auth = useAuth();
@@ -57,7 +64,7 @@ const MainContent = () => {
   return (
     <div className="bg-white">
       {/* Hero Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-16">
         <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
           <div className="relative z-10 space-y-8">
@@ -143,7 +150,7 @@ const MainContent = () => {
                 {/* Search Button */}
                 <button
                   onClick={handleHeroSearch}
-                  className="w-full md:w-auto bg-green-600 hover:bg-green-700 text-white p-2 rounded-lg md:rounded-full transition-colors flex items-center justify-center md:relative md:right-1"
+                  className="w-full md:w-auto bg-green-600 hover:bg-green-800 text-white p-2 rounded-lg md:rounded-full transition-colors flex items-center justify-center md:relative md:right-1"
                 >
                   <Search className="w-4 h-4" />
                   <span className="ml-2 md:hidden">Search</span>
@@ -166,40 +173,34 @@ const MainContent = () => {
       </section>
 
       {/* Partners Section */}
-      <section className="bg-gray-50 py-16">
+      <section className="bg-gray-50 py-8" aria-labelledby="partners-heading">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl font-bold text-gray-900 text-center mb-12">Our Partners</h2>
-          
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center justify-items-center">
-            {/* Partner 1 - Check D'Deck Homes */}
-            <div className="flex flex-col items-center space-y-2">
-              <img src={companyOne} alt="Check D'Deck Homes" className="w-26 h-26 mb-2" />
-            </div>
+          <h2 id="partners-heading" className="text-2xl font-bold text-gray-900 text-center mb-6">
+            Our Partners
+          </h2>
 
-            {/* Partner 2 - Lane*Wey */}
-            <div className="flex flex-col items-center space-y-2">
-              <div className="text-center">
-                <img src={companyTwo} alt="Lane*Wey" className="w-26 h-26 mb-2" />
-              </div>
-            </div>
-
-            {/* Partner 3 - Telos Properties */}
-            <div className="flex flex-col items-center space-y-2">
-              <div className="text-center">
-                <div className="flex items-center space-x-2">
-                  <img src={companyThree} alt="Telos Properties" className="w-16 h-11 mb-2" />
-                  <div>
-                   
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Partner 4 - Golden Partner */}
-            <div className="flex flex-col items-center space-y-2">
-             
-              <img src={companyFour} alt="Golden Partner" className="w-full h-full object-cover rounded-full" />
-              
+          <div className="partner-marquee">
+            <div className="partner-marquee-track">
+              {[false, true].map((isDuplicate) => (
+                <ul
+                  key={String(isDuplicate)}
+                  className="partner-marquee-group"
+                  aria-hidden={isDuplicate || undefined}
+                >
+                  {partners.map((partner) => (
+                    <li
+                      key={partner.name}
+                      className="flex h-24 w-40 shrink-0 items-center justify-center rounded-xl bg-white px-4 py-3 shadow-sm"
+                    >
+                      <img
+                        src={partner.image}
+                        alt={isDuplicate ? '' : partner.name}
+                        className="h-full w-full object-contain"
+                      />
+                    </li>
+                  ))}
+                </ul>
+              ))}
             </div>
           </div>
         </div>

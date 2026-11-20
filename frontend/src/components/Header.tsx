@@ -146,10 +146,7 @@ const Header = () => {
             {/* Get Started / Dashboard Button */}
             <button
               onClick={handleGetStarted}
-              className="hidden md:flex text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors items-center space-x-1"
-              style={{ backgroundColor: '#3A4B3C' }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#4F6C51')}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#3A4B3C')}
+              className="hidden md:flex items-center space-x-1 rounded-lg bg-green-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-800 focus-visible:ring-offset-2"
             >
               <span>{auth.user ? 'Go to Dashboard' : 'Get Started'}</span>
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -205,8 +202,7 @@ const Header = () => {
                       toggleMobileMenu();
                       handleLogout();
                     }}
-                    className="mt-2 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center space-x-1 w-full"
-                    style={{ backgroundColor: '#3A4B3C' }}
+                    className="mt-2 flex w-full items-center justify-center space-x-1 rounded-lg bg-green-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-800 focus-visible:ring-offset-2"
                   >
                     <span>Sign Out</span>
                   </button>
@@ -221,8 +217,7 @@ const Header = () => {
                       toggleMobileMenu();
                       handleGetStarted();
                     }}
-                    className="mt-2 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center space-x-1 w-full"
-                    style={{ backgroundColor: '#3A4B3C' }}
+                    className="mt-2 flex w-full items-center justify-center space-x-1 rounded-lg bg-green-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-800 focus-visible:ring-offset-2"
                   >
                     <span>Get Started</span>
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

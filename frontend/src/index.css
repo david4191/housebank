@@ -1,6 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap');
 @import 'tailwindcss';
 
+@theme {
+  --color-green-500: #6b866c;
+  --color-green-600: #58745a;
+  --color-green-700: #58745a;
+  --color-green-800: #435944;
+  --font-poppins: 'IBM Plex Sans', sans-serif;
+  --font-sans: 'IBM Plex Sans', sans-serif;
+}
+
 :root {
   --color-main: #8f94fb;
   --color-text: #fff;
@@ -12,7 +21,7 @@
   --color-white: #fff;
   --color-yellow: #ffdf20;
   --color-teal: #0d542b;
-  --color-green: #7bf1a8;
+  --color-green: #58745a;
   --color-border: #e0e3e6;
   --color-disabled: #acb4bd;
   --color-error: #ef4444;
@@ -36,7 +45,7 @@
   --color-white: #2e3235;
   --color-yellow: #ffdf20;
   --color-teal: #0d542b;
-  --color-green: #7bf1a8;
+  --color-green: #58745a;
   --color-border: #252629;
   --color-disabled: #acb4bd;
 }
@@ -45,4 +54,62 @@ body {
   margin: 0;
   font-family: 'IBM Plex Sans', sans-serif;
   min-height: 100vh;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+.partner-marquee {
+  overflow: hidden;
+}
+
+.partner-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: partner-marquee-scroll 32s linear infinite;
+}
+
+.partner-marquee-group {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 3rem;
+  padding-right: 3rem;
+}
+
+.partner-marquee:hover .partner-marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes partner-marquee-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .partner-marquee {
+    overflow: visible;
+  }
+
+  .partner-marquee-track {
+    width: 100%;
+    animation: none;
+  }
+
+  .partner-marquee-group {
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    gap: 1.5rem;
+    padding-right: 0;
+  }
+
+  .partner-marquee-group[aria-hidden='true'] {
+    display: none;
+  }
 }

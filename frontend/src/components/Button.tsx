@@ -10,7 +10,7 @@ interface IButton {
 const variantStyles = {
   primary: `w-full bg-green-600 text-white border border-green-600
              rounded-xl py-3 px-6 text-base font-medium cursor-pointer transition-all duration-300 block
-             hover:bg-green-700 hover:border-green-700 focus:outline-none
+             hover:bg-green-800 hover:border-green-800 focus:outline-none
              focus:ring-2 focus:ring-green-500 focus:ring-offset-2`,
   secondary: `w-full bg-transparent text-green-700 border-2 border-green-600
              rounded-xl py-3 px-6 text-base font-medium cursor-pointer transition-all duration-300 block
