@@ -1,0 +1,67 @@
+# Environment variables — secrets must never be committed
+.env
+.env.local
+.env.development
+.env.production
+.env.staging
+
+# Dependencies
+node_modules/
+
+# Logs
+storage/logs/*.log
+*.log
+
+# Uploaded files — user content, never commit
+storage/uploads/**
+!storage/uploads/.gitkeep
+
+# Runtime / build artifacts
+dist/
+build/
+*.pid
+*.seed
+
+# OS files
+.DS_Store
+Thumbs.db
+$RECYCLE.BIN/
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+*~
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Coverage / test artifacts
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+.nyc_output/
+
+# Database backups
+*.sql.gz
+*.sql.bak
+
+# Local SQLite / DuckDB
+*.db
+*.sqlite
+*.sqlite3
+
+# PM2 / process managers
+*.pid
+
+# Secret keys / certificates
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
