@@ -9,9 +9,10 @@
   are hashed at rest too — a database leak alone doesn't hand out usable
   credentials for any of the three.
 - JWT access tokens are short-lived (30 min default) and stateless.
-  Refresh tokens are opaque random strings (not JWTs), hashed, and
-  rotated on every use — a stolen refresh token is only good for a
-  single exchange before it's revoked.
+  Browser sessions use `HttpOnly` cookies for both access and refresh
+  tokens; refresh tokens are opaque random strings (not JWTs), hashed,
+  and rotated on every use. Cookie-authenticated writes enforce an
+  allowlisted `Origin`; API clients may also use bearer access tokens.
 - Rate limiting is DB-backed (`rate_limits` table), not an in-memory
   Map — this matters specifically because cPanel's Node.js Selector runs
   under Passenger, which can recycle the app process at any time; an

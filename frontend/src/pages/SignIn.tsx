@@ -4,7 +4,6 @@ import Button from '../components/Button.tsx';
 import AuthTitle from '../components/AuthTitle.tsx';
 import useAuth from '../hooks/useAuth.tsx';
 import { roleHomePath } from '../context/AuthContext.tsx';
-import { isValidEmail } from '../utils/emailValidation.ts';
 
 export const authInputStyle = `w-full h-12 bg-[color:var(--color-bg)] border border-[color:var(--color-border)]
               rounded-md px-4 text-base text-[color:var(--color-dark)] placeholder-[color:var(--color-gray)]
@@ -17,8 +16,13 @@ text-[color:var(--color-dark)] outline-none focus:ring-2 focus:ring-[color:var(-
 
 import Seo from '../components/Seo.tsx';
 
+interface SignInLocationState {
+  passwordReset?: boolean;
+  from?: { pathname?: string };
+}
+
 export default function SignIn() {
-  const [rememberMe, setRememberMe] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -37,27 +41,24 @@ export default function SignIn() {
   const auth = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const passwordWasReset = Boolean((location.state as any)?.passwordReset);
+  const locationState = location.state as SignInLocationState | null;
+  const passwordWasReset = Boolean(locationState?.passwordReset);
 
   const handleSubmit = async () => {
     if (submitting) return;
     setError('');
 
     if (!email.trim() || !password) {
-      setError('Please enter your email and password.');
-      return;
-    }
-    if (!isValidEmail(email)) {
-      setError('Please enter a valid email address.');
+      setError('Please enter your email or phone number and password.');
       return;
     }
 
     setSubmitting(true);
-    const result = await auth.login({ userName: email.trim(), password });
+    const result = await auth.login({ userName: email.trim(), password, rememberMe });
     setSubmitting(false);
 
     if (result.ok) {
-      const redirectTo = (location.state as any)?.from?.pathname || roleHomePath(result.user.role);
+      const redirectTo = locationState?.from?.pathname || roleHomePath(result.user.role);
       navigate(redirectTo, { replace: true });
       return;
     }
@@ -88,11 +89,11 @@ export default function SignIn() {
     }
 
     setVerifying(true);
-    const result = await auth.verifyTwoFactorLogin(pendingToken, twoFactorCode.trim());
+    const result = await auth.verifyTwoFactorLogin(pendingToken, twoFactorCode.trim(), rememberMe);
     setVerifying(false);
 
     if (result.ok) {
-      const redirectTo = (location.state as any)?.from?.pathname || roleHomePath(result.user.role);
+      const redirectTo = locationState?.from?.pathname || roleHomePath(result.user.role);
       navigate(redirectTo, { replace: true });
       return;
     }
@@ -106,11 +107,6 @@ export default function SignIn() {
     setTwoFactorCode('');
     setTwoFactorError('');
   };
-
-  // `rememberMe` doesn't change how long the session cookie lives — the
-  // refresh token already persists across browser restarts by design — it's
-  // kept here as-is from the original UI, purely as a user-facing toggle.
-  void rememberMe;
 
   if (step === 'twoFactor') {
     return (
@@ -143,7 +139,7 @@ export default function SignIn() {
           {twoFactorError && <p className="mb-4 text-sm text-red-600">{twoFactorError}</p>}
         </div>
         <div className="w-full sm:w-2/5 mt-8">
-          <Button text={verifying ? 'Verifying…' : 'Verify'} onClick={handleVerifyTwoFactor} />
+          <Button text={verifying ? 'Verifying…' : 'Verify'} onClick={handleVerifyTwoFactor} disabled={verifying} />
         </div>
         <div className="w-full sm:w-2/5 mt-8">
           <Button text="Back" onClick={backToCredentials} variant="link" />
@@ -169,13 +165,15 @@ export default function SignIn() {
         )}
         {/* Email Address */}
         <div className="mb-8 w-full">
-          <label className="block mb-6 font-medium text-[color:var(--color-dark)] text-base">
-            Email Address
+          <label className="block mb-6 font-medium text-[color:var(--color-dark)] text-base" htmlFor="signin-identifier">
+            Email or Phone Number
           </label>
           <input
-            type="email"
+            id="signin-identifier"
+            type="text"
             className={authInputStyle}
-            placeholder="e.g john@example.com"
+            placeholder="Enter your email or phone number"
+            autoComplete="username"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -206,40 +204,20 @@ export default function SignIn() {
 
         {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
 
-        {/* Remember Me Toggle */}
         <div className="mb-8 w-full">
-          <div className="flex items-center gap-4">
-            <label
-              className="text-gray-800 text-lg cursor-pointer"
-              onClick={() => setRememberMe(!rememberMe)}
-            >
-              Remember me?
-            </label>
-            <div className="inline-block w-12 h-6 relative -top-7">
-              <input
-                type="checkbox"
-                checked={rememberMe}
-                onChange={() => setRememberMe(!rememberMe)}
-                className="opacity-0 w-0 h-0"
-              />
-              <span
-                className={`block cursor-pointer w-12 h-6 rounded-full transition-all duration-300 ${
-                  rememberMe ? 'bg-green-700' : 'bg-gray-400'
-                }`}
-                onClick={() => setRememberMe(!rememberMe)}
-              >
-                <span
-                  className={`relative left-1 top-1 block h-4 w-4 mt-1 ml-1 bg-white transition-all duration-300 rounded-full transform ${
-                    rememberMe ? 'translate-x-5' : ''
-                  }`}
-                />
-              </span>
-            </div>
-          </div>
+          <label className="inline-flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={rememberMe}
+              onChange={(event) => setRememberMe(event.target.checked)}
+              className="h-4 w-4 accent-green-700"
+            />
+            Remember me on this device
+          </label>
         </div>
       </div>
       <div className="w-full sm:w-2/5 mt-8">
-        <Button text={submitting ? 'Signing in…' : 'Sign In'} onClick={handleSubmit} />
+        <Button text={submitting ? 'Signing in…' : 'Sign In'} onClick={handleSubmit} disabled={submitting} />
       </div>
     </div>
   );

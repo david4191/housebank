@@ -1,29 +1,32 @@
-# Deploying HouseBank's frontend to Namecheap (cPanel static hosting)
+# Deploying HouseBank's frontend
 
 This is a Vite/React SPA. There's no Node process for this half —
 `npm run build` produces a static `dist/` folder that cPanel serves as
 plain files (Apache/LiteSpeed), same as any HTML site. The backend
 (`hb-backend`) is a separate Node app — see its own `docs/DEPLOYMENT.md`.
 
-## 0. Point the build at your real API before building
+## Vercel deployment
 
-Vite bakes `VITE_APP_BACKEND_HOST` into the JS bundle at **build time** —
-it's not read at runtime like a normal backend env var. The checked-in
-`.env.production` points production builds at the Render API. If a local
-`.env.local` overrides it, create `.env.production.local` in this folder:
+The checked-in production build uses the same-origin `/api/` path. `vercel.json`
+rewrites `/api/*` to the backend, so auth cookies remain first-party and the
+browser does not need to allow third-party cookies. Update the rewrite target
+there if the backend hostname changes.
 
-Before building for deployment, create `.env.production.local` (git-
-ignored, same as `.env.local`) in this folder:
+## Namecheap/cPanel static deployment
+
+For a static host without an API rewrite, override the build-time API URL with
+the public backend URL. Create `.env.production.local` (git-ignored) in this
+folder before building:
 
 ```
 VITE_APP_BACKEND_HOST=https://housebank-backend-j5a6.onrender.com/
 ```
 
-The trailing slash is required because `src/redux/housebank.ts` appends
-endpoint paths directly. `.env.production.local` outranks `.env.local`
-for production builds, so this overrides a local development URL without
-changing your local dev setup. Set the same `VITE_APP_BACKEND_HOST` in
-your hosting provider's build environment if builds happen there.
+The trailing slash is required because endpoint paths are appended directly.
+If builds happen in the hosting provider, set the same value in its build
+environment. Since the API is cross-origin in this deployment, verify browser
+cookie support and configure the backend's `FRONTEND_URL` for the exact site
+origin.
 
 ## 1. Build
 

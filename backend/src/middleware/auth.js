@@ -3,6 +3,7 @@
 const { verifyAccessToken } = require('../utils/jwt');
 const { logger } = require('../utils/logger');
 const response = require('../utils/response');
+const { ACCESS_COOKIE, cookieValue } = require('../utils/authCookies');
 
 function bearerToken(req) {
   const header = req.headers.authorization || '';
@@ -16,7 +17,7 @@ function bearerToken(req) {
  * enforce RBAC on a route.
  */
 function requireAuth(req, res, next) {
-  const token = bearerToken(req);
+  const token = bearerToken(req) || cookieValue(req, ACCESS_COOKIE);
   if (!token) {
     return response.unauthorized(res, 'Authentication required.');
   }

@@ -210,6 +210,7 @@ const CompanyDetailsModal = ({ id, onClose }: { id: number; onClose: () => void 
     try {
       const token = cookieManager.get(TOKEN_COOKIE);
       const res = await fetch(`${import.meta.env.VITE_APP_BACKEND_HOST}admin/companies/${id}/cac-document`, {
+        credentials: 'include',
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
       if (!res.ok) throw new Error('Could not load the CAC document.');

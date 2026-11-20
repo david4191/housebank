@@ -4,6 +4,7 @@ interface IButton {
   onClick: () => void;
   text?: string;
   variant?: 'primary' | 'secondary' | 'link';
+  disabled?: boolean;
 }
 
 const variantStyles = {
@@ -19,12 +20,13 @@ const variantStyles = {
            hover:text-green-800 underline-offset-2 hover:underline`,
 };
 
-const Button: FC<IButton> = ({ onClick, text, variant }) => {
+const Button: FC<IButton> = ({ onClick, text, variant, disabled = false }) => {
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`${variantStyles[variant ? variant : 'primary']}`}
+      disabled={disabled}
+      className={`${variantStyles[variant ? variant : 'primary']} disabled:cursor-not-allowed disabled:opacity-60`}
     >
       {text ? text : 'Default'}
     </button>

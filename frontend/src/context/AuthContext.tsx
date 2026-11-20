@@ -15,11 +15,8 @@ import {
 } from '../redux/housebank.ts';
 import {
   cookieManager,
-  TOKEN_COOKIE,
-  REFRESH_TOKEN_COOKIE,
   USER_COOKIE,
-  COOKIE_AGE,
-  REFRESH_COOKIE_AGE,
+  REMEMBER_SESSION_KEY,
   clearAuthCookies,
 } from '../utils/cookie.ts';
 import { mapRegistrationError, type RegistrationFieldErrors } from '../utils/registrationError.ts';
@@ -64,15 +61,17 @@ function readCachedUser(): HouseBankUser | null {
   }
 }
 
-function persistSession(token: string, refreshToken: string, user: HouseBankUser) {
-  cookieManager.set(TOKEN_COOKIE, token, { path: '/', maxAge: COOKIE_AGE });
-  cookieManager.set(REFRESH_TOKEN_COOKIE, refreshToken, { path: '/', maxAge: REFRESH_COOKIE_AGE });
-  cookieManager.set(USER_COOKIE, user, { path: '/', maxAge: REFRESH_COOKIE_AGE });
+function persistSession(user: HouseBankUser, rememberMe = true) {
+  localStorage.setItem(REMEMBER_SESSION_KEY, rememberMe ? '1' : '0');
+  cookieManager.set(USER_COOKIE, user, {
+    path: '/',
+    ...(rememberMe ? { maxAge: 1209600 } : {}),
+  });
 }
 
 interface AuthContextType {
   user: HouseBankUser | null;
-  login: (credentials: { userName: string; password: string }) => Promise<
+  login: (credentials: { userName: string; password: string; rememberMe: boolean }) => Promise<
     | { ok: true; user: HouseBankUser }
     | { ok: false; message: string; requiresVerification?: boolean; userId?: number }
     | { ok: false; requires2fa: true; pendingToken: string }
@@ -82,7 +81,8 @@ interface AuthContextType {
   // 6-digit code or a recovery code.
   verifyTwoFactorLogin: (
     pendingToken: string,
-    code: string
+    code: string,
+    rememberMe: boolean
   ) => Promise<{ ok: true; user: HouseBankUser; usedRecoveryCode: boolean } | { ok: false; message: string }>;
   register: (
     payload: any
@@ -150,13 +150,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if ('requires_2fa' in result.data && result.data.requires_2fa) {
         return { ok: false, requires2fa: true, pendingToken: result.data.pending_token };
       }
-      const { token, refreshToken, user: loggedInUser } = result.data as {
-        token: string;
-        refreshToken: string;
-        user: HouseBankUser;
-      };
+      const { user: loggedInUser } = result.data as { user: HouseBankUser };
       resetApiCache();
-      persistSession(token, refreshToken, loggedInUser);
+      persistSession(loggedInUser, credentials.rememberMe);
       setUser(loggedInUser);
       return { ok: true, user: loggedInUser };
     }
@@ -201,9 +197,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const verifyOtp: AuthContextType['verifyOtp'] = async (userId, code) => {
     const result = await verifyOtpMutation({ userId, code });
     if ('data' in result && result.data) {
-      const { token, refreshToken, user: verifiedUser } = result.data;
+      const { user: verifiedUser } = result.data;
       resetApiCache();
-      persistSession(token, refreshToken, verifiedUser);
+      persistSession(verifiedUser);
       setUser(verifiedUser);
       return { ok: true, user: verifiedUser };
     }
@@ -211,12 +207,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return { ok: false, message: err?.message || 'Invalid or expired code.' };
   };
 
-  const verifyTwoFactorLogin: AuthContextType['verifyTwoFactorLogin'] = async (pendingToken, code) => {
-    const result = await verifyTwoFactorLoginMutation({ pending_token: pendingToken, code });
+  const verifyTwoFactorLogin: AuthContextType['verifyTwoFactorLogin'] = async (pendingToken, code, rememberMe) => {
+    const result = await verifyTwoFactorLoginMutation({ pending_token: pendingToken, code, rememberMe });
     if ('data' in result && result.data) {
-      const { token, refreshToken, user: loggedInUser, used_recovery_code } = result.data;
+      const { user: loggedInUser, used_recovery_code } = result.data;
       resetApiCache();
-      persistSession(token, refreshToken, loggedInUser);
+      persistSession(loggedInUser, rememberMe);
       setUser(loggedInUser);
       return { ok: true, user: loggedInUser, usedRecoveryCode: !!used_recovery_code };
     }
@@ -230,7 +226,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const refreshed = result.data as HouseBankUser;
       // Only re-syncs the cached user object (e.g. two_factor_enabled after
       // a Settings change) — the active token/refresh token are untouched.
-      cookieManager.set(USER_COOKIE, refreshed, { path: '/', maxAge: REFRESH_COOKIE_AGE });
+      const rememberMe = localStorage.getItem(REMEMBER_SESSION_KEY) === '1';
+      cookieManager.set(USER_COOKIE, refreshed, {
+        path: '/',
+        ...(rememberMe ? { maxAge: 1209600 } : {}),
+      });
       setUser(refreshed);
       return refreshed;
     }
@@ -256,12 +256,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const changePassword: AuthContextType['changePassword'] = async (currentPassword, newPassword) => {
     const result = await changePasswordMutation({ current_password: currentPassword, new_password: newPassword });
-    if ('data' in result && result.data) {
-      const { token, refreshToken } = result.data as { token: string; refreshToken: string };
-      // Same account, same cached user object — only the token pair
-      // changed, so there's no resetApiCache()/setUser() the way
-      // login()/verifyOtp() need when switching accounts.
-      if (user) persistSession(token, refreshToken, user);
+    if ('data' in result && !('error' in result) && result.data === null) {
       return { ok: true };
     }
     const err: any = 'error' in result ? result.error : null;

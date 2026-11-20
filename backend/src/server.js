@@ -10,6 +10,7 @@ const { logger } = require('./utils/logger');
 const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
 const { verifyMailTransport } = require('./utils/mailer');
 const { verifyDatabaseConnection } = require('./config/db');
+const { ACCESS_COOKIE, REFRESH_COOKIE, cookieValue } = require('./utils/authCookies');
 
 const authRoutes = require('./modules/auth/auth.routes');
 const propertyRoutes = require('./modules/properties/properties.routes');
@@ -104,6 +105,17 @@ app.use(
   })
 );
 
+app.use((req, res, next) => {
+  const isWrite = !['GET', 'HEAD', 'OPTIONS'].includes(req.method);
+  if (isWrite && (cookieValue(req, ACCESS_COOKIE) || cookieValue(req, REFRESH_COOKIE))) {
+    const origin = req.get('origin');
+    if (!origin || !allowedOrigins.includes(origin)) {
+      return res.status(403).json({ success: false, message: 'Request origin is not allowed.' });
+    }
+  }
+  next();
+});
+
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 
@@ -141,94 +153,6 @@ app.use('/leads', leadRoutes);
 app.use('/reports', reportRoutes);
 app.use('/reviews', reviewRoutes);
 app.use('/wishlist', wishlistRoutes);
-
-// ---------------------------------------------------------------------
-// TEMPORARY DEBUG: Email testing endpoints (will be removed after debugging)
-// ---------------------------------------------------------------------
-app.get('/debug/email-logs', async (req, res) => {
-  try {
-    const fs = require('fs');
-    const path = require('path');
-    const LOG_DIR = path.join(__dirname, '..', 'storage', 'logs');
-    const appLogPath = path.join(LOG_DIR, 'app.log');
-
-    if (!fs.existsSync(appLogPath)) {
-      return res.json({ entries: [] });
-    }
-
-    const content = fs.readFileSync(appLogPath, 'utf8');
-    const lines = content.split('\n').filter(Boolean);
-    const entries = lines
-      .map((line) => {
-        const match = line.match(/^\[([^\]]+)\]\s+(\w+):\s+(.+)$/);
-        if (!match) return null;
-        let context = null;
-        try {
-          // Context is JSON after the message
-          const jsonMatch = line.match(/\{.*\}$/);
-          if (jsonMatch) {
-            context = JSON.parse(jsonMatch[0]);
-          }
-        } catch (e) {
-          // ignore
-        }
-        return {
-          timestamp: match[1],
-          level: match[2],
-          message: match[3],
-          context,
-        };
-      })
-      .filter((entry) => entry && /email|brevo|otp|smtp|mail/i.test(entry.message + JSON.stringify(entry.context || {})))
-      .slice(-100); // Last 100 entries
-
-    res.json({ entries });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-app.post('/debug/test-email', async (req, res) => {
-  try {
-    const { sendMail, verifyMailTransport } = require('./utils/mailer');
-    const { logger } = require('./utils/logger');
-
-    const testEmail = req.body?.email || 'test@example.com';
-    const testSubject = req.body?.subject || 'Housebank Debug Test Email';
-    const testHtml = req.body?.html || '<p>This is a test email from Housebank debug endpoint.</p>';
-
-    logger.info('Debug test email requested', { to: testEmail, subject: testSubject });
-
-    const success = await sendMail(testEmail, testSubject, testHtml);
-
-    res.json({
-      success,
-      message: success ? 'Email sent successfully' : 'Email failed to send',
-      recipient: testEmail,
-    });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-app.get('/debug/mail-status', async (req, res) => {
-  try {
-    const { env } = require('./config/env');
-    const { logger } = require('./utils/logger');
-
-    const status = {
-      mail_provider: 'brevo',
-      brevo_configured: !!env.BREVO_API_KEY,
-      brevo_sender_email: env.BREVO_SENDER_EMAIL,
-      brevo_sender_name: env.BREVO_SENDER_NAME,
-      node_env: env.NODE_ENV,
-    };
-
-    res.json(status);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
 
 app.use(notFoundHandler);
 app.use(errorHandler);

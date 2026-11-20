@@ -8,9 +8,6 @@ import {
 import {
   cookieManager,
   TOKEN_COOKIE,
-  REFRESH_TOKEN_COOKIE,
-  COOKIE_AGE,
-  REFRESH_COOKIE_AGE,
   clearAuthCookies,
 } from '../utils/cookie.ts';
 
@@ -31,6 +28,7 @@ const apiBaseUrl = import.meta.env.DEV
 
 const rawBaseQuery = fetchBaseQuery({
   baseUrl: apiBaseUrl,
+  credentials: 'include',
   prepareHeaders: (headers: Headers) => {
     const token = cookieManager.get(TOKEN_COOKIE);
     if (!headers.has('Authorization') && token) {
@@ -41,12 +39,9 @@ const rawBaseQuery = fetchBaseQuery({
 });
 
 /**
- * Access tokens are short-lived (30 min) by design — see docs/SECURITY.md in
- * hb-backend for why. Rather than forcing a full sign-out the moment one
- * expires, this wrapper catches a 401, tries the stored refresh token exactly
- * once, and — only if that succeeds — replays the original request. If the
- * refresh token itself is invalid/expired/revoked, it clears the local
- * session so the app falls back to its normal "not signed in" state.
+ * The refresh cookie is HttpOnly, so the browser sends it automatically and
+ * the client cannot read or persist the token. A successful refresh rotates
+ * the cookies server-side before retrying the original request.
  */
 const baseQueryWithReauth: BaseQueryFn<
   string | FetchArgs,
@@ -56,26 +51,13 @@ const baseQueryWithReauth: BaseQueryFn<
   let result = await rawBaseQuery(args, api, extraOptions);
 
   if (result.error && result.error.status === 401) {
-    const refreshToken = cookieManager.get(REFRESH_TOKEN_COOKIE);
-
-    if (refreshToken) {
-      const refreshResult = await rawBaseQuery(
-        { url: 'auth/refresh', method: 'POST', body: { refreshToken } },
-        api,
-        extraOptions
-      );
-      const refreshed = (refreshResult.data as Envelope)?.data;
-
-      if (refreshed?.token) {
-        cookieManager.set(TOKEN_COOKIE, refreshed.token, { path: '/', maxAge: COOKIE_AGE });
-        cookieManager.set(REFRESH_TOKEN_COOKIE, refreshed.refreshToken, {
-          path: '/',
-          maxAge: REFRESH_COOKIE_AGE,
-        });
-        result = await rawBaseQuery(args, api, extraOptions);
-      } else {
-        clearAuthCookies();
-      }
+    const refreshResult = await rawBaseQuery(
+      { url: 'auth/refresh', method: 'POST' },
+      api,
+      extraOptions
+    );
+    if (!refreshResult.error && (refreshResult.data as Envelope | undefined)?.success) {
+      result = await rawBaseQuery(args, api, extraOptions);
     } else {
       clearAuthCookies();
     }
@@ -91,9 +73,9 @@ export const houseBankApi = createApi({
   endpoints: (builder) => ({
     // ---------------------------------------------------------------- auth
     loginInUser: builder.mutation<
-      | { token: string; refreshToken: string; user: any }
+      | { user: any }
       | { requires_2fa: true; pending_token: string },
-      { userName: string; password: string }
+      { userName: string; password: string; rememberMe: boolean }
     >({
       query: (credentials) => ({ url: 'auth/signin', method: 'POST', body: credentials }),
       transformResponse: (response: Envelope) => response.data,
@@ -114,7 +96,7 @@ export const houseBankApi = createApi({
     }),
 
     verifyOtp: builder.mutation<
-      { token: string; refreshToken: string; user: any },
+      { user: any },
       { userId: number; code: string }
     >({
       query: (body) => ({ url: 'auth/verify-otp', method: 'POST', body }),
@@ -129,11 +111,9 @@ export const houseBankApi = createApi({
       transformErrorResponse: (response) => response.data as Envelope,
     }),
 
-    // Authenticated self-service password change (any role) — was
-    // missing entirely; only the unauthenticated forgot-password/OTP
-    // flow existed. Returns a fresh token pair (see auth.routes.js's
-    // POST /auth/change-password doc comment for why).
-    changePassword: builder.mutation<{ token: string; refreshToken: string }, { current_password: string; new_password: string }>({
+    // Authenticated self-service password change; the backend rotates the
+    // HttpOnly session cookies and returns no credential material.
+    changePassword: builder.mutation<null, { current_password: string; new_password: string }>({
       query: (body) => ({ url: 'auth/change-password', method: 'POST', body }),
       transformResponse: (response: Envelope) => response.data,
       transformErrorResponse: (response) => response.data as Envelope,
@@ -167,8 +147,8 @@ export const houseBankApi = createApi({
     // short-lived pending_token from loginInUser's requires_2fa response,
     // plus the emailed code (or a recovery code).
     verifyTwoFactorLogin: builder.mutation<
-      { token: string; refreshToken: string; user: any; used_recovery_code: boolean },
-      { pending_token: string; code: string }
+      { user: any; used_recovery_code: boolean },
+      { pending_token: string; code: string; rememberMe: boolean }
     >({
       query: (body) => ({ url: 'auth/2fa/verify-login', method: 'POST', body }),
       transformResponse: (response: Envelope) => response.data,

@@ -2,6 +2,12 @@
 
 Base URL: `{VITE_APP_BACKEND_HOST}` (e.g. `https://api.yourdomain.com/`)
 
+Browser clients use backend-set `HttpOnly` access and refresh cookies and
+must send credentials with API requests. Cookie-authenticated write requests
+must include an allowed `Origin`. The browser does not receive session
+credentials in JSON responses. Non-browser API clients may use bearer access
+tokens and send a refresh token in the `/auth/refresh` request body.
+
 Every response is JSON shaped as:
 
 ```json
@@ -21,6 +27,9 @@ pattern in `src/redux/housebank.ts`.
 Protected routes require `Authorization: Bearer <token>`. Tokens expire
 in 30 minutes (`JWT_ACCESS_TTL_SECONDS`); use `/auth/refresh` with the
 stored `refreshToken` to get a new pair without forcing re-login.
+
+The browser app uses the HttpOnly-cookie flow described below; the bearer
+paragraph above applies only to existing non-browser clients.
 
 ---
 
@@ -42,11 +51,6 @@ stored `refreshToken` to get a new pair without forcing re-login.
 | cacNumber | string | if role=company | |
 | cacFile | file | if role=company | JPG/PNG/PDF, ≤5MB |
 
-**Frontend wiring note**: `SignUp.tsx`, `SignUpBuyer.tsx`, and
-`SignUpUser.tsx` currently `console.log(formData)` — they need to call
-`useRegisterUserMutation()` with a `FormData` body (not JSON) whenever a
-file is attached.
-
 Response `201`: `{ user_id, email }`. Does not log the user in — an OTP
 email is attempted, and the response message indicates whether sending
 succeeded. In non-production environments, a failed send may also log
@@ -55,7 +59,7 @@ Configure a mail provider before deploying (see `docs/DEPLOYMENT.md`).
 
 ### `POST /auth/verify-otp`
 Body: `{ userId, code }` — 6-digit code, expires in 10 minutes.
-Response `200`: `{ token, refreshToken, user }`.
+Response `200`: `{ user }`. Sets the HttpOnly access and refresh cookies.
 
 ### `POST /auth/resend-otp`
 Body: `{ userId, purpose }` — `signup_verification` or `password_reset`.
@@ -64,15 +68,21 @@ Rate-limited. Always returns a generic success message.
 ### `POST /auth/signin`
 Body: `{ userName, password }` — `userName` accepts an email **or** a
 phone number (kept as `userName` to match `AuthContext.tsx`'s existing contract).
-Response `200`: `{ token, refreshToken, user }`.
+Response `200`: `{ user }`. Sets the HttpOnly access and refresh cookies.
 `403` with `{ requires_verification: true, user_id }` if unverified.
 `423` if temporarily locked from repeated failed logins.
 
 ### `POST /auth/refresh`
-Body: `{ refreshToken }`. Rotates the token. Response `200`: `{ token, refreshToken }`.
+The browser sends the HttpOnly refresh cookie automatically; non-browser
+clients may send `{ refreshToken }`. Rotates the token and updates the
+HttpOnly cookies. Response `200`: `data: null`.
 
 ### `POST /auth/logout` (protected)
-Revokes all refresh tokens for the user.
+Revokes all refresh tokens for the user and clears the browser's auth cookies.
+
+### `POST /auth/change-password` (protected)
+Rotates the current browser session cookies after a successful password
+change. Response `200`: `data: null`.
 
 ### `GET /auth/me` (protected)
 

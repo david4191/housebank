@@ -365,3 +365,11 @@
 [2026-11-20T19:27:09.364Z] WARNING: OTP email was not accepted by mail transport {"user_id":90,"purpose":"password_reset","recipient":"d***@gmail.com"}
 [2026-11-20T19:28:01.328Z] INFO: HouseBank API listening on port 3001 (production) 
 [2026-11-20T19:28:02.750Z] INFO: Mail transport: Brevo API key verified OK. 
+[2026-11-20T20:47:08.515Z] INFO: HouseBank API listening on port 3001 (production) 
+[2026-11-20T20:47:09.561Z] INFO: Mail transport: Brevo API key verified OK. 
+[2026-11-20T20:48:01.959Z] INFO: HouseBank API listening on port 3001 (production) 
+[2026-11-20T20:48:02.639Z] INFO: Mail transport: Brevo API key verified OK. 
+[2026-11-20T20:53:23.354Z] INFO: HouseBank API listening on port 3001 (production) 
+[2026-11-20T20:53:25.702Z] INFO: Mail transport: Brevo API key verified OK. 
+[2026-11-20T20:59:28.022Z] INFO: HouseBank API listening on port 3001 (production) 
+[2026-11-20T20:59:29.138Z] INFO: Mail transport: Brevo API key verified OK. 

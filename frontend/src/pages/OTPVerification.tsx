@@ -9,6 +9,10 @@ import Seo from '../components/Seo.tsx';
 
 const CODE_LENGTH = 6; // matches the backend's 6-digit OTP (see hb-backend/src/models/OtpCode.js)
 
+interface OTPVerificationLocationState {
+  userId?: number;
+}
+
 const resendErrorMessage = (error: unknown): string => {
   if (error && typeof error === 'object') {
     if ('data' in error && error.data && typeof error.data === 'object' && 'message' in error.data) {
@@ -32,18 +36,39 @@ export default function OTPVerification() {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  const stateUserId = (location.state as any)?.userId;
+  const stateUserId = (location.state as OTPVerificationLocationState | null)?.userId;
   const paramUserId = searchParams.get('userId');
-  const userId: number | undefined = stateUserId ?? (paramUserId ? Number(paramUserId) : undefined);
+  const parsedUserId = paramUserId ? Number(paramUserId) : undefined;
+  const candidateUserId = stateUserId ?? parsedUserId;
+  const userId = Number.isSafeInteger(candidateUserId) && Number(candidateUserId) > 0
+    ? Number(candidateUserId)
+    : undefined;
 
   const handleOtpChange = (index: number, value: string) => {
-    if (/\D/.test(value)) return;
-
+    const digits = value.replace(/\D/g, '').slice(0, CODE_LENGTH - index);
     const newOtp = [...otp];
-    newOtp[index] = value;
+    if (!digits) {
+      if (value) return;
+      newOtp[index] = '';
+      setOtp(newOtp);
+      setError('');
+      setNotice('');
+      return;
+    }
+    digits.split('').forEach((digit, offset) => {
+      newOtp[index + offset] = digit;
+    });
     setOtp(newOtp);
+    setError('');
+    setNotice('');
+    inputsRef.current[Math.min(index + digits.length, CODE_LENGTH - 1)]?.focus();
+  };
 
-    if (value && index < CODE_LENGTH - 1) inputsRef.current[index + 1]?.focus();
+  const handleOtpPaste = (index: number, event: React.ClipboardEvent<HTMLInputElement>) => {
+    const pasted = event.clipboardData.getData('text').replace(/\D/g, '');
+    if (!pasted) return;
+    event.preventDefault();
+    handleOtpChange(index, pasted);
   };
 
   const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
@@ -108,19 +133,24 @@ export default function OTPVerification() {
       <div>
         {/* OTP Input Section */}
         <div className="mb-8 w-full">
-          <label className="block mb-6 font-medium text-gray-800 text-[19px]">
+          <label id="otp-label" className="block mb-6 font-medium text-gray-800 text-[19px]">
             Enter {CODE_LENGTH}-digit Code
           </label>
-          <div className="flex gap-2 sm:gap-3 justify-start">
+          <div className="flex gap-2 sm:gap-3 justify-start" role="group" aria-labelledby="otp-label">
             {otp.map((digit, index) => (
               <input
                 key={index}
                 type="text"
                 inputMode="numeric"
                 maxLength={1}
+                aria-label={`Digit ${index + 1} of ${CODE_LENGTH}`}
+                aria-invalid={Boolean(error)}
+                aria-describedby={error ? 'otp-error' : undefined}
+                autoComplete={index === 0 ? 'one-time-code' : 'off'}
                 className={authOTPInputStyle}
                 value={digit}
                 onChange={(e) => handleOtpChange(index, e.target.value)}
+                onPaste={(e) => handleOtpPaste(index, e)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
                 ref={(el) => {
                   if (el) inputsRef.current[index] = el;
@@ -130,17 +160,18 @@ export default function OTPVerification() {
             ))}
           </div>
         </div>
-        {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
-        {notice && <p className="mb-4 text-sm text-green-700">{notice}</p>}
+        {error && <p id="otp-error" className="mb-4 text-sm text-red-600" role="alert">{error}</p>}
+        {notice && <p className="mb-4 text-sm text-green-700" role="status">{notice}</p>}
       </div>
       <div className="w-full sm:w-2/5 mt-8">
-        <Button text={submitting ? 'Verifying…' : 'Verify'} onClick={handleVerify} />
+        <Button text={submitting ? 'Verifying…' : 'Verify'} onClick={handleVerify} disabled={submitting || resending} />
       </div>
       <div className="w-full sm:w-2/5 mt-8">
         <Button
           text={resending ? 'Resending…' : 'Resend Code'}
           onClick={handleResend}
           variant="link"
+          disabled={resending || submitting}
         />
       </div>
     </div>

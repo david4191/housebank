@@ -8,6 +8,7 @@ const { logger } = require('../../utils/logger');
 const { signAccessToken, signPendingTwoFactorToken, verifyPendingTwoFactorToken } = require('../../utils/jwt');
 const { enforce, attempt: rateAttempt, reset: rateReset } = require('../../utils/rateLimiter');
 const { requireAuth } = require('../../middleware/auth');
+const { cookieValue, setAuthCookies, clearAuthCookies } = require('../../utils/authCookies');
 const { upload, storeDocument } = require('../../utils/fileUpload');
 const bcrypt = require('bcryptjs');
 const { sendOtp } = require('../../utils/mailer');
@@ -207,7 +208,8 @@ router.post(
     const { accessToken, refreshToken } = await issueTokens(refreshedUser, req);
     const displayName = await User.getDisplayName(refreshedUser);
 
-    return response.success(res, { token: accessToken, refreshToken, user: User.toPublicObject(refreshedUser, displayName) }, 'Account verified successfully.');
+    setAuthCookies(req, res, accessToken, refreshToken);
+    return response.success(res, { user: User.toPublicObject(refreshedUser, displayName) }, 'Account verified successfully.');
   })
 );
 
@@ -309,7 +311,8 @@ router.post(
     logger.security('Successful login', { user_id: user.id, ip: req.ip });
     const displayName = await User.getDisplayName(user);
 
-    return response.success(res, { token: accessToken, refreshToken, user: User.toPublicObject(user, displayName) }, 'Signed in successfully.');
+    setAuthCookies(req, res, accessToken, refreshToken);
+    return response.success(res, { user: User.toPublicObject(user, displayName) }, 'Signed in successfully.');
   })
 );
 
@@ -381,9 +384,10 @@ router.post(
       );
     }
 
+    setAuthCookies(req, res, accessToken, refreshToken);
     return response.success(
       res,
-      { token: accessToken, refreshToken, user: User.toPublicObject(user, displayName), used_recovery_code: usedRecoveryCode },
+      { user: User.toPublicObject(user, displayName), used_recovery_code: usedRecoveryCode },
       'Signed in successfully.'
     );
   })
@@ -500,21 +504,26 @@ router.post(
   })
 );
 
-/** POST /auth/refresh — Body: { refreshToken } */
+/** POST /auth/refresh — rotates the HttpOnly refresh cookie. */
 router.post(
   '/refresh',
   wrap(async (req, res) => {
-    const token = String(req.body.refreshToken || '');
-    if (!token) return response.unauthorized(res, 'Refresh token required.');
+    const token = cookieValue(req, 'hb_refresh_token') || String(req.body?.refreshToken || '');
+    if (!token) {
+      clearAuthCookies(req, res);
+      return response.unauthorized(res, 'Refresh token required.');
+    }
 
     const userId = await RefreshToken.validate(token);
     if (!userId) {
       logger.security('Rejected invalid refresh token', { ip: req.ip });
+      clearAuthCookies(req, res);
       return response.unauthorized(res, 'Session expired. Please sign in again.');
     }
 
     const user = await User.findById(userId);
     if (!user || ['suspended', 'banned'].includes(user.status)) {
+      clearAuthCookies(req, res);
       return response.unauthorized(res, 'Session no longer valid.');
     }
 
@@ -523,7 +532,8 @@ router.post(
     await RefreshToken.revoke(token);
     const { accessToken, refreshToken } = await issueTokens(user, req);
 
-    return response.success(res, { token: accessToken, refreshToken }, 'Token refreshed.');
+    setAuthCookies(req, res, accessToken, refreshToken);
+    return response.success(res, null, 'Token refreshed.');
   })
 );
 
@@ -533,6 +543,7 @@ router.post(
   requireAuth,
   wrap(async (req, res) => {
     await RefreshToken.revokeAllForUser(req.authUser.sub);
+    clearAuthCookies(req, res);
     logger.security('Logout', { user_id: req.authUser.sub });
     return response.success(res, null, 'Logged out.');
   })
@@ -593,7 +604,8 @@ router.post(
       "Your HouseBank password was just changed. If this wasn't you, contact support immediately."
     );
 
-    return response.success(res, { token: accessToken, refreshToken }, 'Password changed.');
+    setAuthCookies(req, res, accessToken, refreshToken);
+    return response.success(res, null, 'Password changed.');
   })
 );
 

@@ -185,7 +185,7 @@ export default function SignUpUser() {
         </div>
       </div>
       <div className="w-full sm:w-2/5 mt-8">
-        <Button text={submitting ? 'Signing up…' : 'Sign Up'} onClick={handleSubmit} />
+        <Button text={submitting ? 'Signing up…' : 'Sign Up'} onClick={handleSubmit} disabled={submitting} />
       </div>
     </div>
   );
