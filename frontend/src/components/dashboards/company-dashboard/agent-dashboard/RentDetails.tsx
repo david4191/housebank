@@ -1,7 +1,7 @@
 import CustomerHeader from './CustomerHeader';
-import propertyExterior from '../../../assets/property/house-porch.png';
-import kitchen from '../../../assets/property/dining-area.png';
-import livingRoom from '../../../assets/property/living-room.png';
+import propertyExterior from '../../../../assets/property/house-porch.png';
+import kitchen from '../../../../assets/property/dining-area.png';
+import livingRoom from '../../../../assets/property/living-room.png';
 
 const RentChartDetailsPage = () => {
   // Calculate progress percentage

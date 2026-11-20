@@ -1,9 +1,9 @@
 import { AlertTriangle } from 'lucide-react';
 import CustomerHeader from './CustomerHeader';
 
-import mainImage from '../../../assets/c5.png';
-import secondImage from '../../../assets/c2.png';
-import thirdImage from '../../../assets/c3.png';
+import mainImage from '../../../../assets/c5.png';
+import secondImage from '../../../../assets/c2.png';
+import thirdImage from '../../../../assets/c3.png';
 
 interface DocumentItem {
   label: string;

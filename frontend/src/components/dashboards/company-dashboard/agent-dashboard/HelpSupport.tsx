@@ -5,9 +5,9 @@ import useAuth from '../../../../hooks/useAuth.tsx';
 import AgentHelpSearch from './AgentHelpSearchPage';
 import AgentFAQ from './AgentFAQ';
 
-import guideImg1 from '../../../assets/guide-1.png';
-import guideImg2 from '../../../assets/guide-2.png';
-import guideImg3 from '../../../assets/guide-3.png';
+import guideImg1 from '../../../../assets/guide-1.png';
+import guideImg2 from '../../../../assets/guide-2.png';
+import guideImg3 from '../../../../assets/guide-3.png';
 
 interface GuideItem {
   id: number;

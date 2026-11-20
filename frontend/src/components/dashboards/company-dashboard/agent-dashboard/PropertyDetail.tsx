@@ -3,9 +3,9 @@ import CustomerHeader from './CustomerHeader';
 
 // You'll need to add these images to your assets folder
 
-import secondImage from '../../../assets/c2.png';
-import thirdImage from '../../../assets/c3.png';
-import fourthImage from '../../../assets/c5.png';
+import secondImage from '../../../../assets/c2.png';
+import thirdImage from '../../../../assets/c3.png';
+import fourthImage from '../../../../assets/c5.png';
 
 const PropertyEarningsPage = () => {
   const handleDownloadDocument = () => {

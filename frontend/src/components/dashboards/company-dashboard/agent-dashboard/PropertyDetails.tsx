@@ -3,17 +3,17 @@ import { MapPin, Home, Bed, Bath, Star } from 'lucide-react';
 import CustomerHeader from './CustomerHeader';
 
 // You'll need to add these images to your assets folder
-import mainImage from '../../../assets/c1.png';
-import secondImage from '../../../assets/c2.png';
-import thirdImage from '../../../assets/c3.png';
-import fourthImage from '../../../assets/c4.png';
+import mainImage from '../../../../assets/c1.png';
+import secondImage from '../../../../assets/c2.png';
+import thirdImage from '../../../../assets/c3.png';
+import fourthImage from '../../../../assets/c4.png';
 
-import firstUser from '../../../assets/1.png';
-import secondUser from '../../../assets/2.png';
-import thirdUser from '../../../assets/3.png';
-import fourthUser from '../../../assets/4.png';
-import fifthUser from '../../../assets/5.png';
-import sixthUser from '../../../assets/6.png';
+import firstUser from '../../../../assets/1.png';
+import secondUser from '../../../../assets/2.png';
+import thirdUser from '../../../../assets/3.png';
+import fourthUser from '../../../../assets/4.png';
+import fifthUser from '../../../../assets/5.png';
+import sixthUser from '../../../../assets/6.png';
 
 interface Message {
   id: string;

@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { CheckCircle, X, Plus } from 'lucide-react';
 import CustomerHeader from './CustomerHeader';
-import upload from '../../../assets/Upload.png';
+import upload from '../../../../assets/Upload.png';
 
 interface PropertyForm {
   propertyName: string;

@@ -1,9 +1,9 @@
 import CustomerHeader from './CustomerHeader';
 
 // You'll need to add these images to your assets folder
-import mainImage from '../../../assets/c5.png';
-import secondImage from '../../../assets/c2.png';
-import thirdImage from '../../../assets/c3.png';
+import mainImage from '../../../../assets/c5.png';
+import secondImage from '../../../../assets/c2.png';
+import thirdImage from '../../../../assets/c3.png';
 
 
 const AgentRentDetailsPage = () => {
