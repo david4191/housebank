@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Building2 } from 'lucide-react';
 import CustomerHeader from './CustomerHeader';
-import TwoFactorSection from '../shared/TwoFactorSection.tsx';
-import ChangePasswordSection from '../shared/ChangePasswordSection.tsx';
-import AvatarUpload from '../shared/AvatarUpload.tsx';
-import { useGetMyProfileQuery, useUpdateMyProfileMutation } from '../../../redux/housebank.ts';
+import TwoFactorSection from '../../shared/TwoFactorSection.tsx';
+import ChangePasswordSection from '../../shared/ChangePasswordSection.tsx';
+import AvatarUpload from '../../shared/AvatarUpload.tsx';
+import { useGetMyProfileQuery, useUpdateMyProfileMutation } from '../../../../redux/housebank.ts';
 
 function logoUrl(relativePath: string | null | undefined) {
   if (!relativePath) return null;

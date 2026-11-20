@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Plus, Eye, Home, CheckCircle2 } from 'lucide-react';
 import CustomerHeader from './CustomerHeader';
-import { useGetMyPropertiesQuery } from '../../../redux/housebank.ts';
+import { useGetMyPropertiesQuery } from '../../../../redux/housebank.ts';
 
 function formatNaira(value: number | string | undefined | null) {
   const n = typeof value === 'string' ? parseFloat(value) : value ?? 0;

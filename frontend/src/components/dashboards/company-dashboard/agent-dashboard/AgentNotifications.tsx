@@ -6,7 +6,7 @@ import {
   useGetNotificationsQuery,
   useMarkNotificationReadMutation,
   useMarkAllNotificationsReadMutation,
-} from '../../../redux/housebank.ts';
+} from '../../../../redux/housebank.ts';
 
 type NotificationCategory = 'all' | 'property' | 'realtor';
 

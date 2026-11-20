@@ -5,7 +5,7 @@ import {
   useGetPropertyTypesQuery,
   useCreatePropertyMutation,
   useUploadPropertyImagesMutation,
-} from '../../../redux/housebank.ts';
+} from '../../../../redux/housebank.ts';
 
 interface ImageSlot {
   file: File | null;

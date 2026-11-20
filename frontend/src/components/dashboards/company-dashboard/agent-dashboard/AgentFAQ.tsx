@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import { useGetHelpTopicsQuery } from '../../../redux/housebank.ts';
+import { useGetHelpTopicsQuery } from '../../../../redux/housebank.ts';
 
 interface AgentFAQProps {
   searchQuery?: string;

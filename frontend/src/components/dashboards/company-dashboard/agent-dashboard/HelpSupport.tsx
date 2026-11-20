@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ArrowRight, Mail } from 'lucide-react';
 import CustomerHeader from './CustomerHeader';
-import useAuth from '../../../hooks/useAuth.tsx';
+import useAuth from '../../../../hooks/useAuth.tsx';
 import AgentHelpSearch from './AgentHelpSearchPage';
 import AgentFAQ from './AgentFAQ';
 

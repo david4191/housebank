@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Search, Plus, Paperclip, Send, User as UserIcon } from 'lucide-react';
 import CustomerHeader from './CustomerHeader';
-import useAuth from '../../../hooks/useAuth.tsx';
+import useAuth from '../../../../hooks/useAuth.tsx';
 import {
   useGetConversationsQuery,
   useGetConversationQuery,
@@ -10,7 +10,7 @@ import {
   useStartConversationMutation,
   useSendMessageMutation,
   useMarkConversationReadMutation,
-} from '../../../redux/housebank.ts';
+} from '../../../../redux/housebank.ts';
 
 function imageUrl(relativePath: string | null | undefined) {
   if (!relativePath) return null;

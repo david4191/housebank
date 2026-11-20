@@ -11,7 +11,7 @@ import {
   useDeclinePurchaseRequestMutation,
   useApproveRentalRequestMutation,
   useDeclineRentalRequestMutation,
-} from '../../../redux/housebank.ts';
+} from '../../../../redux/housebank.ts';
 
 function formatNaira(value: number | string | undefined | null) {
   const n = typeof value === 'string' ? parseFloat(value) : value ?? 0;

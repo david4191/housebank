@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, MessageSquare, Users } from 'lucide-react';
 import CustomerHeader from './CustomerHeader';
-import { useGetMyContactsQuery } from '../../../redux/housebank.ts';
+import { useGetMyContactsQuery } from '../../../../redux/housebank.ts';
 
 function imageUrl(relativePath: string | null | undefined) {
   if (!relativePath) return null;

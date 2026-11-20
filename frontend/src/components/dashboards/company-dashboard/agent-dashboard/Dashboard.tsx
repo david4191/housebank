@@ -1,14 +1,14 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Plus, MoreVertical, Home, CalendarClock, Check, MessageSquare } from 'lucide-react';
 import CustomerHeader from './CustomerHeader';
-import useAuth from '../../../hooks/useAuth.tsx';
+import useAuth from '../../../../hooks/useAuth.tsx';
 import {
   useGetMyPropertiesQuery,
   useGetPurchasesForMyListingsQuery,
   useGetRentalsForMyListingsQuery,
   useGetViewingsForMyPropertiesQuery,
   useConfirmViewingMutation,
-} from '../../../redux/housebank.ts';
+} from '../../../../redux/housebank.ts';
 
 function formatNaira(value: number | string | undefined | null) {
   const n = typeof value === 'string' ? parseFloat(value) : value ?? 0;

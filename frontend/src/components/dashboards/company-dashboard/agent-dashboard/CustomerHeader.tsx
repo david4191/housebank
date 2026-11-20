@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Bell, ChevronDown, ExternalLink, LogOut, Search } from "lucide-react";
-import useAuth from "../../../hooks/useAuth.tsx";
+import useAuth from "../../../../hooks/useAuth.tsx";
 import {
   useGetMyProfileQuery,
   useGetNotificationsQuery,
   useGetUnreadNotificationCountQuery,
   useMarkNotificationReadMutation,
-} from "../../../redux/housebank.ts";
+} from "../../../../redux/housebank.ts";
 
 function avatarUrl(relativePath: string | null | undefined) {
   if (!relativePath) return null;
