@@ -69,7 +69,7 @@ const MainContent = () => {
                 <span className="text-green-700">HouseBank</span>
               </h1>
               <p className="text-gray-600 text-lg leading-relaxed max-w-md">
-                Discover premium properties tailored to your lifestyle.
+                Discover premium properties tailored to your lifestyle..
               </p>
             </div>
 
