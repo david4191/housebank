@@ -87,20 +87,46 @@ async function sendViaBrevo(toEmail, subject, html) {
     });
     return false;
   }
+
+  // Detailed debug logging for tracking email flow
+  logger.info('Brevo email dispatch started', {
+    recipient: maskEmail(toEmail),
+    subject,
+    sender: { name: env.BREVO_SENDER_NAME, email: env.BREVO_SENDER_EMAIL },
+    api_key_prefix: env.BREVO_API_KEY.slice(0, 10) + '...',
+    driver: env.MAIL_DRIVER,
+  });
+
   try {
-    const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+    const endpoint = 'https://api.brevo.com/v3/smtp/email';
+    const payload = {
+      sender: { name: env.BREVO_SENDER_NAME, email: env.BREVO_SENDER_EMAIL },
+      to: [{ email: toEmail }],
+      subject,
+      htmlContent: html,
+    };
+
+    logger.info('Brevo API request', {
+      endpoint,
+      method: 'POST',
+      recipient: maskEmail(toEmail),
+      payload_size: JSON.stringify(payload).length,
+    });
+
+    const res = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'api-key': env.BREVO_API_KEY,
         'Content-Type': 'application/json',
         Accept: 'application/json',
       },
-      body: JSON.stringify({
-        sender: { name: env.BREVO_SENDER_NAME, email: env.BREVO_SENDER_EMAIL },
-        to: [{ email: toEmail }],
-        subject,
-        htmlContent: html,
-      }),
+      body: JSON.stringify(payload),
+    });
+
+    logger.info('Brevo API response received', {
+      recipient: maskEmail(toEmail),
+      status: res.status,
+      statusText: res.statusText,
     });
 
     if (!res.ok) {
@@ -131,7 +157,11 @@ async function sendViaBrevo(toEmail, subject, html) {
     });
     return true;
   } catch (err) {
-    logger.error('Failed to send email via Brevo', { to: maskEmail(toEmail), error: err.message });
+    logger.error('Failed to send email via Brevo', {
+      to: maskEmail(toEmail),
+      error: err.message,
+      stack: err.stack,
+    });
     return false;
   }
 }
