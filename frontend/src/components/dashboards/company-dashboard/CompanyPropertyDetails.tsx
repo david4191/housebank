@@ -5,6 +5,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { MapPin, Bed, Bath, Square, Eye, AlertTriangle, ArrowLeft, Phone } from 'lucide-react';
 import CustomerHeader from './CustomerHeader';
 import { useGetMyPropertyQuery } from '../../../redux/housebank.ts';
+import PropertyImageUploader from '../PropertyImageUploader';
 
 function formatNaira(value: number | string | undefined | null) {
   const n = typeof value === 'string' ? parseFloat(value) : value ?? 0;
@@ -150,6 +151,8 @@ const CompanyPropertyDetailsPage = () => {
                 ) : (
                   <div className="p-8 text-center text-gray-500">No images uploaded for this property yet.</div>
                 )}
+
+                <PropertyImageUploader propertyId={id!} />
 
                 <div className="p-4 sm:p-6">
                   <div className="flex items-start justify-between mb-4 flex-wrap gap-3">

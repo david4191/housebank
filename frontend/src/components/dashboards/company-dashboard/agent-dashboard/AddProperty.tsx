@@ -117,12 +117,13 @@ const AgentAddListPropertyPage = () => {
       filesToUpload.forEach((f) => formData.append('images', f));
       const imgResult = await uploadImages({ id: newId, formData });
       if ('error' in imgResult) {
-        // The listing itself was created successfully, image upload
-        // failing shouldn't strand the agent on a form that looks like
-        // nothing happened. Send them to the real listing either way,
-        // and they can add photos from there.
-        navigate('/agent/properties', {
-          state: { notice: 'Listing created, but the photos failed to upload. You can add them from My Listings.' },
+        const uploadError: any = imgResult.error;
+        navigate(`/agent/property-details/${newId}`, {
+          state: {
+            notice: `Listing created, but the photos failed to upload. ${
+              uploadError?.message || 'Select the photos again below to retry.'
+            }`,
+          },
         });
         return;
       }
@@ -149,12 +150,12 @@ const AgentAddListPropertyPage = () => {
           )}
 
           {/* Image Upload Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-8">
-            <div className="lg:col-span-2 relative">
+          <div className="grid gap-4 mb-8">
+            <div className="relative">
               <input type="file" accept="image/*" ref={mainImageInputRef} onChange={onMainImageChange} className="hidden" />
               <div
                 onClick={() => mainImageInputRef.current?.click()}
-                className="w-full h-56 sm:h-64 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-green-500 transition-colors bg-gray-50 overflow-hidden relative"
+                className="relative flex aspect-video w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 transition-colors hover:border-green-500"
               >
                 {mainImage.preview ? (
                   <>
@@ -176,7 +177,7 @@ const AgentAddListPropertyPage = () => {
               </div>
             </div>
 
-            <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
               {additionalImages.map((img, index) => (
                 <div key={index} className="relative">
                   <input
@@ -188,7 +189,7 @@ const AgentAddListPropertyPage = () => {
                   />
                   <div
                     onClick={() => additionalImageRefs[index].current?.click()}
-                    className="w-full h-28 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-green-500 transition-colors bg-gray-50 overflow-hidden relative"
+                    className="relative flex aspect-video w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 transition-colors hover:border-green-500"
                   >
                     {img.preview ? (
                       <>

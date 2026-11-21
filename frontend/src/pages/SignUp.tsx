@@ -242,8 +242,8 @@ export default function SignUpSeller() {
       <div className="w-full sm:w-2/5 mt-8">
         <Button text={submitting ? 'Signing up…' : 'Sign Up'} onClick={handleSubmit} />
       </div>
-      <div className="mt-4 text-sm text-gray-600">
-        You don't have an account?{' '}
+      <div className="mt-6 text-sm text-gray-600 pb-2">
+        Already Have an Account?{' '}
         <Link to="/signin" className="font-semibold text-[color:var(--color-dark)] hover:underline">
           Sign In
         </Link>

@@ -70,7 +70,7 @@ const PropertyFilterHeader = ({
           </div>
 
           {/* Search Section */}
-          <div className="grid w-full grid-cols-1 gap-3 rounded-2xl border border-gray-200 bg-white p-3 shadow-md md:flex md:w-auto md:flex-1 md:items-center md:gap-0 md:overflow-hidden md:rounded-full md:p-0">
+          <div className="grid w-full grid-cols-1 gap-3 rounded-2xl border border-gray-200 bg-white p-3 shadow-md md:flex md:w-[520px] md:flex-none md:items-center md:gap-0 md:overflow-hidden md:rounded-full md:p-1.5 lg:w-[600px]">
             {/* Location Input */}
             <div className="relative min-w-0">
               <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
@@ -85,7 +85,7 @@ const PropertyFilterHeader = ({
                 value={location}
                 onChange={(e) => onLocationChange(e.target.value)}
                 onKeyDown={handleKeyDown}
-                className="w-full border-none py-3 pl-12 pr-4 text-sm text-gray-600 placeholder-gray-400 focus:outline-none md:w-40"
+                className="w-full border-none py-3 pl-12 pr-4 text-sm text-gray-600 placeholder-gray-400 focus:outline-none md:w-44 lg:w-52"
               />
             </div>
 
@@ -102,7 +102,7 @@ const PropertyFilterHeader = ({
                 value={minAmount}
                 onChange={(e) => onMinAmountChange(e.target.value)}
                 onKeyDown={handleKeyDown}
-                className="w-full min-w-0 border-none px-3 py-3 text-sm text-gray-600 placeholder-gray-400 focus:outline-none md:w-24 md:px-4"
+                className="w-full min-w-0 border-none px-3 py-3 text-sm text-gray-600 placeholder-gray-400 focus:outline-none md:w-32 md:px-4"
               />
 
               {/* Divider */}
@@ -118,12 +118,13 @@ const PropertyFilterHeader = ({
                   value={maxAmount}
                   onChange={(e) => onMaxAmountChange(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  className="w-full min-w-0 border-none py-3 pl-3 pr-10 text-sm text-gray-600 placeholder-gray-400 focus:outline-none md:w-24 md:pl-4"
+                  className="w-full min-w-0 border-none py-3 pl-3 pr-4 text-sm text-gray-600 placeholder-gray-400 focus:outline-none md:w-32 md:pl-4"
                 />
                 <button
                   type="button"
                   onClick={onSearch}
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-[#455C47] hover:bg-green-700 text-white p-2.5 rounded-full transition-colors"
+                  className="ml-2 flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-white transition-colors hover:opacity-90"
+                  style={{ backgroundColor: '#58745A' }}
                   aria-label="Search investment opportunities"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

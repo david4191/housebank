@@ -119,9 +119,6 @@ export default function SignIn() {
       <div className={authContainerStyle}>
         <AuthTitle
           headerText="Two-Factor Verification"
-          subtitle="You don't have an account?"
-          linkText="Sign Up"
-          linkTo="/signup"
         />
         <div>
           <div className="mb-8 w-full">
@@ -147,6 +144,12 @@ export default function SignIn() {
         <div className="w-full sm:w-2/5 mt-8">
           <Button text={verifying ? 'Verifying…' : 'Verify'} onClick={handleVerifyTwoFactor} disabled={verifying} />
         </div>
+        <div className="mt-6 text-sm text-gray-600 pb-2">
+          You don&apos;t have an account?{' '}
+          <Link to="/signup" className="font-semibold text-[color:var(--color-dark)] hover:underline">
+            Sign Up
+          </Link>
+        </div>
         <div className="w-full sm:w-2/5 mt-8">
           <Button text="Back" onClick={backToCredentials} variant="link" />
         </div>
@@ -159,9 +162,6 @@ export default function SignIn() {
       <Seo title="Sign In" description="Sign in to your HouseBank account." noindex />
       <AuthTitle
         headerText="Sign In"
-        subtitle="You don't have an account?"
-        linkText="Sign Up"
-        linkTo="/signup"
       />
       <div>
         {passwordWasReset && (
@@ -224,6 +224,12 @@ export default function SignIn() {
       </div>
       <div className="w-full sm:w-2/5 mt-8">
         <Button text={submitting ? 'Signing in…' : 'Sign In'} onClick={handleSubmit} disabled={submitting} />
+      </div>
+      <div className="mt-6 text-sm text-gray-600 pb-2">
+        You don&apos;t have an account?{' '}
+        <Link to="/signup" className="font-semibold text-[color:var(--color-dark)] hover:underline">
+          Sign Up
+        </Link>
       </div>
     </div>
   );

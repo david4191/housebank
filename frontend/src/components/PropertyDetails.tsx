@@ -170,6 +170,14 @@ const PropertyDetail = () => {
     .filter(({ index }) => index !== selectedImageIndex)
     .slice(0, 3);
   const additionalImageCount = images.length - thumbnails.length - 1;
+  const showImageModal = (index: number) => {
+    setSelectedImageIndex(index);
+    setLightboxIndex(index);
+  };
+  const moveLightbox = (direction: -1 | 1) => {
+    if (lightboxIndex === null || imageCount < 2) return;
+    showImageModal((lightboxIndex + direction + imageCount) % imageCount);
+  };
 
   useEffect(() => {
     setSelectedImageIndex(0);
@@ -179,8 +187,12 @@ const PropertyDetail = () => {
     if (lightboxIndex === null || imageCount === 0) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setLightboxIndex(null);
-      if (e.key === 'ArrowRight') setLightboxIndex((i) => (i === null ? i : (i + 1) % imageCount));
-      if (e.key === 'ArrowLeft') setLightboxIndex((i) => (i === null ? i : (i - 1 + imageCount) % imageCount));
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        const direction = e.key === 'ArrowRight' ? 1 : -1;
+        const nextIndex = (lightboxIndex + direction + imageCount) % imageCount;
+        setSelectedImageIndex(nextIndex);
+        setLightboxIndex(nextIndex);
+      }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
@@ -251,42 +263,42 @@ const PropertyDetail = () => {
               {images.length > 0 ? (
                 <div className="grid gap-2 p-2 sm:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]">
                   <button
-                      type="button"
-                      onClick={() => setLightboxIndex(selectedImageIndex)}
-                      aria-label={`View ${property.title} image full size`}
-                      className="group relative h-64 w-full cursor-zoom-in overflow-hidden rounded-lg bg-gray-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 sm:h-[22rem]"
+                    type="button"
+                    onClick={() => showImageModal(selectedImageIndex)}
+                    aria-label={`View ${property.title} image full size`}
+                    className="group relative aspect-video w-full cursor-zoom-in overflow-hidden rounded-lg bg-gray-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700"
                   >
-                      <img
-                        src={images[selectedImageIndex] || images[0]}
-                        alt={`${property.title} main view`}
-                        className="h-full w-full object-cover"
-                      />
-                      <div className="absolute top-3 left-3">
-                        <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded">Available</span>
-                      </div>
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                    <img
+                      src={images[selectedImageIndex] || images[0]}
+                      alt={`${property.title} main view`}
+                      className="h-full w-full object-cover"
+                    />
+                    <div className="absolute top-3 left-3">
+                      <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded">Available</span>
+                    </div>
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
                   </button>
 
                   {thumbnails.length > 0 && (
-                      <div className="grid grid-cols-3 gap-2 sm:min-h-[22rem] sm:grid-cols-1 sm:grid-rows-3">
-                        {thumbnails.map(({ src, index }, thumbnailIndex) => (
-                          <button
-                            type="button"
-                            key={index}
-                            onClick={() => setSelectedImageIndex(index)}
-                            aria-label={`Show ${property.title} image ${index + 1}`}
-                            className="group relative h-20 w-full overflow-hidden rounded-lg bg-gray-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 sm:h-auto"
-                          >
-                            <img src={src} alt={`${property.title} view ${index + 1}`} className="h-full w-full object-cover" />
-                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
-                            {thumbnailIndex === thumbnails.length - 1 && additionalImageCount > 0 && (
-                              <div className="absolute inset-0 flex items-center justify-center bg-black/50 text-sm font-medium text-white">
-                                +{additionalImageCount} more
-                              </div>
-                            )}
-                          </button>
-                        ))}
-                      </div>
+                    <div className="grid grid-cols-3 gap-2 sm:grid-cols-1 sm:grid-rows-3">
+                      {thumbnails.map(({ src, index }, thumbnailIndex) => (
+                        <button
+                          type="button"
+                          key={index}
+                          onClick={() => showImageModal(index)}
+                          aria-label={`View ${property.title} image ${index + 1} full size`}
+                          className="group relative aspect-video w-full overflow-hidden rounded-lg bg-gray-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 sm:aspect-auto"
+                        >
+                          <img src={src} alt={`${property.title} view ${index + 1}`} className="h-full w-full object-cover" />
+                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                          {thumbnailIndex === thumbnails.length - 1 && additionalImageCount > 0 && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-black/50 text-sm font-medium text-white">
+                              +{additionalImageCount} more
+                            </div>
+                          )}
+                        </button>
+                      ))}
+                    </div>
                   )}
                 </div>
               ) : (
@@ -649,6 +661,9 @@ const PropertyDetail = () => {
         <div
           className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
           onClick={() => setLightboxIndex(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${property.title} image gallery`}
         >
           <button
             type="button"
@@ -664,7 +679,7 @@ const PropertyDetail = () => {
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
-                setLightboxIndex((i) => (i === null ? i : (i - 1 + images.length) % images.length));
+                moveLightbox(-1);
               }}
               className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white"
               title="Previous image"
@@ -673,19 +688,23 @@ const PropertyDetail = () => {
             </button>
           )}
 
-          <img
-            src={images[lightboxIndex]}
-            alt={`${property.title} full view`}
-            className="max-w-full max-h-full object-contain"
+          <div
+            className="relative aspect-video w-[min(90vw,72rem)] overflow-hidden rounded-xl"
             onClick={(e) => e.stopPropagation()}
-          />
+          >
+            <img
+              src={images[lightboxIndex]}
+              alt={`${property.title} full view`}
+              className="h-full w-full object-cover"
+            />
+          </div>
 
           {images.length > 1 && (
             <button
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
-                setLightboxIndex((i) => (i === null ? i : (i + 1) % images.length));
+                moveLightbox(1);
               }}
               className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white"
               title="Next image"

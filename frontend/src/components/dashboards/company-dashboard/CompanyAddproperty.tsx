@@ -88,6 +88,7 @@ const CompanyAddPropertyCreate = () => {
 
   const [errors, setErrors] = useState<Record<string, string[]>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [photoUploadError, setPhotoUploadError] = useState<string | null>(null);
   const [selectedAgentId, setSelectedAgentId] = useState<number | null>(null);
   const [assignError, setAssignError] = useState<string | null>(null);
 
@@ -157,9 +158,13 @@ const CompanyAddPropertyCreate = () => {
     if (newId && filesToUpload.length > 0) {
       const formData = new FormData();
       filesToUpload.forEach((f) => formData.append('images', f));
-      await uploadImages({ id: newId, formData });
-      // Image upload failing doesn't strand the flow, the listing
-      // itself exists either way, so continue to the assign step.
+      const imageResult: any = await uploadImages({ id: newId, formData });
+      if (imageResult?.error) {
+        setPhotoUploadError(
+          imageResult.error?.message ||
+            'The property was created, but its photos could not be uploaded. Open the listing to retry.'
+        );
+      }
     }
 
     setCreatedId(newId);
@@ -208,12 +213,12 @@ const CompanyAddPropertyCreate = () => {
                 </div>
               )}
 
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-8">
-                <div className="lg:col-span-2 relative">
+              <div className="grid gap-4 mb-8">
+                <div className="relative">
                   <input type="file" accept="image/*" ref={mainImageInputRef} onChange={onMainImageChange} className="hidden" />
                   <div
                     onClick={() => mainImageInputRef.current?.click()}
-                    className="w-full h-56 sm:h-64 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-green-500 transition-colors bg-gray-50 overflow-hidden relative"
+                    className="relative flex aspect-video w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 transition-colors hover:border-green-500"
                   >
                     {mainImage.preview ? (
                       <>
@@ -235,7 +240,7 @@ const CompanyAddPropertyCreate = () => {
                   </div>
                 </div>
 
-                <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
                   {additionalImages.map((img, index) => (
                     <div key={index} className="relative">
                       <input
@@ -247,7 +252,7 @@ const CompanyAddPropertyCreate = () => {
                       />
                       <div
                         onClick={() => additionalImageRefs[index].current?.click()}
-                        className="w-full h-28 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-green-500 transition-colors bg-gray-50 overflow-hidden relative"
+                        className="relative flex aspect-video w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 transition-colors hover:border-green-500"
                       >
                         {img.preview ? (
                           <>
@@ -430,6 +435,21 @@ const CompanyAddPropertyCreate = () => {
               </div>
             )}
 
+            {photoUploadError && (
+              <div role="alert" className="flex flex-col gap-3 rounded-lg border border-red-200 bg-red-50 p-3 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-sm text-red-700">{photoUploadError}</p>
+                {createdId != null && (
+                  <button
+                    type="button"
+                    onClick={() => navigate(`/company/property-details/${createdId}`)}
+                    className="shrink-0 text-sm font-medium text-red-800 underline"
+                  >
+                    Open listing to retry
+                  </button>
+                )}
+              </div>
+            )}
+
             {rosterLoading ? (
               <p className="text-sm text-gray-500">Loading your roster…</p>
             ) : (roster || []).length === 0 ? (
@@ -509,6 +529,20 @@ const CompanyAddPropertyCreate = () => {
             <p className="text-xs text-gray-400 mb-5">
               It won't appear publicly until it's approved. You'll see it under Property Management with a Pending status.
             </p>
+            {photoUploadError && (
+              <div role="alert" className="mb-5 w-full rounded-lg border border-red-200 bg-red-50 p-3 text-left">
+                <p className="text-sm text-red-700">{photoUploadError}</p>
+                {createdId != null && (
+                  <button
+                    type="button"
+                    onClick={() => navigate(`/company/property-details/${createdId}`)}
+                    className="mt-2 text-sm font-medium text-red-800 underline"
+                  >
+                    Open listing to add photos
+                  </button>
+                )}
+              </div>
+            )}
             <div className="flex items-center gap-3">
               <button
                 onClick={() => navigate('/company/property')}
