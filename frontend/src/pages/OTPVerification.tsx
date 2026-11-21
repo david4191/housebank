@@ -82,7 +82,7 @@ export default function OTPVerification() {
     setNotice('');
 
     if (!userId) {
-      setError('We lost track of which account this is for — please sign up again.');
+      setError('We lost track of which account this is for, please sign up again.');
       return;
     }
 
@@ -107,7 +107,7 @@ export default function OTPVerification() {
     setError('');
     setNotice('');
     if (!userId) {
-      setError('We lost track of which account this is for — please sign up again.');
+      setError('We lost track of which account this is for, please sign up again.');
       return;
     }
     setResending(true);

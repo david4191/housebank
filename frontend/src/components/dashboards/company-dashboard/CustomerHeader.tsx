@@ -1,3 +1,4 @@
+import { getMediaUrl } from '../../../utils/mediaUrl.ts';
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Bell, ChevronDown, ExternalLink, LogOut, Search } from "lucide-react";
@@ -10,16 +11,15 @@ import {
 } from "../../../redux/housebank.ts";
 
 function avatarUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 
 /** Same header rebuild as the agent dashboard's CustomerHeader.tsx (see
  * that file for the full writeup of the click-outside fix). This one had
- * even less going for it before — hardcoded "John Isa"/"Admin", a fake
+ * even less going for it before, hardcoded "John Isa"/"Admin", a fake
  * "1" bell count, and not a single click handler anywhere, not even a
- * dead dropdown — so this is a from-scratch real header, not a patch. */
+ * dead dropdown, so this is a from-scratch real header, not a patch. */
 function useClickOutside(onOutside: () => void) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -96,7 +96,7 @@ const CustomerHeader = () => {
         </div>
 
         <div className="flex shrink-0 items-center gap-2 sm:gap-3 lg:gap-6" ref={controlsRef}>
-          {/* Search Bar — hidden on small screens; doesn't filter anything
+          {/* Search Bar, hidden on small screens; doesn't filter anything
               yet, so it stays out of the way on mobile rather than eating
               the whole row. */}
           <div className="relative hidden md:block">
@@ -108,7 +108,7 @@ const CustomerHeader = () => {
             />
           </div>
 
-          {/* Language Selector — only English is actually supported today;
+          {/* Language Selector, only English is actually supported today;
               honest about that rather than pretending to switch languages. */}
           <div className="relative hidden sm:block">
             <button
@@ -133,7 +133,7 @@ const CustomerHeader = () => {
             )}
           </div>
 
-          {/* Notification Bell — real unread count + real list */}
+          {/* Notification Bell, real unread count + real list */}
           <div className="relative">
             <button
               type="button"
@@ -185,7 +185,7 @@ const CustomerHeader = () => {
             )}
           </div>
 
-          {/* User Profile — real name/role/initials-avatar, real Log Out.
+          {/* User Profile, real name/role/initials-avatar, real Log Out.
               No "Settings" link: there's no company settings page yet
               (the sidebar's own menu doesn't list one either), so rather
               than link somewhere fake, it's left out until that page

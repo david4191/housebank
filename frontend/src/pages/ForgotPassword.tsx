@@ -13,12 +13,12 @@ type Step = 'email' | 'reset';
  * POST /auth/forgot-password and POST /auth/reset-password have existed
  * on the backend (and even in AuthContext.tsx as forgotPassword()/
  * resetPassword()) since early in this build, but nothing in the UI
- * ever called them — no page, and no "Forgot password?" link pointing
+ * ever called them, no page, and no "Forgot password?" link pointing
  * anywhere. This is that missing page: email in, a 6-digit emailed
  * code + new password out.
  *
  * /auth/forgot-password is deliberately generic on the backend (always
- * "a code has been sent", whether or not that email exists — see the
+ * "a code has been sent", whether or not that email exists, see the
  * route's own comment) to avoid leaking which emails are registered, so
  * this page always advances to the code step after submitting an email
  * rather than branching on found/not-found.

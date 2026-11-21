@@ -1,3 +1,4 @@
+import { getMediaUrl } from '../utils/mediaUrl.ts';
 import realtorBackground from '../assets/realtor/handshake-background.png';
 import companyOne from '../assets/company1.png';
 import companyTwo from '../assets/company2.png';
@@ -9,8 +10,7 @@ import { renderIcon } from '../utils/iconLookup.tsx';
 import useAuth from '../hooks/useAuth.tsx';
 
 function imageUrl(path?: string | null) {
-  if (!path) return null;
-  return path.startsWith('http') ? path : `${import.meta.env.VITE_APP_BACKEND_HOST}${path}`;
+  return getMediaUrl(path);
 }
 
 const FALLBACK_PARTNER_LOGOS = [companyOne, companyTwo, companyThree, companyFour];

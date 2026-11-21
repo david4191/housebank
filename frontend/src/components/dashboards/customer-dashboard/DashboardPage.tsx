@@ -1,3 +1,4 @@
+import { getMediaUrl } from '../../../utils/mediaUrl.ts';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -61,7 +62,7 @@ interface InvestmentStat {
 }
 
 /** Real money everywhere here comes back from the API as a DECIMAL
- * string (see hb-backend/src/config/db.js — decimalNumbers:false is
+ * string (see hb-backend/src/config/db.js, decimalNumbers:false is
  * deliberate, so it's never silently rounded through a JS float).
  * Formatting is the one place it's safe to convert to a display number. */
 function formatNaira(value: number | string | undefined | null) {
@@ -69,13 +70,9 @@ function formatNaira(value: number | string | undefined | null) {
   return `N${(Number.isFinite(n) ? n : 0).toLocaleString('en-NG', { maximumFractionDigits: 0 })}`;
 }
 
-/** property_images.file_path is stored (and returned by the API) already
- * as "uploads/<subfolder>/<file>" — see hb-backend's
- * src/utils/fileUpload.js storeImage(). VITE_APP_BACKEND_HOST already
- * ends in "/", so this is a plain concatenation, not another "uploads/". */
+/** Resolve stored property image paths through the shared media URL helper. */
 function imageUrl(relativePath: string | null | undefined, fallback: string) {
-  if (!relativePath) return fallback;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath) ?? fallback;
 }
 
 const DashboardOverview = () => {

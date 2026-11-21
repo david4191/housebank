@@ -1,3 +1,4 @@
+import { getMediaUrl } from '../../../utils/mediaUrl.ts';
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { MapPin, Bed, Bath, Square } from 'lucide-react';
@@ -19,8 +20,7 @@ function formatNaira(value: number | string | undefined | null) {
 }
 
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 const BuyPropertyDetails = () => {
@@ -49,7 +49,7 @@ const BuyPropertyDetails = () => {
       setActionError('You need to be signed in to do this.');
       return;
     }
-    // buyer_user_id comes from the auth token server-side, not the body —
+    // buyer_user_id comes from the auth token server-side, not the body,
     // /purchases (staff-only) is a different endpoint from this one.
     const result = await requestPurchase({ property_id: id as string });
     if ('error' in result) {
@@ -100,7 +100,7 @@ const BuyPropertyDetails = () => {
         <div className="p-6">
           <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
             <p className="text-gray-500">
-              This property isn't available anymore — it may have been sold, rented, or taken down.
+              This property isn't available anymore, it may have been sold, rented, or taken down.
             </p>
             <button
               onClick={() => navigate('/customer/property-listing')}
@@ -194,7 +194,7 @@ const BuyPropertyDetails = () => {
               </div>
               <div className="flex justify-between items-start py-2 border-b border-gray-100">
                 <span className="text-gray-700 font-medium">Address:</span>
-                <span className="text-gray-900 text-right">{addressLine || '—'}</span>
+                <span className="text-gray-900 text-right">{addressLine || '-'}</span>
               </div>
               <div className="flex justify-between items-center py-2">
                 <span className="text-gray-700 font-medium">Description:</span>
@@ -206,11 +206,11 @@ const BuyPropertyDetails = () => {
               <h2 className="text-xl font-bold text-gray-900">Listed By</h2>
               <div className="flex justify-between items-center py-2 border-b border-gray-100">
                 <span className="text-gray-700 font-medium">{property.company_name ? 'Agency' : "Realtor's Name"}:</span>
-                <span className="text-gray-900">{listerLabel || '—'}</span>
+                <span className="text-gray-900">{listerLabel || '-'}</span>
               </div>
               <div className="flex justify-between items-center py-2">
                 <span className="text-gray-700 font-medium">Contact:</span>
-                <span className="text-gray-900">{property.lister_phone || '—'}</span>
+                <span className="text-gray-900">{property.lister_phone || '-'}</span>
               </div>
             </div>
           </div>
@@ -254,7 +254,7 @@ const BuyPropertyDetails = () => {
               ) : (
                 <div className="text-center">
                   <p className="text-sm text-gray-500 mb-4">
-                    No live payment gateway is connected yet — buying records your intent, and our team follows up
+                    No live payment gateway is connected yet, buying records your intent, and our team follows up
                     to arrange payment by bank transfer.
                   </p>
                   <button
@@ -262,7 +262,7 @@ const BuyPropertyDetails = () => {
                     disabled={buying}
                     className="bg-green-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-green-700 disabled:opacity-50"
                   >
-                    {buying ? 'Recording your request…' : `Buy Now — ${formatNaira(property.price)}`}
+                    {buying ? 'Recording your request…' : `Buy Now: ${formatNaira(property.price)}`}
                   </button>
                 </div>
               )
@@ -293,8 +293,8 @@ const BuyPropertyDetails = () => {
               ) : (
                 <div className="text-center">
                   <p className="text-sm text-gray-500 mb-4">
-                    Rent is paid upfront for the whole lease term. No live payment gateway is connected yet —
-                    renting records your intent, and our team follows up to arrange payment by bank transfer.
+                    Rent is paid upfront for the whole lease term. No live payment gateway is connected yet,
+                    renting records your intent. Our team follows up to arrange payment by bank transfer.
                   </p>
                   <div className="flex items-center justify-center gap-3 mb-4">
                     <label className="text-sm text-gray-700 font-medium">Lease length:</label>
@@ -317,13 +317,13 @@ const BuyPropertyDetails = () => {
                   >
                     {renting
                       ? 'Recording your request…'
-                      : `Rent Now — ${formatNaira(Number(property.price) * rentMonths)} total`}
+                      : `Rent Now: ${formatNaira(Number(property.price) * rentMonths)} total`}
                   </button>
                 </div>
               )
             ) : (
               <p className="text-sm text-gray-500 text-center py-4">
-                This is an investment property — visit the Investments section of your dashboard to invest in it.
+                This is an investment property, visit the Investments section of your dashboard to invest in it.
               </p>
             )}
             {actionError && <p className="text-sm text-red-600 text-center mt-3">{actionError}</p>}

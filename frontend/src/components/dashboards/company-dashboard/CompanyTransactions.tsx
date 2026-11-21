@@ -1,4 +1,5 @@
 // src/components/dashboards/company-dashboard/CompanyTransactions.tsx
+import { getMediaUrl } from '../../../utils/mediaUrl.ts';
 import { useMemo, useState } from 'react';
 import { MoreVertical, Home } from 'lucide-react';
 import CustomerHeader from './CustomerHeader';
@@ -20,12 +21,11 @@ function formatNaira(value: number | string | undefined | null) {
 }
 
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 function formatDate(iso: string | null | undefined) {
-  if (!iso) return '—';
+  if (!iso) return '-';
   return new Date(iso.replace(' ', 'T') + 'Z').toLocaleDateString('en-GB', {
     day: '2-digit', month: 'short', year: 'numeric',
   });
@@ -58,9 +58,9 @@ type FilterTab = 'all' | 'requests' | 'buy' | 'rent' | 'pending';
  * The old page was an enormous mock: six hardcoded dollar-denominated
  * rows ("Wade Warren", "$351.02"), a fake card-number/VAT/commission
  * invoice breakdown, and non-functional download/share/report buttons
- * — none of it backed by anything this platform stores or bills in.
+ *, none of it backed by anything this platform stores or bills in.
  *
- * This is the company mirror of agent-dashboard/Transactions.tsx —
+ * This is the company mirror of agent-dashboard/Transactions.tsx,
  * same real purchase/rental data (already company-roster-scoped
  * server-side), same detail modal, same confirm action. Revenue.tsx
  * covers the same underlying data with a chart on top; this is the

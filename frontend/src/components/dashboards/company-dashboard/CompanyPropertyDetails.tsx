@@ -1,4 +1,5 @@
 // src/components/dashboards/company-dashboard/CompanyPropertyDetails.tsx
+import { getMediaUrl } from '../../../utils/mediaUrl.ts';
 import { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { MapPin, Bed, Bath, Square, Eye, AlertTriangle, ArrowLeft, Phone } from 'lucide-react';
@@ -11,12 +12,11 @@ function formatNaira(value: number | string | undefined | null) {
 }
 
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 function formatDate(iso: string | null | undefined) {
-  if (!iso) return '—';
+  if (!iso) return '-';
   return new Date(iso.replace(' ', 'T') + 'Z').toLocaleDateString('en-GB', {
     day: '2-digit', month: 'short', year: 'numeric',
   });
@@ -41,29 +41,29 @@ const statusColor: Record<string, string> = {
 
 const statusExplainer: Record<string, string> = {
   pending: "Submitted and waiting on admin review. It won't show up in public search until it's approved.",
-  approved: 'Live — this listing is visible in public search results.',
+  approved: 'Live. This listing is visible in public search results.',
   rejected: 'An admin reviewed and rejected this listing. See the reason below.',
   sold: 'Marked sold. No longer visible in public search.',
   rented: 'Marked rented. No longer visible in public search.',
-  draft: "Saved as a draft — hasn't been submitted for review yet.",
+  draft: "Saved as a draft. It hasn't been submitted for review yet.",
   archived: 'Archived. No longer visible in public search.',
 };
 
 /**
- * The old page ignored the URL entirely — no :id param existed on its
+ * The old page ignored the URL entirely, no :id param existed on its
  * route, so it always rendered the same hardcoded "Rendez House Bay"
  * (4.6 stars, a fake 75% "Progress" donut, three canned reviews, a
  * realtor named "Ibrahim Haruna" with a randomuser.me photo) no matter
  * which property's "View" link was clicked.
  *
  * This is now the real, :id-parameterized page (App.tsx's route was
- * missing the param too — fixed alongside this). It mirrors
+ * missing the param too, fixed alongside this). It mirrors
  * agent-dashboard/AgentPropertyDetail.tsx's real listing-facts panel
- * (status, rejection reason, views, GET /properties/mine/:id — which
+ * (status, rejection reason, views, GET /properties/mine/:id, which
  * a backend fix this same pass extended to also allow a company to
  * open a listing one of its roster agents made, not just ones it made
  * itself). The one addition over the agent version is a Realtor card,
- * since a company's listing can belong to any agent on its roster —
+ * since a company's listing can belong to any agent on its roster,
  * there's no invented "Progress" or "Reviews" widget, HouseBank has no
  * such features anywhere in the schema yet.
  */
@@ -268,7 +268,7 @@ const CompanyPropertyDetailsPage = () => {
                   </div>
                   <div className="flex justify-between">
                     <dt className="text-gray-500">Category</dt>
-                    <dd className="text-gray-900">{property.property_type_name || '—'}</dd>
+                    <dd className="text-gray-900">{property.property_type_name || '-'}</dd>
                   </div>
                   <div className="flex justify-between">
                     <dt className="text-gray-500">Listed on</dt>

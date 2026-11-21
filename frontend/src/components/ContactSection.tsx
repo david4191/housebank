@@ -72,7 +72,7 @@ const ContactSection = () => {
 
                 {status === 'success' ? (
                   <div className="border border-green-500 bg-green-500/10 rounded-lg p-6 text-center space-y-3">
-                    <p className="text-white font-medium">Message sent — thank you.</p>
+                    <p className="text-white font-medium">Message sent, thank you.</p>
                     <p className="text-gray-300 text-sm">We've received your message and will get back to you soon.</p>
                     <button
                       onClick={() => setStatus('idle')}

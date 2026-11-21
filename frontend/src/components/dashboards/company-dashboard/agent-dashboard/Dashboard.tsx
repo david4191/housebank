@@ -1,3 +1,4 @@
+import { getMediaUrl } from '../../../../utils/mediaUrl.ts';
 import { Link, useNavigate } from 'react-router-dom';
 import { Plus, MoreVertical, Home, CalendarClock, Check, MessageSquare } from 'lucide-react';
 import CustomerHeader from './CustomerHeader';
@@ -15,14 +16,9 @@ function formatNaira(value: number | string | undefined | null) {
   return `N${(Number.isFinite(n) ? n : 0).toLocaleString('en-NG', { maximumFractionDigits: 0 })}`;
 }
 
-/** property_images.file_path is stored (and returned by the API)
- * already as "uploads/<subfolder>/<file>" — see hb-backend's
- * fileUpload.js. VITE_APP_BACKEND_HOST already ends in "/", so this is
- * a plain concatenation, matching the pattern used across the
- * customer dashboard (PropertyListing.tsx, MyProperty.tsx, etc.). */
+/** Resolve stored property image paths through the shared media URL helper. */
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 function greetingForNow() {
@@ -116,17 +112,17 @@ const AgentDashboard = () => {
 
           <div className="bg-white rounded-xl p-4 border border-gray-200">
             <div className="text-sm text-gray-600 mb-2">Total Listings</div>
-            <div className="text-2xl font-bold text-gray-900">{propsLoading ? '—' : totalListings}</div>
+            <div className="text-2xl font-bold text-gray-900">{propsLoading ? '-' : totalListings}</div>
           </div>
 
           <div className="bg-white rounded-xl p-4 border border-gray-200">
             <div className="text-sm text-gray-600 mb-2">Approved Properties</div>
-            <div className="text-2xl font-bold text-gray-900">{propsLoading ? '—' : approvedCount}</div>
+            <div className="text-2xl font-bold text-gray-900">{propsLoading ? '-' : approvedCount}</div>
           </div>
 
           <div className="bg-white rounded-xl p-4 border border-gray-200">
             <div className="text-sm text-gray-600 mb-2">Pending Approvals</div>
-            <div className="text-2xl font-bold text-gray-900">{propsLoading ? '—' : pendingCount}</div>
+            <div className="text-2xl font-bold text-gray-900">{propsLoading ? '-' : pendingCount}</div>
           </div>
 
           <div className="bg-white rounded-xl p-4 border border-gray-200">
@@ -137,14 +133,14 @@ const AgentDashboard = () => {
 
         {/* Needs attention + listing-type breakdown */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Viewing requests needing action — real, and previously had
+          {/* Viewing requests needing action, real, and previously had
               no screen anywhere to see or act on these from (only
               curl/Postman) */}
           <div className="lg:col-span-2 bg-white rounded-xl p-6 border border-gray-200">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-gray-900">Needs Your Attention</h3>
               <span className="text-sm text-gray-500">
-                {viewingsLoading ? '—' : `${(pendingViewings || []).length} pending`}
+                {viewingsLoading ? '-' : `${(pendingViewings || []).length} pending`}
               </span>
             </div>
             {viewingsLoading ? (
@@ -205,7 +201,7 @@ const AgentDashboard = () => {
             )}
           </div>
 
-          {/* Listing type breakdown — real counts among this agent's own
+          {/* Listing type breakdown, real counts among this agent's own
               properties, not the fake fixed 45/30/25 split this page
               used to show regardless of what was actually listed. */}
           <div className="bg-white rounded-xl p-6 border border-gray-200">

@@ -13,7 +13,7 @@ interface HelpTopic {
   answer: string;
 }
 
-/** GET /content/help-topics is public and role-agnostic — the exact
+/** GET /content/help-topics is public and role-agnostic, the exact
  * same real help_topics table the customer FAQ reads from (see
  * CustomerFAQ.tsx). No agent-only backend work needed here. */
 const AgentFAQ = ({ searchQuery = '' }: AgentFAQProps) => {

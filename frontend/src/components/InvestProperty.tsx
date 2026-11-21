@@ -1,3 +1,4 @@
+import { getMediaUrl } from '../utils/mediaUrl.ts';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, Building2 } from 'lucide-react';
 import { useGetInvestmentOpportunitiesQuery } from '../redux/housebank.ts';
@@ -23,8 +24,7 @@ function formatNaira(value: number | string | undefined | null) {
 }
 
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 function fundingPercent(opp: InvestmentOpportunity) {

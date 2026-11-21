@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import AuthTitle from '../components/AuthTitle.tsx';
 import Button from '../components/Button.tsx';
 import { authContainerStyle, authInputStyle } from './SignIn.tsx';
@@ -110,41 +110,34 @@ export default function SignUpSeller() {
   return (
     <div className={authContainerStyle}>
       <Seo title="Register Your Company" description="Register your real estate company on HouseBank." noindex />
-      <AuthTitle
-        headerText="Register Your Company"
-        subtitle="Have an account?"
-        linkText="Sign In"
-        linkTo="/signin"
-      />
+      <AuthTitle headerText="Register Your Company" />
       <div>
-        <div className="flex gap-4 mb-6">
-          <div className="flex-1">
-            <label className="block mb-2 font-medium text-gray-800 text-[19px]">Company's Name</label>
-            <input
-              type="text"
-              className={authInputStyle}
-              placeholder="e.g Acme Realty Ltd"
-              value={formData.companyName}
-              onChange={update('companyName')}
-              aria-invalid={Boolean(fieldErrors.companyName)}
-              aria-describedby={fieldErrors.companyName ? 'company-name-error' : undefined}
-            />
-            <AuthFieldError id="company-name-error" message={fieldErrors.companyName} />
-          </div>
+        <div className="mb-6 w-full">
+          <label className="block mb-2 font-medium text-gray-800 text-[19px]">Company's Name</label>
+          <input
+            type="text"
+            className={authInputStyle}
+            placeholder="e.g Acme Realty Ltd"
+            value={formData.companyName}
+            onChange={update('companyName')}
+            aria-invalid={Boolean(fieldErrors.companyName)}
+            aria-describedby={fieldErrors.companyName ? 'company-name-error' : undefined}
+          />
+          <AuthFieldError id="company-name-error" message={fieldErrors.companyName} />
+        </div>
 
-          <div className="flex-1">
-            <label className="block mb-2 font-medium text-gray-800 text-[19px]">Company's Address</label>
-            <input
-              type="text"
-              className={authInputStyle}
-              placeholder="e.g 123 Main Street"
-              value={formData.companyAddress}
-              onChange={update('companyAddress')}
-              aria-invalid={Boolean(fieldErrors.companyAddress)}
-              aria-describedby={fieldErrors.companyAddress ? 'company-address-error' : undefined}
-            />
-            <AuthFieldError id="company-address-error" message={fieldErrors.companyAddress} />
-          </div>
+        <div className="mb-6 w-full">
+          <label className="block mb-2 font-medium text-gray-800 text-[19px]">Company's Address</label>
+          <input
+            type="text"
+            className={authInputStyle}
+            placeholder="e.g 123 Main Street"
+            value={formData.companyAddress}
+            onChange={update('companyAddress')}
+            aria-invalid={Boolean(fieldErrors.companyAddress)}
+            aria-describedby={fieldErrors.companyAddress ? 'company-address-error' : undefined}
+          />
+          <AuthFieldError id="company-address-error" message={fieldErrors.companyAddress} />
         </div>
 
         <div className="mb-6">
@@ -248,6 +241,12 @@ export default function SignUpSeller() {
       </div>
       <div className="w-full sm:w-2/5 mt-8">
         <Button text={submitting ? 'Signing up…' : 'Sign Up'} onClick={handleSubmit} />
+      </div>
+      <div className="mt-4 text-sm text-gray-600">
+        You don't have an account?{' '}
+        <Link to="/signin" className="font-semibold text-[color:var(--color-dark)] hover:underline">
+          Sign In
+        </Link>
       </div>
     </div>
   );

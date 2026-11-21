@@ -1,4 +1,5 @@
 // src/components/dashboards/company-dashboard/CompanyListingReview.tsx
+import { getMediaUrl } from '../../../utils/mediaUrl.ts';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ClipboardCheck, Home, CheckCircle2, XCircle, Loader2 } from 'lucide-react';
@@ -15,12 +16,11 @@ function formatNaira(value: number | string | undefined | null) {
 }
 
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 function formatDate(iso: string | null | undefined) {
-  if (!iso) return '—';
+  if (!iso) return '-';
   return new Date(iso.replace(' ', 'T') + 'Z').toLocaleDateString('en-GB', {
     day: '2-digit', month: 'short', year: 'numeric',
   });
@@ -129,11 +129,11 @@ const CompanyListingReview = () => {
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="text-sm text-gray-700">{property.lister_name || '—'}</span>
+                          <span className="text-sm text-gray-700">{property.lister_name || '-'}</span>
                         </td>
                         <td className="px-6 py-4">
                           <span className="text-sm text-gray-900">
-                            {[property.city, property.state].filter(Boolean).join(', ') || '—'}
+                            {[property.city, property.state].filter(Boolean).join(', ') || '-'}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">

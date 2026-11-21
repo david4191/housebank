@@ -18,7 +18,7 @@ export default function PropertyManagementPage() {
     <div
       className={`${mode} w-full mx-auto h-[100vh] bg-[color:var(--color-bg)] font-poppins`}
     >
-      <Seo title="Property Management Services" description="HouseBank's property management services — leasing, maintenance, compliance, and full-service management for property owners." path="/property-management" />
+      <Seo title="Property Management Services" description="HouseBank's property management services, leasing, maintenance, compliance, and full-service management for property owners." path="/property-management" />
       <Header />
        <PropertyManagementContent />
        <PropertyServicesPage />

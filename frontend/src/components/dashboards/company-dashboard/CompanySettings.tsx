@@ -7,12 +7,12 @@ import AvatarUpload from '../shared/AvatarUpload.tsx';
 import { useGetMyProfileQuery } from '../../../redux/housebank.ts';
 
 /**
- * There was no company settings page anywhere in this build — flagged
+ * There was no company settings page anywhere in this build, flagged
  * as a gap in the company-dashboard rebuild and now filled in. Mirrors
  * AgentSettings.tsx (same shared AvatarUpload + TwoFactorSection, same
  * GET /profile/me), but the profile half is read-only, not a form: see
  * PUT /profile/me in profile.routes.js, which deliberately returns 403
- * for the company role — company_name/company_address/cac_number are
+ * for the company role, company_name/company_address/cac_number are
  * identity-verification facts, not something to quietly self-edit.
  * Only the logo (POST /profile/me/avatar) and 2FA are actually
  * changeable here, same as the real backend allows.
@@ -35,7 +35,7 @@ const ProfileSection = () => {
         <h3 className="text-lg font-semibold text-gray-900 mb-1">Company profile</h3>
         <p className="text-sm text-gray-500">
           Your registered company details. These are identity-verification facts and can't be edited
-          here — contact support if something needs to be corrected.
+          here, contact support if something needs to be corrected.
         </p>
       </div>
 
@@ -65,7 +65,7 @@ const ProfileSection = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
-            <p className="text-sm text-gray-600 max-w-md">{p.company_address || '—'}</p>
+            <p className="text-sm text-gray-600 max-w-md">{p.company_address || '-'}</p>
           </div>
 
           {p.verification_status !== 'verified' && (

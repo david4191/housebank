@@ -174,10 +174,10 @@ const ViewDetailsModal = ({ realtor, onClose, onAssign }: { realtor: Realtor; on
           <div className="space-y-0">
             <InfoRow label="Phone Number" value={realtor.contact} />
             <InfoRow label="Email" value={realtor.email} />
-            <InfoRow label="Agency:" value={realtor.agency || '—'} />
-            <InfoRow label="License Number:" value={realtor.licenseNumber || '—'} />
-            <InfoRow label="Year of Experience:" value={realtor.experience || '—'} />
-            <InfoRow label="Specialization:" value={realtor.specialization || '—'} />
+            <InfoRow label="Agency:" value={realtor.agency || '-'} />
+            <InfoRow label="License Number:" value={realtor.licenseNumber || '-'} />
+            <InfoRow label="Year of Experience:" value={realtor.experience || '-'} />
+            <InfoRow label="Specialization:" value={realtor.specialization || '-'} />
             <InfoRow label="Location:" value={realtor.address} />
             <InfoRow
               label="Status:"
@@ -527,7 +527,7 @@ const CompanyManageRealtors = () => {
                   </button>
                 ))}
               </div>
-              {/* Realtor Ranking button — only on All Realtor tab */}
+              {/* Realtor Ranking button, only on All Realtor tab */}
               {activeTab === 'All Realtor' && (
                 <div className="px-4">
                   <button

@@ -114,7 +114,7 @@ const WhyJoinUs = () => {
             anyone type in any email and try their luck. */}
         <div className="text-center mt-16 space-y-4">
           <p className="text-gray-600 max-w-md mx-auto">
-            Realtors join HouseBank through their company's invitation — a company adds your email to
+            Realtors join HouseBank through their company's invitation, a company adds your email to
             their roster, and you'll get an email with a link to complete your own registration.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4">

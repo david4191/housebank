@@ -1,3 +1,4 @@
+import { getMediaUrl } from '../utils/mediaUrl.ts';
 import { useParams, Link } from 'react-router-dom';
 import { Bed, Bath, Building2, MapPin, ShieldCheck, Square, Star } from 'lucide-react';
 import {
@@ -7,8 +8,7 @@ import {
 } from '../redux/housebank.ts';
 
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 function formatNaira(value: number | string | undefined | null) {

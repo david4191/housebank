@@ -1,4 +1,5 @@
 // src/components/dashboards/company-dashboard/CompanyAddproperty.tsx
+import { getMediaUrl } from '../../../utils/mediaUrl.ts';
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Upload, X, AlertCircle, ChevronLeft, CheckCircle, XCircle, Users } from 'lucide-react';
@@ -25,8 +26,7 @@ const NIGERIAN_STATES = [
 ];
 
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 function initialsFor(name: string) {
@@ -48,13 +48,13 @@ type Step = 'form' | 'assign' | 'success' | 'error';
  * star rating, three stock photos) no matter what was actually typed.
  *
  * This is the real flow: Step 1 is the same property-creation form
- * agents use (see agent-dashboard/AddProperty.tsx — same fields, same
+ * agents use (see agent-dashboard/AddProperty.tsx, same fields, same
  * useCreatePropertyMutation/useUploadPropertyImagesMutation calls),
  * Step 2 offers this company's actual roster (useGetMyCompanyAgentsQuery)
  * to hand the new listing to via the reassign-agent endpoint, or lets
  * it stay with the company account when the roster is empty or no one
  * is picked, and Step 3 confirms with the property that was actually
- * created — no fabricated preview.
+ * created, no fabricated preview.
  */
 const CompanyAddPropertyCreate = () => {
   const navigate = useNavigate();
@@ -158,7 +158,7 @@ const CompanyAddPropertyCreate = () => {
       const formData = new FormData();
       filesToUpload.forEach((f) => formData.append('images', f));
       await uploadImages({ id: newId, formData });
-      // Image upload failing doesn't strand the flow — the listing
+      // Image upload failing doesn't strand the flow, the listing
       // itself exists either way, so continue to the assign step.
     }
 
@@ -173,7 +173,7 @@ const CompanyAddPropertyCreate = () => {
       return;
     }
     if (selectedAgentId == null) {
-      // Left with the company account — already the default from
+      // Left with the company account, already the default from
       // creation, so there's nothing to send.
       setStep('success');
       return;
@@ -275,7 +275,7 @@ const CompanyAddPropertyCreate = () => {
               <div>
                 <h2 className="text-lg font-semibold text-gray-900 mb-2">Property Details</h2>
                 <p className="text-sm text-gray-500 mb-6">
-                  New listings go live only after admin review — this submits for approval, it doesn't publish instantly.
+                  New listings go live only after admin review. This submits your listing for approval, and it won't publish instantly.
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -419,7 +419,7 @@ const CompanyAddPropertyCreate = () => {
             <div>
               <h2 className="text-xl font-bold text-gray-900">Assign Property to a Realtor</h2>
               <p className="text-sm text-gray-400 mt-1">
-                Optional — hand this listing to someone on your roster, or leave it with your company account.
+                Optional, hand this listing to someone on your roster, or leave it with your company account.
               </p>
             </div>
 
@@ -436,7 +436,7 @@ const CompanyAddPropertyCreate = () => {
               <div className="text-center py-8">
                 <Users className="w-8 h-8 text-gray-300 mx-auto mb-2" />
                 <p className="text-sm text-gray-500">
-                  No realtors on your roster yet — this listing will stay under your company account.
+                  No realtors on your roster yet. This listing will stay under your company account.
                   You can reassign it anytime from Manage Realtor.
                 </p>
               </div>
@@ -507,7 +507,7 @@ const CompanyAddPropertyCreate = () => {
               &ldquo;{title || 'Your property'}&rdquo; has been sent for admin review.
             </p>
             <p className="text-xs text-gray-400 mb-5">
-              It won't appear publicly until it's approved — you'll see it under Property Management with a Pending status.
+              It won't appear publicly until it's approved. You'll see it under Property Management with a Pending status.
             </p>
             <div className="flex items-center gap-3">
               <button

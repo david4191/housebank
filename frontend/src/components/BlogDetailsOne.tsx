@@ -1,11 +1,11 @@
+import { getMediaUrl } from '../utils/mediaUrl.ts';
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Copy, Twitter, Facebook, Linkedin } from 'lucide-react';
 import { useGetBlogPostQuery } from '../redux/housebank.ts';
 
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 function formatDate(value: string | null | undefined) {

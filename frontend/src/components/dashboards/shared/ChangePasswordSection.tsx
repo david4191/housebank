@@ -2,12 +2,12 @@ import { useState } from 'react';
 import useAuth from '../../../hooks/useAuth.tsx';
 
 /**
- * Shared change-password form — Joan, Sep 2026: "the admin should be
+ * Shared change-password form, Joan, Sep 2026: "the admin should be
  * able to reset their own password" (raised while looking at
  * /admin/settings, but the gap was identical for every role: the only
  * password endpoint that existed anywhere was the unauthenticated
  * forgot-password/OTP flow, which means giving up account access
- * first). Same pattern as TwoFactorSection — self-contained, reads/
+ * first). Same pattern as TwoFactorSection, self-contained, reads/
  * writes through AuthContext, dropped into any role's settings page.
  */
 const ChangePasswordSection = () => {

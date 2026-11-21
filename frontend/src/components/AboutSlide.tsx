@@ -1,18 +1,18 @@
+import { getMediaUrl } from '../utils/mediaUrl.ts';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import heroBackground from '../assets/about/hero-building-bg.png';
 import { useGetPageContentQuery } from '../redux/housebank.ts';
 
 function imageUrl(path?: string | null) {
-  if (!path) return null;
-  return path.startsWith('http') ? path : `${import.meta.env.VITE_APP_BACKEND_HOST}${path}`;
+  return getMediaUrl(path);
 }
 
 const DEFAULTS = {
   badge: 'Welcome to HouseBank',
   title: 'Dream Home Meets Trusted Expertise',
   paragraph1:
-    "At HouseBank, we pride ourselves on being more than just a real estate agency, we are your partners in finding the perfect space to live, work, and thrive.",
+    "At HouseBank, we are your partners in finding the perfect space to live, work, and thrive.",
   paragraph2:
     "Whether you're searching for a family home, an investment property, or a commercial space, we are committed to helping you achieve your goals with professionalism and care",
   ctaText: 'Explore Properties',

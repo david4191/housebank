@@ -1,4 +1,5 @@
 // src/components/dashboards/company-dashboard/CompanyMessages.tsx
+import { getMediaUrl } from '../../../utils/mediaUrl.ts';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Search, Plus, Paperclip, Send, User as UserIcon } from 'lucide-react';
@@ -14,8 +15,7 @@ import {
 } from '../../../redux/housebank.ts';
 
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 function initialsFor(name: string | undefined | null) {
@@ -46,7 +46,7 @@ function formatFullTimestamp(value: string | undefined | null) {
   return d.toLocaleString('en-NG', { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 }
 
-/** Same real messaging backend as customer/agent (Task #9-12) — this
+/** Same real messaging backend as customer/agent (Task #9-12), this
  * is the company mirror of agent-dashboard/Messages.tsx, differing
  * only in copy and where the "no contacts yet" empty state points
  * (Customers, not Active Customers). contacts/mine and the POST
@@ -80,7 +80,7 @@ const CompanyMessage = () => {
   const [sendMessage, { isLoading: sending }] = useSendMessageMutation();
   const [markRead] = useMarkConversationReadMutation();
 
-  // Arrived from "Customers" (or elsewhere) with a contact to message —
+  // Arrived from "Customers" (or elsewhere) with a contact to message,
   // reuse the existing thread with them if there is one, otherwise
   // open a fresh composer for that contact.
   useEffect(() => {
@@ -114,7 +114,7 @@ const CompanyMessage = () => {
     return list.filter((c: any) => c.other_participant?.name?.toLowerCase().includes(q));
   }, [conversations, searchTerm]);
 
-  // Customers you can start a fresh thread with — i.e. not already an
+  // Customers you can start a fresh thread with, i.e. not already an
   // open conversation.
   const messageableContacts = useMemo(() => {
     const openWith = new Set((conversations || []).map((c: any) => c.other_participant?.user_id));

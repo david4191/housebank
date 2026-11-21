@@ -24,12 +24,12 @@ interface GuideItem {
  * questions that referenced buttons/pages that don't exist ("purple
  * Export Revenue button").
  *
- * This is the company mirror of agent-dashboard/HelpSupport.tsx — same
+ * This is the company mirror of agent-dashboard/HelpSupport.tsx, same
  * real FAQ (GET /content/help-topics, role-agnostic) via the new
  * CompanyFAQ.tsx, same honest contact story: there's no
  * "message platform support" backend endpoint for staff accounts (the
  * one contact-form endpoint that exists, POST /messages/contact-company,
- * is customer-only by design — it resolves to the customer's own
+ * is customer-only by design, it resolves to the customer's own
  * company relationship), so rather than fake a submit, this offers a
  * plain, honest mailto link instead.
  */
@@ -86,7 +86,7 @@ const CompanySupport = () => {
             </p>
             <a
               href={`mailto:Support@housebank.com?subject=${encodeURIComponent('Company support request')}&body=${encodeURIComponent(
-                `— ${auth.user?.full_name || 'Company'} (${auth.user?.email || ''})`
+                `From: ${auth.user?.full_name || 'Company'} (${auth.user?.email || ''})`
               )}`}
               className="inline-flex items-center space-x-2 bg-green-700 text-white px-6 py-3 rounded-md font-medium hover:bg-green-800 transition"
             >
@@ -101,7 +101,7 @@ const CompanySupport = () => {
               <div className="bg-gray-50 border border-gray-100 rounded-2xl p-6 sm:p-8 hover:shadow-md transition-shadow">
                 <h3 className="text-xl font-bold text-gray-900 mb-2">List a new property</h3>
                 <p className="text-gray-600 leading-relaxed mb-6">
-                  Add a property under your company — assign it to a roster realtor or keep it with the company.
+                  Add a property under your company, assign it to a roster realtor or keep it with the company.
                 </p>
                 <a
                   href="/company/add-property"

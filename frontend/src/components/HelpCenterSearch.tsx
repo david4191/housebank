@@ -1,7 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ChevronDown, ChevronUp, Search } from 'lucide-react';
 import useAuth from '../hooks/useAuth.tsx';
 import { useGetHelpTopicsQuery } from '../redux/housebank.ts';
+import { useSearchParams } from 'react-router-dom';
 
 interface HelpTopic {
   id: number;
@@ -16,8 +17,10 @@ const HelpSearchPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
   const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const requestedCategory = searchParams.get('category');
 
-  // Real Help Center topics from the DB — search box and category tabs
+  // Real Help Center topics from the DB, search box and category tabs
   // below filter this live instead of doing nothing.
   const { data: topics, isLoading, isError } = useGetHelpTopicsQuery();
 
@@ -28,6 +31,12 @@ const HelpSearchPage = () => {
     );
     return ['All', ...unique];
   }, [topics]);
+
+  useEffect(() => {
+    if (requestedCategory && categories.includes(requestedCategory)) {
+      setActiveCategory(requestedCategory);
+    }
+  }, [requestedCategory, categories]);
 
   const results = useMemo(() => {
     const rows = (topics || []) as HelpTopic[];
@@ -83,16 +92,19 @@ const HelpSearchPage = () => {
           </form>
         </div>
 
-        {/* Category Tabs — real categories present in help_topics, not a fixed guess */}
+        {/* Category Tabs, real categories present in help_topics, not a fixed guess */}
         {categories.length > 1 && (
-          <div className="flex">
-            <div className="flex flex-wrap gap-2">
+          <div className="flex border-0">
+            <div className="flex flex-wrap gap-2 border-0">
               {categories.map((category) => (
                 <button
                   key={category}
                   type="button"
-                  onClick={() => setActiveCategory(category)}
-                  className={`px-6 py-3 text-sm font-medium rounded-lg transition-colors ${
+                  onClick={() => {
+                    setActiveCategory(category);
+                    setSearchParams(category === 'All' ? {} : { category });
+                  }}
+                  className={`border-0 px-6 py-3 text-sm font-medium rounded-lg transition-colors ${
                     activeCategory === category
                       ? 'bg-purple-600 text-white'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -105,7 +117,7 @@ const HelpSearchPage = () => {
           </div>
         )}
 
-        {/* Live results — real rows from help_topics, filtered by the search box
+        {/* Live results, real rows from help_topics, filtered by the search box
             and category tabs above. This is also what the "Browse all topics"
             button on the guides section below scrolls back up to. */}
         <div className="mt-6 max-w-3xl mx-auto text-left">

@@ -1,3 +1,4 @@
+import { getMediaUrl } from '../utils/mediaUrl.ts';
 import { Twitter, Facebook, Linkedin } from 'lucide-react';
 
 import team1 from '../assets/about/team-1.png';
@@ -9,8 +10,7 @@ import { useGetPageContentQuery } from '../redux/housebank.ts';
 const FALLBACK_IMAGES = [team1, team2, team3, team4];
 
 function imageUrl(path?: string | null) {
-  if (!path) return null;
-  return path.startsWith('http') ? path : `${import.meta.env.VITE_APP_BACKEND_HOST}${path}`;
+  return getMediaUrl(path);
 }
 
 const DEFAULT_HEADER = {

@@ -1,3 +1,4 @@
+import { getMediaUrl } from '../../../../utils/mediaUrl.ts';
 import { Link } from 'react-router-dom';
 import { Plus, Eye, Home, Clock } from 'lucide-react';
 import CustomerHeader from './CustomerHeader';
@@ -9,12 +10,11 @@ function formatNaira(value: number | string | undefined | null) {
 }
 
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 function formatDate(iso: string | null | undefined) {
-  if (!iso) return '—';
+  if (!iso) return '-';
   return new Date(iso.replace(' ', 'T') + 'Z').toLocaleDateString('en-GB', {
     day: '2-digit', month: 'short', year: 'numeric',
   });
@@ -101,7 +101,7 @@ function PendingTable({ rows, emptyText }: { rows: any[]; emptyText: string }) {
 }
 
 /** This screen's counterpart, and its sibling ApprovedProperties.tsx,
- * aren't linked from anywhere in the app right now — the sidebar's
+ * aren't linked from anywhere in the app right now, the sidebar's
  * "Manage Property" only points at /agent/properties, which already
  * has an "All / Pending / Approved / …" tab switcher covering the same
  * ground. Kept real and working (rather than left on fake data) in
@@ -143,7 +143,7 @@ const AgentPendingProperties = () => {
           </Link>
         </div>
 
-        {/* Awaiting company review — the company this listing was
+        {/* Awaiting company review, the company this listing was
             submitted under hasn't approved it yet. Once they do, it's
             live immediately -- there's no second, admin-side queue. */}
         <div>

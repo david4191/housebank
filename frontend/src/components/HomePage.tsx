@@ -234,7 +234,7 @@ const MainContent = () => {
               </div>
               
               {/* Team avatars */}
-              <div className="flex -mt-6 ml-4 space-x-2">
+              <div className="flex -mt-6 ml-4 -space-x-3">
                 <div className="w-12 h-12 rounded-full bg-blue-600 border-4 border-white overflow-hidden">
                   <img 
                    src={teamOne} alt="Team member" 

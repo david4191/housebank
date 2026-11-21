@@ -117,12 +117,12 @@ const AgentAddListPropertyPage = () => {
       filesToUpload.forEach((f) => formData.append('images', f));
       const imgResult = await uploadImages({ id: newId, formData });
       if ('error' in imgResult) {
-        // The listing itself was created successfully — image upload
+        // The listing itself was created successfully, image upload
         // failing shouldn't strand the agent on a form that looks like
         // nothing happened. Send them to the real listing either way,
         // and they can add photos from there.
         navigate('/agent/properties', {
-          state: { notice: 'Listing created, but the photos failed to upload — you can add them from My Listings.' },
+          state: { notice: 'Listing created, but the photos failed to upload. You can add them from My Listings.' },
         });
         return;
       }
@@ -217,7 +217,7 @@ const AgentAddListPropertyPage = () => {
           <div>
             <h2 className="text-lg font-semibold text-gray-900 mb-2">Property Details</h2>
             <p className="text-sm text-gray-500 mb-6">
-              New listings go live only after review — this submits for approval, it doesn't publish instantly. (If your account is attached to a company, they review it first before it reaches HouseBank admin.)
+              New listings go live only after review. This submits your listing for approval, and it won't publish instantly. If your account is attached to a company, they review it before it reaches HouseBank admin.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">

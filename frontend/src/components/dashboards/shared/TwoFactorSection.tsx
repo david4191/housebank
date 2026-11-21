@@ -9,7 +9,7 @@ import {
 type TwoFactorStep = 'idle' | 'password' | 'code' | 'recovery-codes';
 
 /**
- * Shared 2FA enable/disable flow — originally lived only inside the
+ * Shared 2FA enable/disable flow, originally lived only inside the
  * customer settings page, but the backend's /auth/2fa/* routes were
  * always role-agnostic (requireAuth only, no requireRole), so this was
  * pulled out here to be reused by the agent settings page too, rather
@@ -227,7 +227,7 @@ const TwoFactorSection = () => {
             <p className="text-sm font-medium text-amber-900 mb-1">Save your recovery codes</p>
             <p className="text-xs text-amber-800">
               Each code can be used once to sign in if you lose access to your email. We won't show
-              these again — store them somewhere safe.
+              these again, store them somewhere safe.
             </p>
           </div>
           <div className="grid grid-cols-2 gap-2 font-mono text-sm bg-gray-50 border border-gray-200 rounded-md p-4">

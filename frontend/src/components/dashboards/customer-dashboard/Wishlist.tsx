@@ -1,3 +1,4 @@
+import { getMediaUrl } from '../../../utils/mediaUrl.ts';
 import { useState } from 'react';
 import { Heart, MapPin, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -8,8 +9,7 @@ import {
 } from '../../../redux/housebank.ts';
 
 function imageUrl(path: string | null | undefined) {
-  if (!path) return null;
-  return path.startsWith('http') ? path : `${import.meta.env.VITE_APP_BACKEND_HOST}${path}`;
+  return getMediaUrl(path);
 }
 
 function formatPrice(price: number | string | null | undefined, currency: string | null | undefined) {

@@ -9,16 +9,16 @@ import { useGetMyProfileQuery } from '../../../redux/housebank.ts';
 /**
  * Joan, Sep 2026: "the same notification and profile settings that
  * customer has, do same for ... admin". Admin had no Settings page at
- * all — no route, no sidebar entry, no way to reach 2FA.
+ * all, no route, no sidebar entry, no way to reach 2FA.
  *
- * Unlike every other role, admin has no profile table server-side —
- * see GET /profile/me in profile.routes.js — so full name/bio/etc.
+ * Unlike every other role, admin has no profile table server-side,
+ * see GET /profile/me in profile.routes.js, so full name/bio/etc.
  * stay read-only here (PUT /profile/me still 403s for admin, by
  * design: there's nothing role-specific to edit). Migration 014 (Joan,
  * Sep 2026: "admin should also be able to edit their profile image
  * too") added exactly one column, users.avatar_path, so the shared
- * AvatarUpload component — the same one AgentSettings.tsx/
- * CompanySettings.tsx use — now works here too; its avatar_path/
+ * AvatarUpload component, the same one AgentSettings.tsx/
+ * CompanySettings.tsx use, now works here too; its avatar_path/
  * logo_path fallback already reads the right field for every role.
  * "Won't clash with other users' profile image": AuthContext already
  * resets the whole RTK Query cache on every sign-in/out, so this and
@@ -42,7 +42,7 @@ const AccountInfoSection = () => {
       <div>
         <h3 className="text-lg font-semibold text-gray-900 mb-1">Account</h3>
         <p className="text-sm text-gray-500">
-          Your administrator account details. There's no editable profile for the admin role — these
+          Your administrator account details. There's no editable profile for the admin role, these
           are read-only.
         </p>
       </div>
@@ -69,7 +69,7 @@ const AccountInfoSection = () => {
             </div>
             <div>
               <p className="text-xs text-gray-500">Phone</p>
-              <p className="text-sm font-medium text-gray-900">{profile.phone || '—'}</p>
+              <p className="text-sm font-medium text-gray-900">{profile.phone || '-'}</p>
             </div>
           </div>
 

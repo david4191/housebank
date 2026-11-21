@@ -1,4 +1,5 @@
 // src/components/dashboards/admin-dashboard/AdminManageCompanies.tsx
+import { getMediaUrl } from '../../../utils/mediaUrl.ts';
 import { useState } from 'react';
 import { Search, Building2, FileText, XCircle, Loader2, ShieldCheck, ShieldAlert, X } from 'lucide-react';
 import CustomerHeader from './CustomerHeader';
@@ -36,15 +37,14 @@ const STATUS_STYLE: Record<string, string> = {
 };
 
 function formatDate(iso: string | null | undefined) {
-  if (!iso) return '—';
+  if (!iso) return '-';
   return new Date(iso.replace(' ', 'T') + 'Z').toLocaleDateString('en-GB', {
     day: '2-digit', month: 'short', year: 'numeric',
   });
 }
 
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 const VerificationBadge = ({ status }: { status: string }) => (

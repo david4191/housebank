@@ -1,3 +1,4 @@
+import { getMediaUrl } from '../../../../utils/mediaUrl.ts';
 import { useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Plus, Eye, Home, CheckCircle2 } from 'lucide-react';
@@ -10,12 +11,11 @@ function formatNaira(value: number | string | undefined | null) {
 }
 
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 function formatDate(iso: string | null | undefined) {
-  if (!iso) return '—';
+  if (!iso) return '-';
   return new Date(iso.replace(' ', 'T') + 'Z').toLocaleDateString('en-GB', {
     day: '2-digit', month: 'short', year: 'numeric',
   });
@@ -97,7 +97,7 @@ const AgentListedProp = () => {
           </div>
         )}
 
-        {/* Status tabs — real counts, computed from the same data as the
+        {/* Status tabs, real counts, computed from the same data as the
             table below rather than a separate query per tab. */}
         <div className="flex gap-2 overflow-x-auto pb-2 mb-4 -mx-1 px-1">
           {TABS.map((t) => (

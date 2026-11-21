@@ -25,25 +25,25 @@ const AuthLeftPanel: React.FC<ILeftPanelProps> = ({ testimonialData }) => {
                 <stop offset="100%" stopColor="#00bb22" stopOpacity="0.3" />
               </linearGradient>
             </defs>
-            
+
             {/* First flowing wave */}
-            <path 
-              d="M0,200 Q100,100 200,150 T400,200 L400,600 Q300,500 200,550 T0,600 Z" 
+            <path
+              d="M0,200 Q100,100 200,150 T400,200 L400,600 Q300,500 200,550 T0,600 Z"
               fill="url(#aurora1)"
               className="animate-pulse"
             />
-            
+
             {/* Second flowing wave */}
-            <path 
-              d="M0,400 Q150,300 300,350 T400,400 L400,800 Q250,700 100,750 T0,800 Z" 
+            <path
+              d="M0,400 Q150,300 300,350 T400,400 L400,800 Q250,700 100,750 T0,800 Z"
               fill="url(#aurora2)"
               className="animate-pulse"
               style={{ animationDelay: '1s' }}
             />
-            
+
             {/* Third accent wave */}
-            <path 
-              d="M0,600 Q200,500 400,600 L400,800 L0,800 Z" 
+            <path
+              d="M0,600 Q200,500 400,600 L400,800 L0,800 Z"
               fill="url(#aurora1)"
               opacity="0.3"
               className="animate-pulse"
@@ -55,7 +55,7 @@ const AuthLeftPanel: React.FC<ILeftPanelProps> = ({ testimonialData }) => {
 
       {/* Content Container */}
       <div className="relative z-10 flex flex-col h-full p-8 text-white">
-        
+
         {/* Logo Section */}
         <div className="mb-8">
           <img src={logo} alt="HouseBank Logo" className="h-9 w-10" />

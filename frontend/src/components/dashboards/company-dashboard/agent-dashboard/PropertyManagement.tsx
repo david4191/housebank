@@ -1,3 +1,4 @@
+import { getMediaUrl } from '../../../../utils/mediaUrl.ts';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Eye, Home, Plus } from 'lucide-react';
@@ -10,12 +11,11 @@ function formatNaira(value: number | string | undefined | null) {
 }
 
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 function formatDate(iso: string | null | undefined) {
-  if (!iso) return '—';
+  if (!iso) return '-';
   return new Date(iso.replace(' ', 'T') + 'Z').toLocaleDateString('en-GB', {
     day: '2-digit', month: 'short', year: 'numeric',
   });
@@ -37,7 +37,7 @@ const listingTypeForTab: Record<TabType, string | null> = {
 };
 
 /** Search + category view of the same real listings ListedProperties.tsx
- * shows by status — this page isn't linked from anywhere in the app
+ * shows by status, this page isn't linked from anywhere in the app
  * today either, but kept real (not fake) in case it gets linked. */
 const AgentPropertyManagement = () => {
   const [activeTab, setActiveTab] = useState<TabType>('All Property');

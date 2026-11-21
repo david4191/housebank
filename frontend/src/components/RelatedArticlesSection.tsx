@@ -1,10 +1,10 @@
+import { getMediaUrl } from '../utils/mediaUrl.ts';
 import { ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useGetBlogPostsQuery } from '../redux/housebank.ts';
 
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 /**

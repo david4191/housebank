@@ -1,4 +1,5 @@
 // src/components/dashboards/company-dashboard/CompanyRealtor.tsx
+import { getMediaUrl } from '../../../utils/mediaUrl.ts';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, Plus, Trash2, Users, Home as HomeIcon, BarChart3, ArrowLeftRight, Mail, X } from 'lucide-react';
@@ -12,8 +13,7 @@ import {
 } from '../../../redux/housebank.ts';
 
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 function initialsFor(name: string) {
@@ -24,9 +24,9 @@ function initialsFor(name: string) {
 }
 
 function formatDate(isoLike: string | null | undefined) {
-  if (!isoLike) return '—';
+  if (!isoLike) return '-';
   const d = new Date(isoLike.replace(' ', 'T') + (isoLike.includes('Z') ? '' : 'Z'));
-  if (Number.isNaN(d.getTime())) return '—';
+  if (Number.isNaN(d.getTime())) return '-';
   return d.toLocaleDateString('en-NG', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
@@ -48,7 +48,7 @@ const verificationStyle: Record<string, string> = {
  *
  * "Every agent must work for a company" (Joan, Sep 2026) removed
  * independent-agent signup entirely, so attach-by-email alone isn't
- * enough anymore — most of the time the email won't have an account
+ * enough anymore, most of the time the email won't have an account
  * yet. POST /company-agents now handles both cases itself: if the
  * email belongs to an existing independent agent it's attached
  * immediately (unchanged), otherwise it records a pending invite and
@@ -116,7 +116,7 @@ const CompanyManageRealtor = () => {
       <CustomerHeader />
 
       <main className="flex-1 p-4 sm:p-6 bg-gray-50 overflow-auto space-y-6">
-        {/* Stat Cards — real counts only; no fabricated "Clients" or
+        {/* Stat Cards, real counts only; no fabricated "Clients" or
             "Revenue" here, those belong on Revenue/Customers. */}
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 flex-1 min-w-0">
@@ -126,7 +126,7 @@ const CompanyManageRealtor = () => {
                 <Users className="w-5 h-5 text-orange-500" />
               </div>
             </div>
-            <p className="text-3xl font-bold text-gray-900">{isLoading ? '—' : rows.length}</p>
+            <p className="text-3xl font-bold text-gray-900">{isLoading ? '-' : rows.length}</p>
           </div>
           <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 flex-1 min-w-0">
             <div className="flex items-center justify-between mb-2">
@@ -135,7 +135,7 @@ const CompanyManageRealtor = () => {
                 <HomeIcon className="w-5 h-5 text-blue-500" />
               </div>
             </div>
-            <p className="text-3xl font-bold text-gray-900">{isLoading ? '—' : totalProperties}</p>
+            <p className="text-3xl font-bold text-gray-900">{isLoading ? '-' : totalProperties}</p>
           </div>
           <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 flex-1 min-w-0">
             <div className="flex items-center justify-between mb-2">
@@ -144,7 +144,7 @@ const CompanyManageRealtor = () => {
                 <Mail className="w-5 h-5 text-purple-500" />
               </div>
             </div>
-            <p className="text-3xl font-bold text-gray-900">{invitesLoading ? '—' : pendingInvites.length}</p>
+            <p className="text-3xl font-bold text-gray-900">{invitesLoading ? '-' : pendingInvites.length}</p>
           </div>
         </div>
 
@@ -212,8 +212,8 @@ const CompanyManageRealtor = () => {
               {formError && <p className="text-sm text-red-600 mt-2">{formError}</p>}
               <p className="text-xs text-gray-400 mt-2">
                 If they already have an unattached HouseBank realtor account, they're added instantly. If
-                not, they'll get a spot waiting for them — they just need to sign up as a realtor using
-                this same email, and they'll join your roster automatically.
+                not, they'll get a spot waiting for them. They just need to sign up as a realtor using
+                this same email to join your roster automatically.
               </p>
             </div>
           )}
@@ -225,7 +225,7 @@ const CompanyManageRealtor = () => {
               <Users className="w-8 h-8 text-gray-300 mx-auto mb-2" />
               <p className="text-sm text-gray-500">
                 {rows.length === 0
-                  ? "No realtors on your roster yet — add one by email above."
+                  ? "No realtors on your roster yet, add one by email above."
                   : 'No realtors match your search.'}
               </p>
             </div>
@@ -261,7 +261,7 @@ const CompanyManageRealtor = () => {
                           </div>
                         </td>
                         <td className="px-6 py-4 text-gray-600">{realtor.email}</td>
-                        <td className="px-6 py-4 text-gray-600">{realtor.phone || '—'}</td>
+                        <td className="px-6 py-4 text-gray-600">{realtor.phone || '-'}</td>
                         <td className="px-6 py-4 text-gray-700 font-medium text-center">{realtor.property_count}</td>
                         <td className="px-6 py-4">
                           <span className={`px-3 py-1 rounded-full text-xs font-medium ${verificationStyle[realtor.verification_status] || verificationStyle.unverified}`}>
@@ -318,7 +318,7 @@ const CompanyManageRealtor = () => {
           )}
         </div>
 
-        {/* Pending Invites — emails added before the person had an
+        {/* Pending Invites, emails added before the person had an
             account. Nothing here means every recent invite either got
             attached immediately (independent agent already existed) or
             hasn't been added yet. */}

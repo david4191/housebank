@@ -1,3 +1,4 @@
+import { getMediaUrl } from '../../../utils/mediaUrl.ts';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Search, Plus, Paperclip, Send, Building2 } from 'lucide-react';
@@ -13,8 +14,7 @@ import {
 } from '../../../redux/housebank.ts';
 
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 function initialsFor(name: string | undefined | null) {
@@ -70,7 +70,7 @@ const MessagesPage = () => {
   const [sendMessage, { isLoading: sending }] = useSendMessageMutation();
   const [markRead] = useMarkConversationReadMutation();
 
-  // Arrived from "My Realtor" with a contact to message — reuse the
+  // Arrived from "My Realtor" with a contact to message, reuse the
   // existing thread with them if there is one, otherwise open a fresh
   // composer for that contact.
   useEffect(() => {
@@ -104,7 +104,7 @@ const MessagesPage = () => {
     return list.filter((c: any) => c.other_participant?.name?.toLowerCase().includes(q));
   }, [conversations, searchTerm]);
 
-  // Contacts you can start a fresh thread with — i.e. not already an
+  // Contacts you can start a fresh thread with, i.e. not already an
   // open conversation.
   const messageableContacts = useMemo(() => {
     const openWith = new Set((conversations || []).map((c: any) => c.other_participant?.user_id));

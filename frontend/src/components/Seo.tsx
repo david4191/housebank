@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 const SITE_NAME = 'HouseBank';
 const DEFAULT_DESCRIPTION =
-  'HouseBank is a real estate and property-investment marketplace — browse verified listings, buy, rent, or invest in property, and connect with realtors and companies, all in one place.';
+  'HouseBank is a real estate and property-investment marketplace. Browse verified listings, buy, rent, or invest in property, and connect with realtors and companies.';
 const DEFAULT_IMAGE_PATH = '/og-image.png';
 
 interface SeoProps {
@@ -52,7 +52,7 @@ function upsertLink(rel: string, href: string) {
  */
 export default function Seo({ title, description, path, image, noindex }: SeoProps) {
   useEffect(() => {
-    const fullTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME} — Real Estate & Property Investment Marketplace`;
+    const fullTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME} | Real Estate & Property Investment Marketplace`;
     document.title = fullTitle;
 
     const desc = description || DEFAULT_DESCRIPTION;

@@ -1,9 +1,9 @@
+import { getMediaUrl } from '../utils/mediaUrl.ts';
 import { ArrowRight } from 'lucide-react';
 import { useGetPageContentQuery } from '../redux/housebank.ts';
 
 function imageUrl(path?: string | null) {
-  if (!path) return null;
-  return path.startsWith('http') ? path : `${import.meta.env.VITE_APP_BACKEND_HOST}${path}`;
+  return getMediaUrl(path);
 }
 
 const DEFAULT_BACKGROUND =

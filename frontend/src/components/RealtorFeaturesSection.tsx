@@ -1,3 +1,4 @@
+import { getMediaUrl } from '../utils/mediaUrl.ts';
 import icons from '../assets/realtor/icons.png';
 import arrowTop from '../assets/arrow-top.png';
 import { useNavigate } from 'react-router-dom';
@@ -5,8 +6,7 @@ import { useGetPageContentQuery } from '../redux/housebank.ts';
 import useAuth from '../hooks/useAuth.tsx';
 
 function imageUrl(path?: string | null) {
-  if (!path) return null;
-  return path.startsWith('http') ? path : `${import.meta.env.VITE_APP_BACKEND_HOST}${path}`;
+  return getMediaUrl(path);
 }
 
 const DEFAULT_HEADER = {

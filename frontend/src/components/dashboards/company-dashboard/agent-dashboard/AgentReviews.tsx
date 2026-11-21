@@ -1,7 +1,7 @@
 import { Star } from 'lucide-react';
 import CustomerHeader from './CustomerHeader';
 
-/** Customer reviews aren't a real feature yet — there's no backend
+/** Customer reviews aren't a real feature yet, there's no backend
  * module for a customer to rate an agent or a completed deal (no
  * reviews table, no rating endpoint). The old version of this page
  * showed nine fake reviews with garbled placeholder text ("rafekem
@@ -22,7 +22,7 @@ const AgentReviewPage = () => {
             <h2 className="text-lg font-semibold text-gray-900 mb-2">Reviews aren't live yet</h2>
             <p className="text-sm text-gray-500 max-w-md mx-auto">
               HouseBank doesn't yet support customers leaving a rating or review after a purchase or lease. Once
-              that's built, real feedback from your customers will show up here — nothing invented in the
+              that's built, real feedback from your customers will show up here, nothing invented in the
               meantime.
             </p>
           </div>

@@ -8,11 +8,11 @@ import useAuth from '../hooks/useAuth.tsx';
 import { isValidEmail } from '../utils/emailValidation.ts';
 import { AuthFieldError, AuthFormNotice } from '../components/AuthFormFeedback.tsx';
 
-// This is the plain customer (property buyer/browser) sign-up form — no
+// This is the plain customer (property buyer/browser) sign-up form, no
 // documents required, matching hb-backend's `role: 'customer'` signup shape
 // (fullName, email, phone, password). Registered companies have their own
 // dedicated form at /signup-seller, linked below. Realtors have no public
-// signup entry point at all — they're invited by a company and complete
+// signup entry point at all, they're invited by a company and complete
 // registration through a one-time link emailed to them
 // (/realtor-onboarding/:token, see pages/RealtorOnboarding.tsx).
 import Seo from '../components/Seo.tsx';
@@ -90,12 +90,7 @@ export default function SignUpUser() {
   return (
     <div className={authContainerStyle}>
       <Seo title="Sign Up" description="Create your HouseBank account to browse, buy, rent, and invest in property." noindex />
-      <AuthTitle
-        headerText="Sign Up"
-        subtitle="Have an account?"
-        linkText="Sign In"
-        linkTo="/signin"
-      />
+      <AuthTitle headerText="Sign Up" />
       <div>
         <div className="mb-6 w-full">
           <label className="block mb-2 font-medium text-gray-800 text-[19px]">Full Name</label>
@@ -186,6 +181,12 @@ export default function SignUpUser() {
       </div>
       <div className="w-full sm:w-2/5 mt-8">
         <Button text={submitting ? 'Signing up…' : 'Sign Up'} onClick={handleSubmit} disabled={submitting} />
+      </div>
+      <div className="mt-4 text-sm text-gray-600">
+        You don't have an account?{' '}
+        <Link to="/signin" className="font-semibold text-[color:var(--color-dark)] hover:underline">
+          Sign In
+        </Link>
       </div>
     </div>
   );

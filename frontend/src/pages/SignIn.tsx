@@ -4,12 +4,13 @@ import Button from '../components/Button.tsx';
 import AuthTitle from '../components/AuthTitle.tsx';
 import useAuth from '../hooks/useAuth.tsx';
 import { roleHomePath } from '../context/AuthContext.tsx';
+import { isValidEmail } from '../utils/emailValidation.ts';
 
 export const authInputStyle = `w-full h-12 bg-[color:var(--color-bg)] border border-[color:var(--color-border)]
               rounded-md px-4 text-base text-[color:var(--color-dark)] placeholder-[color:var(--color-gray)]
               outline-none focus:ring-2 focus:ring-[color:var(--color-green)] focus:border-[color:var(--color-green)] transition-all`;
 
-export const authContainerStyle = `w-full md:w-3/5 h-full flex flex-col place-content-center px-6 sm:px-10 md:px-12`;
+export const authContainerStyle = `w-full md:w-3/5 h-full flex flex-col place-content-center px-6 sm:px-10 md:px-12 pb-8`;
 
 export const authOTPInputStyle = `w-10 h-10 sm:w-12 sm:h-12 bg-[color:var(--color-white)] border border-[color:var(--color-border)] rounded-md text-center text-lg sm:text-xl font-semibold
 text-[color:var(--color-dark)] outline-none focus:ring-2 focus:ring-[color:var(--color-green)] focus:border-[color:var(--color-green)] transition-all`;
@@ -28,7 +29,7 @@ export default function SignIn() {
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  // Second-factor step — only entered when the account has 2FA enabled.
+  // Second-factor step, only entered when the account has 2FA enabled.
   // loginInUser stops short of issuing tokens on such accounts and hands
   // back a short-lived pending_token instead (see hb-backend's
   // POST /auth/signin and POST /auth/2fa/verify-login).
@@ -49,7 +50,12 @@ export default function SignIn() {
     setError('');
 
     if (!email.trim() || !password) {
-      setError('Please enter your email or phone number and password.');
+      setError('Please enter your email address and password.');
+      return;
+    }
+
+    if (!isValidEmail(email.trim())) {
+      setError('Enter a valid email address.');
       return;
     }
 
@@ -166,14 +172,14 @@ export default function SignIn() {
         {/* Email Address */}
         <div className="mb-8 w-full">
           <label className="block mb-6 font-medium text-[color:var(--color-dark)] text-base" htmlFor="signin-identifier">
-            Email or Phone Number
+            Email Address
           </label>
           <input
             id="signin-identifier"
-            type="text"
+            type="email"
             className={authInputStyle}
-            placeholder="Enter your email or phone number"
-            autoComplete="username"
+            placeholder="Enter your email address"
+            autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -195,7 +201,7 @@ export default function SignIn() {
           <div className="mt-3 text-right">
             <Link
               to="/forgot-password"
-              className="text-sm font-medium text-[color:var(--color-green)] hover:underline"
+              className="text-sm font-medium text-red-600 hover:text-red-700 hover:underline"
             >
               Forgot password?
             </Link>

@@ -15,7 +15,7 @@ const ROLE_LABELS: Record<string, string> = {
 
 /**
  * Notification `type` is a free-form string set by whatever backend
- * module creates it (see hb-backend/src/models/Notification.js) — this
+ * module creates it (see hb-backend/src/models/Notification.js), this
  * buckets a real type string into one of the page's tabs without
  * assuming an exact fixed vocabulary.
  */
@@ -41,10 +41,10 @@ function timeAgo(isoLike: string) {
 /**
  * Joan, Sep 2026: "realtors notifications is meant to come from the
  * companys... lastly ... admins notification is meant to emcompass all
- * users and not this" — the version that shipped first was a straight
+ * users and not this", the version that shipped first was a straight
  * copy of the customer notifications page: GET /notifications, scoped
  * to the logged-in user's own user_id. For admin that's structurally
- * broken, not just wrong-looking — nothing in the backend ever creates
+ * broken, not just wrong-looking, nothing in the backend ever creates
  * a Notification row addressed to admin's own account (grepped every
  * Notification.create() call site to confirm), so that page could
  * never show anything but "No notifications yet," forever, no matter
@@ -52,17 +52,17 @@ function timeAgo(isoLike: string) {
  *
  * This is the real fix: GET /admin/notifications (Notification.
  * platformFeed on the backend) returns every notification generated
- * for every user across the whole platform — new messages, listing
+ * for every user across the whole platform, new messages, listing
  * approvals/rejections, company invites, purchases/rentals/
- * investments, 2FA events — tagged with who it was actually for. That
+ * investments, 2FA events, tagged with who it was actually for. That
  * is what "encompass all users" means literally, so that's what this
  * page now shows: a real activity stream, not a personal inbox that
  * can never fill.
  *
- * Read/unread and "mark as read" don't have an honest meaning here —
+ * Read/unread and "mark as read" don't have an honest meaning here,
  * is_read reflects whether the *recipient* has seen it, not admin, and
  * admin marking someone else's notification "read" would be misleading
- * — so both are dropped in favor of showing who each item was for.
+ *, so both are dropped in favor of showing who each item was for.
  */
 const AdminNotifications = () => {
   const [activeCategory, setActiveCategory] = useState<NotificationCategory>('all');
@@ -103,7 +103,7 @@ const AdminNotifications = () => {
           <div>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Platform Activity</h2>
             <p className="text-sm text-gray-500 mt-0.5">
-              Every notification sent to every user on HouseBank — {total} total.
+              Every notification sent to every user on HouseBank, {total} total.
             </p>
           </div>
 

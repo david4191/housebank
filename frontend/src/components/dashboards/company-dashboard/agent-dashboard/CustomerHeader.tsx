@@ -1,3 +1,4 @@
+import { getMediaUrl } from '../../../../utils/mediaUrl.ts';
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Bell, ChevronDown, ExternalLink, LogOut, Search } from "lucide-react";
@@ -10,18 +11,17 @@ import {
 } from "../../../../redux/housebank.ts";
 
 function avatarUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 
 /** Same fix as the customer header's dropdown bug: one shared
- * click-outside ref on the whole controls row, not one per dropdown —
+ * click-outside ref on the whole controls row, not one per dropdown,
  * see CustomerHeader.tsx (customer-dashboard) for the full writeup of
  * why per-menu refs break Settings/Log Out-style clicks. This header
  * had no working dropdown at all before (hardcoded "John", a stock
  * photo, no click handlers anywhere), so there's no old bug to
- * preserve — this is the same fix applied from scratch. */
+ * preserve, this is the same fix applied from scratch. */
 function useClickOutside(onOutside: () => void) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -98,7 +98,7 @@ const CustomerHeader = () => {
         </div>
 
         <div className="flex shrink-0 items-center gap-2 sm:gap-3 lg:gap-6" ref={controlsRef}>
-          {/* Search Bar — hidden on small screens, same as the customer
+          {/* Search Bar, hidden on small screens, same as the customer
               header, since it doesn't filter anything yet and eats the
               whole row on mobile */}
           <div className="relative hidden md:block">
@@ -110,7 +110,7 @@ const CustomerHeader = () => {
             />
           </div>
 
-          {/* Language Selector — only English is actually supported today;
+          {/* Language Selector, only English is actually supported today;
               honest about that rather than pretending to switch languages. */}
           <div className="relative hidden sm:block">
             <button
@@ -135,7 +135,7 @@ const CustomerHeader = () => {
             )}
           </div>
 
-          {/* Notification Bell — real unread count + real list, same as
+          {/* Notification Bell, real unread count + real list, same as
               the customer header */}
           <div className="relative">
             <button
@@ -188,7 +188,7 @@ const CustomerHeader = () => {
             )}
           </div>
 
-          {/* User Profile — real name/role/initials-avatar, real Log Out. */}
+          {/* User Profile, real name/role/initials-avatar, real Log Out. */}
           <div className="relative">
             <button
               type="button"

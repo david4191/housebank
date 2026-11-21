@@ -1,3 +1,4 @@
+import { getMediaUrl } from '../../../utils/mediaUrl.ts';
 import { useNavigate } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import {
@@ -12,8 +13,7 @@ import { useGetAdminOverviewQuery } from '../../../redux/housebank.ts';
  * this codebase (see AdminPropertyManagement.tsx for the full note) --
  * this dashboard's "Recent Properties" table had the same raw-path bug. */
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 const DONUT_COLORS = ['#2563eb', '#15803d', '#fb923c', '#a855f7', '#ec4899'];
@@ -117,7 +117,7 @@ const AdminOverview = () => {
   const platformGrowth = data?.platform_growth ?? 0;
   const trend = (data?.properties_trend || []).length > 0
     ? data.properties_trend
-    : [{ month: '—', value: 0 }];
+    : [{ month: '-', value: 0 }];
   const topCompanies = data?.top_companies || [];
   const activity = data?.recent_activity || [];
   const recentProperties = data?.recently_added_properties || [];
@@ -164,7 +164,7 @@ const AdminOverview = () => {
                 change="Registered customer accounts" />
               <StatCard title="Platform Growth" value={`${platformGrowth > 0 ? '+' : ''}${platformGrowth}%`} iconBg="bg-green-100"
                 icon={<svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>}
-                change="New signups, this month vs last" changeColor={platformGrowth >= 0 ? 'text-green-600' : 'text-red-500'} />
+                change="New signups vs last month" changeColor={platformGrowth >= 0 ? 'text-green-600' : 'text-red-500'} />
             </div>
 
             {/* ── Charts + Activity row ── */}
@@ -295,8 +295,8 @@ const AdminOverview = () => {
                             <span className="font-medium text-gray-800">{prop.title}</span>
                           </div>
                         </td>
-                        <td className="px-6 py-4 text-gray-600">{prop.company_name || '—'}</td>
-                        <td className="px-6 py-4 text-gray-600">{prop.lister_name || '—'}</td>
+                        <td className="px-6 py-4 text-gray-600">{prop.company_name || '-'}</td>
+                        <td className="px-6 py-4 text-gray-600">{prop.lister_name || '-'}</td>
                         <td className="px-6 py-4 text-gray-700 font-medium">{formatMoney(prop.price, prop.currency)}</td>
                         <td className="px-6 py-4 text-gray-600 capitalize">{prop.listing_type}</td>
                         <td className="px-6 py-4">

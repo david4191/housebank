@@ -1,3 +1,4 @@
+import { getMediaUrl } from '../../../utils/mediaUrl.ts';
 import { Link, useNavigate } from 'react-router-dom';
 import { Plus, MoreVertical, Home, CalendarClock, Check, MessageSquare } from 'lucide-react';
 import CustomerHeader from './CustomerHeader';
@@ -16,14 +17,9 @@ function formatNaira(value: number | string | undefined | null) {
   return `N${(Number.isFinite(n) ? n : 0).toLocaleString('en-NG', { maximumFractionDigits: 0 })}`;
 }
 
-/** property_images.file_path is stored (and returned by the API)
- * already as "uploads/<subfolder>/<file>" — see hb-backend's
- * fileUpload.js. VITE_APP_BACKEND_HOST already ends in "/", so this is
- * a plain concatenation, matching the pattern used across the customer
- * and agent dashboards. */
+/** Resolve stored property image paths through the shared media URL helper. */
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 function greetingForNow() {
@@ -51,7 +47,7 @@ const listingTypeLabel: Record<string, string> = {
  * The old "Overview" page was a template lift from a property-management
  * SaaS: a "Total Agents 128" stat that never moved, three fake charts,
  * and a "Requests" table (Maintenance/Complaint/Task) with no matching
- * concept anywhere in this codebase — nothing here tracks maintenance
+ * concept anywhere in this codebase, nothing here tracks maintenance
  * tickets. This is the same real-data rebuild the agent dashboard got:
  * every number below comes from properties/purchases/rentals/viewings/
  * roster this company (and, since the backend scoping fix, its attached
@@ -129,12 +125,12 @@ const CompanyOverview = () => {
 
             <div className="bg-white rounded-xl p-4 border border-gray-200">
               <div className="text-sm text-gray-600 mb-2">Total Listings</div>
-              <div className="text-2xl font-bold text-gray-900">{propsLoading ? '—' : totalListings}</div>
+              <div className="text-2xl font-bold text-gray-900">{propsLoading ? '-' : totalListings}</div>
             </div>
 
             <div className="bg-white rounded-xl p-4 border border-gray-200">
               <div className="text-sm text-gray-600 mb-2">Approved Properties</div>
-              <div className="text-2xl font-bold text-gray-900">{propsLoading ? '—' : approvedCount}</div>
+              <div className="text-2xl font-bold text-gray-900">{propsLoading ? '-' : approvedCount}</div>
             </div>
 
             <div className="bg-white rounded-xl p-4 border border-gray-200">
@@ -150,13 +146,13 @@ const CompanyOverview = () => {
 
           {/* Needs attention + listing-type breakdown */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Viewing requests needing action — across every property
+            {/* Viewing requests needing action, across every property
                 this company (or an agent on its roster) lists. */}
             <div className="lg:col-span-2 bg-white rounded-xl p-6 border border-gray-200">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900">Needs Your Attention</h3>
                 <span className="text-sm text-gray-500">
-                  {viewingsLoading ? '—' : `${(pendingViewings || []).length} pending`}
+                  {viewingsLoading ? '-' : `${(pendingViewings || []).length} pending`}
                 </span>
               </div>
               {viewingsLoading ? (
@@ -217,7 +213,7 @@ const CompanyOverview = () => {
               )}
             </div>
 
-            {/* Listing type breakdown — real counts across everything this
+            {/* Listing type breakdown, real counts across everything this
                 company and its roster have listed. */}
             <div className="bg-white rounded-xl p-6 border border-gray-200">
               <h3 className="text-lg font-semibold text-gray-900 mb-6">Listing Mix</h3>
@@ -278,7 +274,7 @@ const CompanyOverview = () => {
             </div>
           </div>
 
-          {/* Listings table — includes every roster agent's listings, not
+          {/* Listings table, includes every roster agent's listings, not
               just the company's own, so a "Realtor" column matters here
               in a way it doesn't on the agent dashboard's version. */}
           <div className="mt-8 bg-white rounded-xl border border-gray-200">
@@ -297,7 +293,7 @@ const CompanyOverview = () => {
             ) : rows.length === 0 ? (
               <div className="px-6 py-10 text-center">
                 <Home className="w-8 h-8 text-gray-300 mx-auto mb-2" />
-                <p className="text-sm text-gray-500">No properties listed yet — by your company or your roster.</p>
+                <p className="text-sm text-gray-500">No properties listed yet, by your company or your roster.</p>
                 <Link to="/company/add-property" className="text-sm text-purple-600 hover:text-purple-700 font-medium mt-2 inline-block">
                   Add your first property
                 </Link>

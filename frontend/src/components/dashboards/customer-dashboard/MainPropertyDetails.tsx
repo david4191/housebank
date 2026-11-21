@@ -1,3 +1,4 @@
+import { getMediaUrl } from '../../../utils/mediaUrl.ts';
 import { useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { MapPin, Bed, Bath, Square, Phone, MessageSquare } from 'lucide-react';
@@ -16,8 +17,7 @@ function formatNaira(value: number | string | undefined | null) {
 }
 
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 const listingTypeCta: Record<string, string> = {
@@ -102,7 +102,7 @@ const CustomerPropertyDetailsPageOne = () => {
         <div className="p-6">
           <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
             <p className="text-gray-500">
-              This property isn't available anymore — it may have been sold, rented, or taken down.
+              This property isn't available anymore. It may have been sold, rented, or taken down.
             </p>
             <button
               onClick={() => navigate('/customer/property-listing')}
@@ -224,7 +224,7 @@ const CustomerPropertyDetailsPageOne = () => {
                 </div>
                 {wishlistError && <p role="alert" className="mt-3 text-sm text-red-600">{wishlistError}</p>}
                 <p className="text-xs text-gray-500 mt-3">
-                  HouseBank doesn't do instant checkout — buying, renting, or investing starts with booking a
+                  HouseBank doesn't do instant checkout, buying, renting, or investing starts with booking a
                   viewing below. The sale itself is agreed and processed at the office.
                 </p>
               </div>

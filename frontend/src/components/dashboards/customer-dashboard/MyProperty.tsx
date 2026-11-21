@@ -1,3 +1,4 @@
+import { getMediaUrl } from '../../../utils/mediaUrl.ts';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, SlidersHorizontal, MoreVertical, Heart } from 'lucide-react';
@@ -27,8 +28,7 @@ function formatNaira(value: number | string | undefined | null) {
 }
 
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 function statusBadge(status: InvestmentRow['status']) {
@@ -63,7 +63,7 @@ const MyPropertyPage = () => {
   ];
 
   // Direct property purchase/rental tracking isn't built on the backend yet
-  // (no purchases/leases table exists — only investments, which the schema
+  // (no purchases/leases table exists, only investments, which the schema
   // fully supports). Buy/Rent tabs are real, working controls, but there's
   // nothing to show under them today, so they say that plainly instead of
   // showing invented rows.
@@ -124,7 +124,7 @@ const MyPropertyPage = () => {
                 }}
               />
 
-              {/* Filter Dropdown — real statuses that actually exist on an investment */}
+              {/* Filter Dropdown, real statuses that actually exist on an investment */}
               {showFilterDropdown && (
                 <div className="absolute top-full mt-2 right-0 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
                   <div className="p-3">
@@ -199,7 +199,7 @@ const MyPropertyPage = () => {
         {showComingSoon ? (
           <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
             <p className="text-gray-500">
-              Direct property {activeCategory === 'buy' ? 'purchases' : 'rentals'} aren't tracked here yet —
+              Direct property {activeCategory === 'buy' ? 'purchases' : 'rentals'} aren't tracked here yet,
               this tab will show real data once that's built. Your investments are under the Investment tab.
             </p>
           </div>
@@ -262,14 +262,14 @@ const MyPropertyPage = () => {
 
                         {/* Address */}
                         <div className="text-sm text-gray-600 min-w-0">
-                          <div className="truncate">{addressLine || '—'}</div>
+                          <div className="truncate">{addressLine || '-'}</div>
                         </div>
 
                         {/* Company */}
-                        <div className="text-sm text-gray-900">{row.company_name || '—'}</div>
+                        <div className="text-sm text-gray-900">{row.company_name || '-'}</div>
 
                         {/* Assign Realtor */}
-                        <div className="text-sm text-gray-600">{row.realtor_name || '—'}</div>
+                        <div className="text-sm text-gray-600">{row.realtor_name || '-'}</div>
 
                         {/* Status */}
                         <div className="flex justify-start">{statusBadge(row.status)}</div>

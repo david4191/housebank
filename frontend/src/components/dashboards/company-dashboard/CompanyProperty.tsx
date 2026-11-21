@@ -1,4 +1,5 @@
 // src/components/dashboards/company-dashboard/CompanyProperty.tsx
+import { getMediaUrl } from '../../../utils/mediaUrl.ts';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Eye, Home, Plus, ShieldAlert, X } from 'lucide-react';
@@ -15,12 +16,11 @@ function formatNaira(value: number | string | undefined | null) {
 }
 
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 function formatDate(iso: string | null | undefined) {
-  if (!iso) return '—';
+  if (!iso) return '-';
   return new Date(iso.replace(' ', 'T') + 'Z').toLocaleDateString('en-GB', {
     day: '2-digit', month: 'short', year: 'numeric',
   });
@@ -44,14 +44,14 @@ const listingTypeForTab: Record<TabType, string | null> = {
 };
 
 /**
- * The old page was a flat mock table — every row's "realtor" was the
+ * The old page was a flat mock table, every row's "realtor" was the
  * same hardcoded "Abubakar Isa" with a randomuser.me photo, duplicate
  * "#HB111" ids, a 5-page pager over 6 rows, and no way to actually get
  * to a property or list a new one (both links pointed nowhere real).
  *
  * This is now real: properties/mine already returns every listing
- * under this company — the caller's own plus anything listed by an
- * agent on its roster (see Property.findByListerId in hb-backend) —
+ * under this company, the caller's own plus anything listed by an
+ * agent on its roster (see Property.findByListerId in hb-backend),
  * so a "Realtor" column is the one real addition over the agent
  * version of this page, since a company's listings can come from
  * several different people, not just the account itself.
@@ -111,7 +111,7 @@ const AppealModal = ({ propertyId, propertyTitle, onClose }: { propertyId: numbe
 
         {hasPending ? (
           <p className="text-sm text-orange-600 bg-orange-50 border border-orange-200 rounded-lg p-3">
-            An appeal for this listing is already pending review — you'll be notified once HouseBank responds.
+            An appeal for this listing is already pending review. You'll be notified once HouseBank responds.
           </p>
         ) : (
           <>
@@ -221,7 +221,7 @@ const CompanyPropertyPager = () => {
               <Home className="w-8 h-8 text-gray-300 mx-auto mb-2" />
               <p className="text-sm text-gray-500">
                 {rows.length === 0
-                  ? "No properties listed yet — click \"List Property\" to add your first one."
+                  ? "No properties listed yet. Click \"List Property\" to add your first one."
                   : 'No listings match here.'}
               </p>
             </div>

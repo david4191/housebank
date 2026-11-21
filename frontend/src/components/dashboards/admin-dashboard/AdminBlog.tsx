@@ -1,4 +1,5 @@
 // src/components/dashboards/admin-dashboard/AdminBlog.tsx
+import { getMediaUrl } from '../../../utils/mediaUrl.ts';
 import { useEffect, useState } from 'react';
 import { FileText, Image as ImageIcon, Loader2, Pencil, Plus, Trash2, X } from 'lucide-react';
 import CustomerHeader from './CustomerHeader';
@@ -11,15 +12,14 @@ import {
 } from '../../../redux/housebank.ts';
 
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 function formatDate(value: string | null | undefined) {
-  if (!value) return '—';
+  if (!value) return '-';
   const iso = value.includes('T') ? value : `${value.replace(' ', 'T')}Z`;
   const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return '—';
+  if (Number.isNaN(d.getTime())) return '-';
   return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
@@ -507,7 +507,7 @@ const BlogFormModal = ({ postId, onClose }: { postId: number | string | null; on
                 className="w-full px-4 py-3 border border-gray-200 rounded-lg text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 font-mono"
               />
               <p className="text-xs text-gray-400">
-                Lowercase letters, numbers and hyphens only — used in the post&rsquo;s public URL.
+                Lowercase letters, numbers and hyphens only, used in the post&rsquo;s public URL.
               </p>
               {fieldErrors.slug && <p className="text-xs text-red-600">{fieldErrors.slug}</p>}
             </div>

@@ -13,7 +13,7 @@ interface HelpTopic {
   answer: string;
 }
 
-/** GET /content/help-topics is public and role-agnostic — the same real
+/** GET /content/help-topics is public and role-agnostic, the same real
  * help_topics table the customer and agent FAQs read from (see
  * CustomerFAQ.tsx / agent-dashboard/AgentFAQ.tsx, which this mirrors).
  * No company-only backend work needed here. */

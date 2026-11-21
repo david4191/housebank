@@ -1,9 +1,9 @@
 # Deploying HouseBank's frontend
 
-This is a Vite/React SPA. There's no Node process for this half —
+This is a Vite/React SPA. There's no Node process for the frontend.
 `npm run build` produces a static `dist/` folder that cPanel serves as
-plain files (Apache/LiteSpeed), same as any HTML site. The backend
-(`hb-backend`) is a separate Node app — see its own `docs/DEPLOYMENT.md`.
+plain files (Apache/LiteSpeed), like any HTML site. The backend
+(`hb-backend`) is a separate Node app. See its `docs/DEPLOYMENT.md`.
 
 ## Vercel deployment
 
@@ -35,11 +35,11 @@ npm install
 npm run build
 ```
 
-Output is `dist/` — everything inside it is what gets uploaded, the
-`dist` folder name itself doesn't matter to the server.
+Output is `dist/`. Upload its contents; the folder name itself doesn't
+matter to the server.
 
 This also bundles `public/.htaccess` (already in this repo) into
-`dist/.htaccess` automatically — that file is what makes React Router's
+`dist/.htaccess` automatically. That file makes React Router's
 client-side routes (e.g. a direct visit or refresh on `/explore` or
 `/agent/dashboard`) work on Apache instead of 404ing. Confirm it's
 present after the build:
@@ -52,7 +52,7 @@ ls -la dist/.htaccess
 
 Decide the domain/subdomain this frontend will answer on (e.g. your
 main domain, or a `test.yourdomain.com` subdomain while you're
-verifying features first) — cPanel → **Domains** (or **Subdomains**) →
+verifying features first), cPanel → **Domains** (or **Subdomains**) →
 create it if it doesn't exist yet, and note the **document root** cPanel
 assigns it (often `public_html` for the main domain, or
 `public_html/test` for a subdomain).
@@ -82,23 +82,22 @@ default cPanel page, remove it first so it doesn't collide.
 `public/robots.txt` and `public/sitemap.xml` (source files, copied
 verbatim into every `dist/`) both still contain the placeholder
 `https://YOUR-DOMAIN-HERE`. Replace it with your real domain and rebuild
-before this goes live for real — harmless while you're just testing on
-a subdomain, but wrong URLs in a sitemap you submit to Google are worse
-than no sitemap.
+before launch. The placeholder is harmless while testing on a subdomain,
+but wrong URLs in a sitemap submitted to Google are worse than no sitemap.
 
 ## 5. Verify
 
-- Visit the domain — the homepage should load.
+- Visit the domain, the homepage should load.
 - Manually type a deep URL in the address bar (not a link click), e.g.
   `https://yourdomain.com/explore`, and refresh it. If you get an Apache
   404 instead of the app, `.htaccess` didn't upload or `mod_rewrite`
-  isn't enabled on your hosting plan (contact Namecheap support for the
-  latter — it's standard on shared hosting but occasionally needs
+  isn't enabled on your hosting plan. Contact Namecheap support if needed;
+  rewrite support is standard on shared hosting but occasionally needs
   enabling).
 - Open the browser console on any page that hits the API (e.g. sign in)
   and confirm requests go to `https://api.yourdomain.com/...`, not
   `localhost`. If you see `localhost:3001`, step 0 was skipped or
-  `.env.production.local` has a typo — rebuild.
+  `.env.production.local` has a typo, rebuild.
 - Confirm CORS works end to end: a failed request that never reaches
   the Network tab with a response, only a CORS error in the console,
   means the backend's `FRONTEND_URL` env var (backend `docs/DEPLOYMENT.md`
@@ -107,6 +106,6 @@ than no sitemap.
 
 ## Redeploying later
 
-Same three commands — rebuild, then re-upload `dist/`'s contents over
-the old ones. `.htaccess` ships with every build automatically since
-it's fixed in `public/`, so you won't lose it.
+Use the same three commands: rebuild, then re-upload `dist/`'s contents
+over the old ones. `.htaccess` ships with every build automatically
+because it's fixed in `public/`.

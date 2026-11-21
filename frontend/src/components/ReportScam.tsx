@@ -77,7 +77,7 @@ const ReportScamContent = () => {
       <div className="min-h-screen bg-gray-50 py-12 flex items-center justify-center">
         <div className="max-w-md mx-auto px-6 text-center bg-white rounded-2xl shadow-sm p-10">
           <h1 className="text-2xl font-bold text-gray-900 mb-3">Report submitted</h1>
-          <p className="text-gray-600">Thank you — your report has been sent to our team for review.</p>
+          <p className="text-gray-600">Thank you, your report has been sent to our team for review.</p>
         </div>
       </div>
     );

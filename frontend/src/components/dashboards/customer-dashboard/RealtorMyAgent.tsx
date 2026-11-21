@@ -1,3 +1,4 @@
+import { getMediaUrl } from '../../../utils/mediaUrl.ts';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, MessageCircle, Phone, Building2 } from 'lucide-react';
@@ -5,8 +6,7 @@ import CustomerHeader from './CustomerHeader';
 import { useGetMyContactsQuery } from '../../../redux/housebank.ts';
 
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 function initialsFor(name: string | undefined | null) {
@@ -78,7 +78,7 @@ const AgentManagementPage = () => {
           ) : list.length === 0 ? (
             <div className="bg-white rounded-lg shadow-sm p-8 text-center text-gray-500">
               You haven't dealt with a realtor or company yet. Booking a property viewing is what starts that
-              relationship — once a realtor or company has a property you've viewed, bought, rented, or invested in,
+              relationship, once a realtor or company has a property you've viewed, bought, rented, or invested in,
               they'll show up here and you'll be able to message them directly.
             </div>
           ) : filtered.length === 0 ? (

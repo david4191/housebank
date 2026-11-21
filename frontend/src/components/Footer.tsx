@@ -26,7 +26,7 @@ const Footer = () => {
       return;
     }
 
-    setFeedback({ type: 'success', text: "You're subscribed — thanks!" });
+    setFeedback({ type: 'success', text: "You're subscribed. Thanks!" });
     setEmail('');
   };
 

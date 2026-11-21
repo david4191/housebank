@@ -80,7 +80,7 @@ const ReportConcernContent = () => {
         <div className="max-w-md mx-auto px-6 text-center bg-white rounded-2xl p-10 border border-gray-100">
           <h1 className="text-2xl font-bold text-gray-900 mb-3">Report submitted</h1>
           <p className="text-gray-600">
-            Thank you — your report has been sent
+            Thank you, your report has been sent
             {matchedCompany ? ` to ${matchedCompany.company_name} and our team` : ' to our team'} for review.
           </p>
         </div>
@@ -200,7 +200,7 @@ const ReportConcernContent = () => {
                 </datalist>
                 {formData.companyName && !matchedCompany && (
                   <p className="text-xs text-gray-500">
-                    We couldn't match this to a registered company — your report will still be sent to our team.
+                    We couldn't match this to a registered company, your report will still be sent to our team.
                   </p>
                 )}
               </div>

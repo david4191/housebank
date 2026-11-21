@@ -18,7 +18,7 @@ type NotificationCategory = 'all' | 'property' | 'realtor' | 'transaction';
 
 /**
  * Notification `type` is a free-form string set by whatever backend
- * module creates it (see hb-backend/src/models/Notification.js) — today
+ * module creates it (see hb-backend/src/models/Notification.js), today
  * only 'investment' exists, but property/realtor-related types are
  * expected as more modules land. This buckets a real type string into
  * one of the page's tabs without assuming an exact fixed vocabulary.
@@ -120,7 +120,7 @@ const NotificationPage = () => {
               }}
             />
 
-            {/* Filter Dropdown — the only real filter the API supports today is
+            {/* Filter Dropdown, the only real filter the API supports today is
                 unread-only, so that's the only option offered here. */}
             {showFilterDropdown && (
               <div className="absolute top-full mt-2 right-0 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-10">

@@ -8,7 +8,7 @@ import { useGetInviteByTokenQuery } from '../redux/housebank.ts';
 import { AuthFieldError, AuthFormNotice } from '../components/AuthFormFeedback.tsx';
 
 /**
- * Realtor onboarding — Joan, Sep 2026: "since its the company that adds
+ * Realtor onboarding, Joan, Sep 2026: "since its the company that adds
  * the realtors email, and they go on to click on the onboarding link
  * and do their registration, remove the realtor sign up page. let it
  * be strictly on invitation... once they are invited, they should get
@@ -21,7 +21,7 @@ import { AuthFieldError, AuthFormNotice } from '../components/AuthFormFeedback.t
  * their email matched (see SignUpBuyer.tsx, now retired). This page is
  * reached only via a unique link emailed to the invited address
  * (company-agents.routes.js's POST / sends it), and the link itself is
- * the proof of invitation — the email field below is locked to the
+ * the proof of invitation, the email field below is locked to the
  * invited address rather than left open, so the account that actually
  * gets created can't drift from who the company meant to invite.
  */
@@ -126,7 +126,7 @@ export default function RealtorOnboarding() {
   }
 
   // Honest dead end for an unknown, already-used, revoked, or expired
-  // token — same "don't invent a page that isn't real" rule this
+  // token, same "don't invent a page that isn't real" rule this
   // codebase follows everywhere else, rather than silently falling
   // through to a blank or broken form.
   if (isError || !invite) {
@@ -148,7 +148,7 @@ export default function RealtorOnboarding() {
   return (
     <div className={authContainerStyle}>
       <Seo title="Complete Your Registration" description="Complete your realtor onboarding on HouseBank." noindex />
-      <AuthTitle headerText="Complete Your Registration" subtitle="Have an account?" linkText="Sign In" linkTo="/signin" />
+      <AuthTitle headerText="Complete Your Registration" subtitle="You don't have an account?" linkText="Sign In" linkTo="/signin" />
 
       <div className="mb-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3">
         <p className="text-sm text-gray-700">
@@ -182,7 +182,7 @@ export default function RealtorOnboarding() {
             disabled
           />
           <p className="mt-1 text-xs text-gray-500">
-            Locked to the email {invite.company_name} invited — contact them if this isn't right.
+            Locked to the email {invite.company_name} invited, contact them if this isn't right.
           </p>
         </div>
 

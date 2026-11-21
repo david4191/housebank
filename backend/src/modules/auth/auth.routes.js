@@ -249,16 +249,16 @@ router.post(
   })
 );
 
-/** POST /auth/signin — Body: { userName, password }. `userName` accepts an email or phone. */
+/** POST /auth/signin — Body: { userName, password }. `userName` must be an email address. */
 router.post(
   '/signin',
   enforce(byIp, 100, 900, 'Too many sign-in attempts from this network. Please try again later.'),
   wrap(async (req, res) => {
     const v = new Validator(req.body);
-    v.required('userName').required('password');
+    v.required('userName', 'Email').email('userName').required('password');
     if (v.fails()) return response.validationError(res, v.errors());
 
-    const user = await User.findByIdentifier(String(req.body.userName));
+    const user = await User.findByEmail(String(req.body.userName).trim().toLowerCase());
 
     if (!user) {
       await new Promise((r) => setTimeout(r, 100 + Math.random() * 150));

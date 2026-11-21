@@ -1,3 +1,4 @@
+import { getMediaUrl } from '../../../../utils/mediaUrl.ts';
 import { Link } from 'react-router-dom';
 import { Plus, Eye, Home, CheckCircle2 } from 'lucide-react';
 import CustomerHeader from './CustomerHeader';
@@ -9,12 +10,11 @@ function formatNaira(value: number | string | undefined | null) {
 }
 
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 function formatDate(iso: string | null | undefined) {
-  if (!iso) return '—';
+  if (!iso) return '-';
   return new Date(iso.replace(' ', 'T') + 'Z').toLocaleDateString('en-GB', {
     day: '2-digit', month: 'short', year: 'numeric',
   });
@@ -27,7 +27,7 @@ const listingTypeLabel: Record<string, string> = {
 };
 
 /** Same note as PendingProperties.tsx: not linked from anywhere in the
- * app today — /agent/properties' own "Approved" tab covers this — but
+ * app today, /agent/properties' own "Approved" tab covers this, but
  * kept on real data rather than fake, in case it gets linked directly. */
 const AgentApprovedProperties = () => {
   const { data: properties, isLoading } = useGetMyPropertiesQuery({ status: 'approved' });

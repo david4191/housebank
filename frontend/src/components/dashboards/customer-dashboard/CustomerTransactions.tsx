@@ -15,7 +15,7 @@ function formatDate(value: string | undefined | null) {
   return d.toLocaleDateString('en-NG', { year: 'numeric', month: 'short', day: 'numeric' });
 }
 
-// transactions.type is a fixed backend ENUM — label it for humans rather
+// transactions.type is a fixed backend ENUM, label it for humans rather
 // than showing the raw snake_case value.
 const TYPE_LABEL: Record<string, string> = {
   property_purchase: 'Buy',
@@ -151,7 +151,7 @@ const TransactionPage = () => {
           ) : filteredTransactions.length === 0 ? (
             <div className="p-8 text-center text-gray-500">
               {transactions.length === 0
-                ? "No transactions yet — they'll show up here once a purchase, rental, or investment is recorded."
+                ? "No transactions yet. They'll show up here once a purchase, rental, or investment is recorded."
                 : 'No transactions match your search/filter.'}
             </div>
           ) : (

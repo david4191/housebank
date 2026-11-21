@@ -1,4 +1,5 @@
 // src/components/dashboards/company-dashboard/CompanyCustomer.tsx
+import { getMediaUrl } from '../../../utils/mediaUrl.ts';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, MessageSquare, Users } from 'lucide-react';
@@ -6,8 +7,7 @@ import CustomerHeader from './CustomerHeader';
 import { useGetMyContactsQuery } from '../../../redux/housebank.ts';
 
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 function initialsFor(name: string | undefined | null) {
@@ -18,7 +18,7 @@ function initialsFor(name: string | undefined | null) {
 }
 
 function formatDate(iso: string | null | undefined) {
-  if (!iso) return '—';
+  if (!iso) return '-';
   return new Date(iso.replace(' ', 'T') + 'Z').toLocaleDateString('en-GB', {
     day: '2-digit', month: 'short', year: 'numeric',
   });
@@ -28,13 +28,13 @@ function formatDate(iso: string | null | undefined) {
  * The old page was 7 hardcoded "Wade Warren"/"Cameron Williamson"-style
  * rows with a fake "Category" (Buyer/Renter/Investor), a fake
  * "Total Transaction" string, a fake "Contact Realtor" avatar, and a
- * fake Active/Inactive status — none of which exist in the schema, plus
+ * fake Active/Inactive status, none of which exist in the schema, plus
  * a 5-page pager over 7 rows.
  *
  * This is now real: GET /contacts/mine (Contact.forLister) already
- * scopes to the whole company when the caller is a company account —
+ * scopes to the whole company when the caller is a company account,
  * anyone who's viewed, bought, or rented a property listed by the
- * company itself or by any agent on its roster — the same endpoint the
+ * company itself or by any agent on its roster, the same endpoint the
  * agent dashboard's Customers page uses. "Message" opens a real
  * conversation via /company/messages.
  */
@@ -93,7 +93,7 @@ const CompanyManageCustomers = () => {
                 <Users className="w-8 h-8 text-gray-300 mx-auto mb-2" />
                 <p className="text-sm text-gray-500">
                   {rows.length === 0
-                    ? "No customers yet — they'll show up here once someone views, buys, or rents a property listed by your company or your roster."
+                    ? "No customers yet. They'll show up here once someone views, buys, or rents a property listed by your company or your roster."
                     : 'No customers match your search.'}
                 </p>
               </div>
@@ -123,11 +123,11 @@ const CompanyManageCustomers = () => {
                             </div>
                           </td>
                           <td className="px-6 py-4">
-                            <span className="text-sm text-gray-700">{customer.email || '—'}</span>
+                            <span className="text-sm text-gray-700">{customer.email || '-'}</span>
                           </td>
                           <td className="px-6 py-4">
                             <span className="text-sm text-gray-700 max-w-xs block truncate" title={(customer.properties || []).join(', ')}>
-                              {(customer.properties || []).join(', ') || '—'}
+                              {(customer.properties || []).join(', ') || '-'}
                             </span>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">

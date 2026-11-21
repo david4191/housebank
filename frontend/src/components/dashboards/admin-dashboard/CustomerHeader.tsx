@@ -1,3 +1,4 @@
+import { getMediaUrl } from '../../../utils/mediaUrl.ts';
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Bell, ChevronDown, ExternalLink, LogOut, Search, Settings } from "lucide-react";
@@ -5,8 +6,7 @@ import useAuth from "../../../hooks/useAuth.tsx";
 import { useGetAdminNotificationsQuery, useGetMyProfileQuery } from "../../../redux/housebank.ts";
 
 function avatarUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 /** Same header rebuild as the other three dashboards' CustomerHeader.tsx
@@ -70,7 +70,7 @@ const CustomerHeader = () => {
     ? ROLE_LABELS[auth.user.role] ?? (auth.user.role.charAt(0).toUpperCase() + auth.user.role.slice(1))
     : "Admin";
 
-  // Migration 014 — admin's own avatar, stored on users.avatar_path
+  // Migration 014, admin's own avatar, stored on users.avatar_path
   // since (unlike every other role) admin has no profile table of its
   // own. Same GET /profile/me every role's header already reads, and
   // the same account-switch cache reset in AuthContext already clears
@@ -109,7 +109,7 @@ const CustomerHeader = () => {
         </div>
 
         <div className="flex shrink-0 items-center gap-2 sm:gap-3 lg:gap-6" ref={controlsRef}>
-          {/* Search Bar — hidden on small screens; doesn't filter anything
+          {/* Search Bar, hidden on small screens; doesn't filter anything
               yet, so it stays out of the way on mobile rather than eating
               the whole row. */}
           <div className="relative hidden md:block">
@@ -121,7 +121,7 @@ const CustomerHeader = () => {
             />
           </div>
 
-          {/* Language Selector — only English is actually supported today;
+          {/* Language Selector, only English is actually supported today;
               honest about that rather than pretending to switch languages. */}
           <div className="relative hidden sm:block">
             <button
@@ -146,7 +146,7 @@ const CustomerHeader = () => {
             )}
           </div>
 
-          {/* Notification Bell — real unread count + real list */}
+          {/* Notification Bell, real unread count + real list */}
           <div className="relative">
             <button
               type="button"
@@ -197,7 +197,7 @@ const CustomerHeader = () => {
             )}
           </div>
 
-          {/* User Profile — real name/role/initials-avatar, real Log Out. */}
+          {/* User Profile, real name/role/initials-avatar, real Log Out. */}
           <div className="relative">
             <button
               type="button"

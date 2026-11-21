@@ -1,3 +1,4 @@
+import { getMediaUrl } from '../../../utils/mediaUrl.ts';
 import { useState } from 'react';
 import { Search, MoreVertical, X, Flag, ShieldOff, CheckCircle, XCircle, MessageSquareWarning } from 'lucide-react';
 import CustomerHeader from './CustomerHeader';
@@ -11,27 +12,18 @@ import {
   useResolveAppealMutation,
 } from '../../../redux/housebank.ts';
 
-/** property_images.file_path is stored (and returned by the API) already
- * as "uploads/<subfolder>/<file>" -- see hb-backend's
- * src/utils/fileUpload.js storeImage(). VITE_APP_BACKEND_HOST already
- * ends in "/", so this is a plain concatenation, not another "uploads/".
- * Same helper as every other property-image consumer in this codebase
- * (TopOffers, ExploreProperty, CompanyProperty, MyProperty, ...) --
- * this admin page was the one place still rendering the raw relative
- * path straight into <img src>, which resolves against the Vite dev
- * origin (5173) instead of the API origin and so never loads. */
+/** Resolve uploaded property images through the shared media URL helper. */
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Joan, Sep 2026: "admin/properties" was still static — a hardcoded
+// Joan, Sep 2026: "admin/properties" was still static, a hardcoded
 // PROPERTIES array plus an elaborate Sold/Rented/Investment mock (fake
 // payment progress, fake license numbers, Lorem Ipsum descriptions)
 // that was never wired to the real property_purchases/property_rentals/
 // investments tables at all. This rewrite drops that duplicate fake
-// system entirely — Sold and Rented are just two more real `status`
+// system entirely, Sold and Rented are just two more real `status`
 // values on the same properties table (Property.markSold/markRented
 // already flip them when a purchase/rental completes elsewhere), so
 // one real query with a status filter covers every tab honestly. Actual
@@ -39,7 +31,7 @@ function imageUrl(relativePath: string | null | undefined) {
 //
 // This also adds what Joan specifically asked for: "admin also can
 // manage properties, flag a property if theres an issue, block a
-// property in which the company will/must appeal" — Flag (soft, stays
+// property in which the company will/must appeal", Flag (soft, stays
 // live), Block (hard, drops out of public search until an appeal is
 // approved), and an Appeals queue to resolve them. See
 // hb-backend/src/modules/admin/admin.routes.js and
@@ -100,12 +92,12 @@ function formatMoney(price: string | number, currency: string) {
 }
 
 function formatDate(iso: string) {
-  if (!iso) return '—';
+  if (!iso) return '-';
   return new Date(iso.replace(' ', 'T') + 'Z').toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Reason modal — shared shape for Reject / Flag / Block
+// Reason modal, shared shape for Reject / Flag / Block
 // ─────────────────────────────────────────────────────────────────────────────
 const ReasonModal = ({
   title, description, actionLabel, actionColor, placeholder, onSubmit, onClose, submitting,
@@ -149,7 +141,7 @@ const ReasonModal = ({
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Property Details Modal — real data via GET /admin/properties/:id
+// Property Details Modal, real data via GET /admin/properties/:id
 // ─────────────────────────────────────────────────────────────────────────────
 const PropertyDetailsModal = ({ id, onClose }: { id: number; onClose: () => void }) => {
   const { data: prop, isLoading } = useGetAdminPropertyQuery(id);
@@ -206,7 +198,7 @@ const PropertyDetailsModal = ({ id, onClose }: { id: number; onClose: () => void
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-gray-50 rounded-xl p-4">
                 <h4 className="text-sm font-bold text-gray-900 mb-2">Listed By</h4>
-                <p className="text-sm text-gray-700">{prop.lister_name || '—'}</p>
+                <p className="text-sm text-gray-700">{prop.lister_name || '-'}</p>
                 <p className="text-xs text-gray-500">{prop.lister_phone || 'No phone on file'}</p>
               </div>
               <div className="bg-gray-50 rounded-xl p-4">
@@ -403,14 +395,14 @@ const AdminPropertyManagement = () => {
         ) : isLoading ? (
           <div className="bg-white rounded-xl border border-gray-100 p-8 text-center text-gray-500">Loading properties…</div>
         ) : error ? (
-          // Distinct from a genuinely empty result on purpose — a failed
+          // Distinct from a genuinely empty result on purpose, a failed
           // request (e.g. a database migration this page's columns
           // depend on not having been run yet) used to render as an
           // identical, silent "No properties in this view.", which is
           // exactly what a real bug looks like when nothing is wrong
           // with the data. This surfaces the real message instead.
           <div className="bg-white rounded-xl border border-red-200 p-8 text-center text-red-600">
-            Couldn't load properties — {(error as any)?.data?.message || (error as any)?.message || 'a server error occurred'}.
+            Couldn't load properties, {(error as any)?.data?.message || (error as any)?.message || 'a server error occurred'}.
             {(error as any)?.status === 500 && ' This usually means a database migration this page depends on hasn\'t been run yet.'}
           </div>
         ) : items.length === 0 ? (
@@ -443,8 +435,8 @@ const AdminPropertyManagement = () => {
                         {p.flagged_at && <Flag className="w-3.5 h-3.5 text-orange-500 flex-shrink-0" />}
                       </button>
                     </td>
-                    <td className="px-6 py-4 text-gray-600">{p.company_name || '—'}</td>
-                    <td className="px-6 py-4 text-gray-600">{p.lister_name || '—'}</td>
+                    <td className="px-6 py-4 text-gray-600">{p.company_name || '-'}</td>
+                    <td className="px-6 py-4 text-gray-600">{p.lister_name || '-'}</td>
                     <td className="px-6 py-4 text-gray-700 font-medium">{formatMoney(p.price, p.currency)}</td>
                     <td className="px-6 py-4 text-gray-500">{formatDate(p.created_at)}</td>
                     <td className="px-6 py-4"><StatusBadge status={p.status} /></td>
@@ -461,7 +453,7 @@ const AdminPropertyManagement = () => {
                             View Details
                           </button>
                           {p.status === 'pending_company_review' && (
-                            <p className="px-4 py-2 text-xs text-gray-400">Awaiting the listing company's own review — not admin's to approve.</p>
+                            <p className="px-4 py-2 text-xs text-gray-400">Awaiting the listing company's own review, not admin's to approve.</p>
                           )}
                           {p.status !== 'blocked' && p.status !== 'pending_company_review' && (
                             p.flagged_at ? (
@@ -489,7 +481,7 @@ const AdminPropertyManagement = () => {
                             </button>
                           )}
                           {p.status === 'blocked' && (
-                            <p className="px-4 py-2 text-xs text-gray-400">Blocked — resolve via the Appeals tab once the company appeals.</p>
+                            <p className="px-4 py-2 text-xs text-gray-400">Blocked, resolve via the Appeals tab once the company appeals.</p>
                           )}
                         </div>
                       )}

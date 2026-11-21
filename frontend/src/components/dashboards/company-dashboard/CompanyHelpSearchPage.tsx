@@ -7,7 +7,7 @@ interface CompanyHelpSearchProps {
   onSubmit: () => void;
 }
 
-/** Company-dashboard mirror of agent-dashboard/AgentHelpSearchPage.tsx —
+/** Company-dashboard mirror of agent-dashboard/AgentHelpSearchPage.tsx,
  * same hero search bar, reused verbatim aside from the component name. */
 const CompanyHelpSearch = ({ greetingName, value, onChange, onSubmit }: CompanyHelpSearchProps) => {
   const handleSearch = (e: React.FormEvent) => {

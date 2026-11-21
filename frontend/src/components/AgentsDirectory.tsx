@@ -1,11 +1,11 @@
+import { getMediaUrl } from '../utils/mediaUrl.ts';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Building2, MapPin, Search, ShieldCheck, Star, User } from 'lucide-react';
 import { useGetPublicAgentsQuery, useGetPublicCompaniesQuery } from '../redux/housebank.ts';
 
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 function initialsFor(name: string) {

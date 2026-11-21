@@ -68,8 +68,9 @@ Body: `{ userId, purpose }` — `signup_verification` or `password_reset`.
 Rate-limited. Always returns a generic success message.
 
 ### `POST /auth/signin`
-Body: `{ userName, password }` — `userName` accepts an email **or** a
-phone number (kept as `userName` to match `AuthContext.tsx`'s existing contract).
+Body: `{ userName, password }` — `userName` must be an email address. The
+`userName` key is retained for compatibility with the frontend's existing API
+payload.
 Browser response `200`: `{ user }`. Sets the HttpOnly access and refresh cookies.
 Requests without an `Origin` header receive `{ token, refreshToken, user }`
 for non-browser API clients.

@@ -32,7 +32,7 @@ export interface HouseBankUser {
   [key: string]: any;
 }
 
-/** Where each role lands after signing in / verifying — used by SignIn, OTPVerification, etc. */
+/** Where each role lands after signing in / verifying, used by SignIn, OTPVerification, etc. */
 export function roleHomePath(role?: HouseBankRole | string) {
   switch (role) {
     case 'agent':
@@ -76,7 +76,7 @@ interface AuthContextType {
     | { ok: false; message: string; requiresVerification?: boolean; userId?: number }
     | { ok: false; requires2fa: true; pendingToken: string }
   >;
-  // Second half of signing in when login() comes back with requires2fa —
+  // Second half of signing in when login() comes back with requires2fa,
   // pendingToken proves the password was just verified, code is the emailed
   // 6-digit code or a recovery code.
   verifyTwoFactorLogin: (
@@ -102,10 +102,10 @@ interface AuthContextType {
     newPassword: string
   ) => Promise<{ ok: true } | { ok: false; message: string }>;
   // Re-syncs the cached user object from the server (e.g. after toggling
-  // 2FA in Settings) without a full re-login — the token/refresh token
+  // 2FA in Settings) without a full re-login, the token/refresh token
   // don't change, only what's cached about the user.
   refreshUser: () => Promise<HouseBankUser | null>;
-  // Self-service password change (any role) — requires the current
+  // Self-service password change (any role), requires the current
   // password, issues a fresh token pair for THIS session (every other
   // session gets signed out server-side), so calling this does not log
   // the caller out the way resetPassword()'s forgot-password flow does.
@@ -159,7 +159,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const err: any = 'error' in result ? result.error : null;
     // The backend nests these two under `errors` (see hb-backend's
     // src/utils/response.js: the 4th arg to error() always lands in the
-    // `errors` field, not spread onto the envelope's top level) — reading
+    // `errors` field, not spread onto the envelope's top level), reading
     // err.requires_verification directly was always undefined, which
     // silently broke the redirect to the OTP screen for any unverified
     // account trying to sign in.
@@ -171,7 +171,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
   };
 
-  // Signup does NOT log the user in — an email OTP has to be verified first
+  // Signup does NOT log the user in, an email OTP has to be verified first
   // (see hb-backend/docs/API_CONTRACT.md). Callers should route to the OTP
   // screen with the returned userId.
   const register: AuthContextType['register'] = async (payload) => {
@@ -225,7 +225,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if ('data' in result && result.data) {
       const refreshed = result.data as HouseBankUser;
       // Only re-syncs the cached user object (e.g. two_factor_enabled after
-      // a Settings change) — the active token/refresh token are untouched.
+      // a Settings change), the active token/refresh token are untouched.
       const rememberMe = localStorage.getItem(REMEMBER_SESSION_KEY) === '1';
       cookieManager.set(USER_COOKIE, refreshed, {
         path: '/',
@@ -268,7 +268,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await logoutUser();
     } finally {
       // Always clear the local session, even if the network call fails
-      // (expired token, offline, etc.) — the user clicked "log out",
+      // (expired token, offline, etc.), the user clicked "log out",
       // staying signed in locally would be the wrong failure mode.
       clearAuthCookies();
       resetApiCache();

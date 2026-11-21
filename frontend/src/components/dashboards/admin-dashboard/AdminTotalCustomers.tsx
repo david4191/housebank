@@ -1,4 +1,5 @@
 // src/components/dashboards/admin-dashboard/AdminTotalCustomers.tsx
+import { getMediaUrl } from '../../../utils/mediaUrl.ts';
 import { useState } from 'react';
 import { Search, User as UserIcon, ShieldOff, ShieldCheck } from 'lucide-react';
 import CustomerHeader from './CustomerHeader';
@@ -34,15 +35,14 @@ const ACCOUNT_LABEL: Record<string, string> = {
 };
 
 function formatDate(iso: string | null | undefined) {
-  if (!iso) return '—';
+  if (!iso) return '-';
   return new Date(iso.replace(' ', 'T') + 'Z').toLocaleDateString('en-GB', {
     day: '2-digit', month: 'short', year: 'numeric',
   });
 }
 
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 type Tab = 'all' | 'active' | 'pending_verification' | 'suspended' | 'banned';
@@ -163,8 +163,8 @@ const AdminTotalCustomers = () => {
                           </div>
                         </td>
                         <td className="px-6 py-4 text-gray-500 text-xs">{c.email}</td>
-                        <td className="px-6 py-4 text-gray-600 text-xs">{c.phone || '—'}</td>
-                        <td className="px-6 py-4 text-gray-600 text-xs">{location || '—'}</td>
+                        <td className="px-6 py-4 text-gray-600 text-xs">{c.phone || '-'}</td>
+                        <td className="px-6 py-4 text-gray-600 text-xs">{location || '-'}</td>
                         <td className="px-6 py-4 text-gray-700 font-medium text-center">{c.purchase_count}</td>
                         <td className="px-6 py-4 text-gray-700 font-medium text-center">{c.rental_count}</td>
                         <td className="px-6 py-4 text-gray-700 font-medium text-center">{c.investment_count}</td>

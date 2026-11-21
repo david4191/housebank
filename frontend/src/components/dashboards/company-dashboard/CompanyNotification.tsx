@@ -12,7 +12,7 @@ type NotificationCategory = 'all' | 'property' | 'realtor' | 'transaction';
 
 /**
  * Notification `type` is a free-form string set by whatever backend
- * module creates it (see hb-backend/src/models/Notification.js) — this
+ * module creates it (see hb-backend/src/models/Notification.js), this
  * buckets a real type string into one of the page's tabs without
  * assuming an exact fixed vocabulary, same approach as
  * customer-dashboard/NotificationPage.tsx, which this page mirrors.
@@ -41,13 +41,13 @@ function timeAgo(isoLike: string) {
  * actually happened on the account, with a fake per-row "read" state
  * that reset on every reload.
  *
- * This is the real thing — same GET /notifications backend every role
+ * This is the real thing, same GET /notifications backend every role
  * already uses, just like customer-dashboard/NotificationPage.tsx,
  * which this mirrors field-for-field. "Realtor Request" (the old tab
  * name) is renamed "Realtor Activities" to match the customer version
  * rather than implying an approval queue that doesn't exist; the old
  * "Client Request" tab is dropped in favor of "Transaction" since
- * nothing in the schema models a distinct "client request" — the real
+ * nothing in the schema models a distinct "client request", the real
  * events HouseBank tracks land in Transaction/Property/Realtor.
  */
 const CompanyNotifications = () => {

@@ -1,10 +1,10 @@
+import { getMediaUrl } from '../../../utils/mediaUrl.ts';
 import { useRef, useState } from 'react';
 import { User as UserIcon } from 'lucide-react';
 import { useGetMyProfileQuery, useUploadMyAvatarMutation } from '../../../redux/housebank.ts';
 
 function avatarUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 const MAX_BYTES = 5 * 1024 * 1024;
@@ -14,7 +14,7 @@ const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
  * Self-contained profile-picture uploader. Reads the current avatar off
  * GET /profile/me and posts a new one to POST /profile/me/avatar itself
  * (both requests carry the caller's own auth token), so any settings
- * page — customer, agent, or company — can drop this in with zero
+ * page, customer, agent, or company, can drop this in with zero
  * props; the backend resolves which profile table's avatar_path/
  * logo_path to write from the caller's role.
  */

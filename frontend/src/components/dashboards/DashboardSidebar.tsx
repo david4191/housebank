@@ -126,7 +126,7 @@ const DashboardSidebar = ({ userRole = 'customer', onMenuClick }: DashboardSideb
   // Self-contained, unlike the regular nav items above: Log Out and Get
   // Pro are rendered on every page that uses this sidebar (every role,
   // every route), but only one page ever passed an onMenuClick handler
-  // that actually did something with them — everywhere else, clicking
+  // that actually did something with them, everywhere else, clicking
   // either button silently did nothing. Handling both directly here
   // fixes it everywhere at once instead of patching each page.
   const handleLogout = async () => {
@@ -149,7 +149,7 @@ const DashboardSidebar = ({ userRole = 'customer', onMenuClick }: DashboardSideb
         {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
       </button>
 
-      {/* Backdrop, mobile only — tapping outside the open drawer closes it */}
+      {/* Backdrop, mobile only, tapping outside the open drawer closes it */}
       {mobileOpen && (
         <div
           className="md:hidden fixed inset-0 bg-black/40 z-30"
@@ -224,7 +224,7 @@ const DashboardSidebar = ({ userRole = 'customer', onMenuClick }: DashboardSideb
         </div>
       </div>
 
-      {/* Coming Soon modal — deliberately a sibling of the drawer above,
+      {/* Coming Soon modal, deliberately a sibling of the drawer above,
           not nested inside it: the drawer carries a CSS transform for
           the slide animation, and a `transform` on an ancestor changes
           the containing block for any `position: fixed` descendant. Left
@@ -246,7 +246,7 @@ const DashboardSidebar = ({ userRole = 'customer', onMenuClick }: DashboardSideb
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Dabang Pro is coming soon</h3>
             <p className="text-sm text-gray-500 mb-6">
-              We're still building out Pro features. There's nothing to upgrade to yet — check back soon.
+              We're still building out Pro features. There's nothing to upgrade to yet, check back soon.
             </p>
             <button
               type="button"

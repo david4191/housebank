@@ -1,3 +1,4 @@
+import { getMediaUrl } from '../../../../utils/mediaUrl.ts';
 import { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { MapPin, Bed, Bath, Square, Eye, AlertTriangle, ArrowLeft } from 'lucide-react';
@@ -10,12 +11,11 @@ function formatNaira(value: number | string | undefined | null) {
 }
 
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 function formatDate(iso: string | null | undefined) {
-  if (!iso) return '—';
+  if (!iso) return '-';
   return new Date(iso.replace(' ', 'T') + 'Z').toLocaleDateString('en-GB', {
     day: '2-digit', month: 'short', year: 'numeric',
   });
@@ -33,16 +33,16 @@ const statusColor: Record<string, string> = {
 
 const statusExplainer: Record<string, string> = {
   pending: "Submitted and waiting on admin review. It won't show up in public search until it's approved.",
-  approved: "Live — this listing is visible in public search results.",
+  approved: "Live. This listing is visible in public search results.",
   rejected: 'An admin reviewed and rejected this listing. See the reason below.',
   sold: 'Marked sold. No longer visible in public search.',
   rented: 'Marked rented. No longer visible in public search.',
-  draft: "Saved as a draft — hasn't been submitted for review yet.",
+  draft: "Saved as a draft. It hasn't been submitted for review yet.",
   archived: 'Archived. No longer visible in public search.',
 };
 
 /**
- * The one real, canonical agent property-detail page — :id-parameterized,
+ * The one real, canonical agent property-detail page, :id-parameterized,
  * replacing three fragmented, non-:id fake pages (a fake "Earnings" view,
  * a fake page with invented messages/reviews/lease-progress, and a fake
  * rejection view) plus a fourth fake rent-specific one, none of which
@@ -51,10 +51,10 @@ const statusExplainer: Record<string, string> = {
  * Deliberately property-centric rather than customer-centric: an agent
  * manages the properties of customers they're assigned to, not a roster
  * of customers in the abstract, so there's no invented "customer" or
- * "reviews" panel here — just the real state of the listing itself
+ * "reviews" panel here, just the real state of the listing itself
  * (status, why it was rejected if it was, how many people have viewed
- * it) via GET /properties/mine/:id, which — unlike the public property
- * endpoint — returns the owner's own listing regardless of status.
+ * it) via GET /properties/mine/:id, which, unlike the public property
+ * endpoint, returns the owner's own listing regardless of status.
  */
 const AgentPropertyDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -218,7 +218,7 @@ const AgentPropertyDetailPage = () => {
             </div>
           </div>
 
-          {/* Right column — listing facts, nothing invented */}
+          {/* Right column, listing facts, nothing invented */}
           <div className="space-y-6">
             <div className="bg-white rounded-xl p-6 border border-gray-200">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Listing Info</h3>
@@ -229,7 +229,7 @@ const AgentPropertyDetailPage = () => {
                 </div>
                 <div className="flex justify-between">
                   <dt className="text-gray-500">Category</dt>
-                  <dd className="text-gray-900">{property.property_type_name || '—'}</dd>
+                  <dd className="text-gray-900">{property.property_type_name || '-'}</dd>
                 </div>
                 <div className="flex justify-between">
                   <dt className="text-gray-500">Listed on</dt>

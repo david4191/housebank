@@ -17,7 +17,7 @@ export default function HomePage() {
     <div
       className={`${mode} w-full mx-auto h-[100vh] bg-[color:var(--color-bg)] font-poppins`}
     >
-      <Seo description="Find verified properties to buy or rent, and real estate investment opportunities — all in one place with HouseBank." path="/" />
+      <Seo description="Find verified properties to buy or rent, and real estate investment opportunities, all in one place with HouseBank." path="/" />
       <Header />
       <MainContent />
       <TopOffers />

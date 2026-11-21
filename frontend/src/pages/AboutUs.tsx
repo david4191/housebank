@@ -17,7 +17,7 @@ export default function AboutUs() {
       <div
         className={`${mode} w-full mx-auto h-[100vh] bg-[color:var(--color-bg)] font-poppins`}
       >
-        <Seo title="About Us" description="Learn about HouseBank — our mission, our approach to real estate, and why buyers, sellers, and investors trust us." path="/about-us" />
+        <Seo title="About Us" description="Learn about HouseBank, our mission, our approach to real estate, and why buyers, sellers, and investors trust us." path="/about-us" />
         <Header />
         <AboutSlide />
         <AboutCompany />

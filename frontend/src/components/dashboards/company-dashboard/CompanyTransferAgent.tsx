@@ -1,4 +1,5 @@
 // src/components/dashboards/company-dashboard/CompanyTransferAgent.tsx
+import { getMediaUrl } from '../../../utils/mediaUrl.ts';
 import { useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ChevronLeft, Search, Home, CheckCircle, Building2 } from 'lucide-react';
@@ -15,8 +16,7 @@ function formatNaira(value: number | string | undefined | null) {
 }
 
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 function initialsFor(name: string) {
@@ -48,16 +48,16 @@ const SuccessCard = ({
  * The old page was entirely fabricated: two hardcoded "Rendez House
  * Bay" property cards, five hardcoded agent names with randomuser.me
  * photos and made-up "N Properties" counts, and a form pre-filled with
- * "Ibrahim Haruna" and a fake license ID that submitted nothing —
+ * "Ibrahim Haruna" and a fake license ID that submitted nothing,
  * clicking "Transfer Property" just flipped local state to a canned
  * success screen no matter what was on the page.
  *
  * This is the real thing: pick from the company's actual listings
- * (properties/mine — the same roster-wide data CompanyProperty.tsx
+ * (properties/mine, the same roster-wide data CompanyProperty.tsx
  * uses), pick a real destination from the roster (or "Keep with
  * company"), and submit through the same
  * PATCH /properties/:id/reassign-agent endpoint CompanyAddproperty.tsx
- * already uses for the single-property assign step — this page is
+ * already uses for the single-property assign step, this page is
  * just the bulk, standalone version of that same capability. It's
  * reached either directly or via a "Transfer" action on a specific
  * roster agent's row in CompanyRealtor.tsx, which pre-filters "From"
@@ -294,7 +294,7 @@ const CompanyTransferAgent = () => {
               })}
               {agents.length === 0 && (
                 <p className="text-sm text-gray-400">
-                  No realtors on your roster yet — add one from Manage Realtors to transfer to a person.
+                  No realtors on your roster yet, add one from Manage Realtors to transfer to a person.
                 </p>
               )}
             </div>

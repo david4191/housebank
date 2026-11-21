@@ -1,11 +1,11 @@
+import { getMediaUrl } from '../utils/mediaUrl.ts';
 import modernApartments from '../assets/explore/modern-apartments.png';
 import commercialBuilding from '../assets/explore/commercial-building.png';
 import aerialNeighborhood from '../assets/explore/aerial-neighborhood.png';
 import { useGetPageContentQuery } from '../redux/housebank.ts';
 
 function imageUrl(path?: string | null) {
-  if (!path) return null;
-  return path.startsWith('http') ? path : `${import.meta.env.VITE_APP_BACKEND_HOST}${path}`;
+  return getMediaUrl(path);
 }
 
 const FALLBACK_IMAGES = [modernApartments, commercialBuilding, aerialNeighborhood];

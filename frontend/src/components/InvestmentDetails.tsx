@@ -1,3 +1,4 @@
+import { getMediaUrl } from '../utils/mediaUrl.ts';
 import { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { MapPin } from 'lucide-react';
@@ -35,8 +36,7 @@ function formatNaira(value: number | string | undefined | null) {
 }
 
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 function fundingPercent(opp: InvestmentOpportunityDetail) {
@@ -97,7 +97,7 @@ const InvestmentPropertyDetailPage = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
           <p className="text-gray-500">
-            This investment opportunity isn't available anymore — it may have closed or been taken down.
+            This investment opportunity isn't available anymore. It may have closed or been taken down.
           </p>
           <button
             onClick={() => navigate('/investment')}
@@ -139,7 +139,7 @@ const InvestmentPropertyDetailPage = () => {
       return;
     }
     setInvestSuccess(
-      "Your investment has been recorded and is pending payment confirmation. HouseBank doesn't do instant checkout — our team will follow up to complete payment before your investment goes active."
+      "Your investment has been recorded and is pending payment confirmation. HouseBank doesn't do instant checkout. Our team will follow up to complete payment before your investment goes active."
     );
   };
 
@@ -276,7 +276,7 @@ const InvestmentPropertyDetailPage = () => {
                 </button>
 
                 <p className="text-xs text-gray-500">
-                  HouseBank doesn't do instant checkout — this records your investment as pending payment
+                  HouseBank doesn't do instant checkout. This records your investment as pending payment
                   confirmation, not an instant purchase. Our team follows up to complete payment before it goes
                   active.
                 </p>
@@ -328,7 +328,7 @@ const InvestmentPropertyDetailPage = () => {
           {opp.company_name ? (
             <p>
               {opp.company_name}
-              {opp.company_address ? ` — ${opp.company_address}` : ''}
+              {opp.company_address ? `, ${opp.company_address}` : ''}
             </p>
           ) : (
             <p>This opportunity is listed by an independent realtor rather than a registered company.</p>

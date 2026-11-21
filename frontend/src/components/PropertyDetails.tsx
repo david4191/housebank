@@ -1,3 +1,4 @@
+import { getMediaUrl } from '../utils/mediaUrl.ts';
 import { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { MapPin, Bed, Bath, Square, Phone, MessageSquare, Heart, X, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -17,8 +18,7 @@ function formatNaira(value: number | string | undefined | null) {
 }
 
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 const listingTypeCta: Record<string, string> = {
@@ -69,6 +69,7 @@ const PropertyDetail = () => {
   const [formSuccess, setFormSuccess] = useState<string | null>(null);
   const [tourHighlight, setTourHighlight] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [showInvestModal, setShowInvestModal] = useState(false);
   const [investAmount, setInvestAmount] = useState('');
   const [investError, setInvestError] = useState<string | null>(null);
@@ -91,7 +92,7 @@ const PropertyDetail = () => {
 
   // The CTA and the Schedule-a-Tour card can end up side by side on a
   // wide desktop viewport (this is a 2-column grid, not stacked), so
-  // scrollIntoView alone is sometimes a silent no-op — nothing to
+  // scrollIntoView alone is sometimes a silent no-op, nothing to
   // scroll to because the target's already on screen (Joan, Sep 2026:
   // "when I click on rent now button, nothing happens"). This adds a
   // visible highlight flash every time, independent of whether a
@@ -153,17 +154,26 @@ const PropertyDetail = () => {
       setInvestError(err?.message || 'Unable to record your investment. Please try again.');
       return;
     }
-    setInvestSuccess('Your investment has been recorded — pending payment confirmation from our team.');
+    setInvestSuccess('Your investment has been recorded, pending payment confirmation from our team.');
   };
 
   // Computed ahead of the loading/error early-returns below so the
-  // lightbox keyboard effect (a hook — must run unconditionally on
+  // lightbox keyboard effect (a hook, must run unconditionally on
   // every render, same as any other hook) has a stable image count to
   // close over even while `property` is still undefined.
   const images: string[] = (property?.images || [])
     .map((img: any) => imageUrl(img.file_path))
     .filter((u: string | null): u is string => !!u);
   const imageCount = images.length;
+  const thumbnails = images
+    .map((src, index) => ({ src, index }))
+    .filter(({ index }) => index !== selectedImageIndex)
+    .slice(0, 3);
+  const additionalImageCount = images.length - thumbnails.length - 1;
+
+  useEffect(() => {
+    setSelectedImageIndex(0);
+  }, [id]);
 
   useEffect(() => {
     if (lightboxIndex === null || imageCount === 0) return;
@@ -185,7 +195,7 @@ const PropertyDetail = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
           <p className="text-gray-500">
-            This property isn't available anymore — it may have been sold, rented, or taken down.
+            This property isn't available anymore. It may have been sold, rented, or taken down.
           </p>
           <button
             onClick={() => navigate('/explore')}
@@ -205,7 +215,7 @@ const PropertyDetail = () => {
   // is a company listing, otherwise the individual agent who listed it.
   const messageTargetUserId = property.company_id ? property.company_user_id : property.listed_by_user_id;
   // Messaging is relationship-gated server-side (POST /messages 403's a
-  // "cold message" to a lister the customer has no real dealings with —
+  // "cold message" to a lister the customer has no real dealings with,
   // see messages.routes.js's assertCustomerCanMessage) -- booking a
   // viewing is what unlocks it, same as it would from "My Realtor".
   // existingViewing already reflects that on this page.
@@ -239,38 +249,45 @@ const PropertyDetail = () => {
             <div className="bg-white rounded-xl overflow-hidden border border-gray-200">
               {/* Main Image and Gallery */}
               {images.length > 0 ? (
-                <div className="grid grid-cols-2 gap-2 p-2">
-                  <div className="row-span-2">
-                    <button
+                <div className="grid gap-2 p-2 sm:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]">
+                  <button
                       type="button"
-                      onClick={() => setLightboxIndex(0)}
-                      className="relative h-[22rem] w-full bg-gray-200 rounded-lg overflow-hidden cursor-zoom-in group"
-                    >
-                      <img src={images[0]} alt={property.title} className="w-full h-full object-cover" />
+                      onClick={() => setLightboxIndex(selectedImageIndex)}
+                      aria-label={`View ${property.title} image full size`}
+                      className="group relative h-64 w-full cursor-zoom-in overflow-hidden rounded-lg bg-gray-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 sm:h-[22rem]"
+                  >
+                      <img
+                        src={images[selectedImageIndex] || images[0]}
+                        alt={`${property.title} main view`}
+                        className="h-full w-full object-cover"
+                      />
                       <div className="absolute top-3 left-3">
                         <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded">Available</span>
                       </div>
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
-                    </button>
-                  </div>
-                  <div className="grid grid-rows-3 gap-2">
-                    {images.slice(1, 4).map((src, i) => (
-                      <button
-                        type="button"
-                        key={i}
-                        onClick={() => setLightboxIndex(i + 1)}
-                        className="bg-gray-200 rounded-lg h-28 w-full overflow-hidden cursor-zoom-in group relative"
-                      >
-                        <img src={src} alt={`${property.title} view ${i + 2}`} className="w-full h-full object-cover" />
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
-                        {i === 2 && images.length > 4 && (
-                          <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-white text-sm font-medium">
-                            +{images.length - 4} more
-                          </div>
-                        )}
-                      </button>
-                    ))}
-                  </div>
+                  </button>
+
+                  {thumbnails.length > 0 && (
+                      <div className="grid grid-cols-3 gap-2 sm:min-h-[22rem] sm:grid-cols-1 sm:grid-rows-3">
+                        {thumbnails.map(({ src, index }, thumbnailIndex) => (
+                          <button
+                            type="button"
+                            key={index}
+                            onClick={() => setSelectedImageIndex(index)}
+                            aria-label={`Show ${property.title} image ${index + 1}`}
+                            className="group relative h-20 w-full overflow-hidden rounded-lg bg-gray-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 sm:h-auto"
+                          >
+                            <img src={src} alt={`${property.title} view ${index + 1}`} className="h-full w-full object-cover" />
+                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                            {thumbnailIndex === thumbnails.length - 1 && additionalImageCount > 0 && (
+                              <div className="absolute inset-0 flex items-center justify-center bg-black/50 text-sm font-medium text-white">
+                                +{additionalImageCount} more
+                              </div>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                  )}
                 </div>
               ) : (
                 <div className="p-8 text-center text-gray-500">No images uploaded for this property yet.</div>
@@ -351,8 +368,8 @@ const PropertyDetail = () => {
                 {wishlistError && <p role="alert" className="mt-3 text-sm text-red-600">{wishlistError}</p>}
                 <p className="text-xs text-gray-500 mt-3">
                   {property.listing_type === 'investment'
-                    ? "Investing here records your intent — it's confirmed once our team verifies payment, the same manual-confirm step every investment on HouseBank goes through."
-                    : "HouseBank doesn't do instant checkout — buying or renting starts with booking a viewing below. The sale itself is agreed and processed at the office."}
+                    ? "Investing here records your intent. Your investment is confirmed once our team verifies payment. Every investment on HouseBank goes through the same manual confirmation."
+                    : "HouseBank doesn't do instant checkout. Buying or renting starts with booking a viewing below. The sale itself is agreed and processed at the office."}
                 </p>
               </div>
             </div>

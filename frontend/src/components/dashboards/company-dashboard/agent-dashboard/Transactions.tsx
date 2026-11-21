@@ -1,3 +1,4 @@
+import { getMediaUrl } from '../../../../utils/mediaUrl.ts';
 import { useMemo, useState } from 'react';
 import { MoreVertical, Home } from 'lucide-react';
 import CustomerHeader from './CustomerHeader';
@@ -19,12 +20,11 @@ function formatNaira(value: number | string | undefined | null) {
 }
 
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 function formatDate(iso: string | null | undefined) {
-  if (!iso) return '—';
+  if (!iso) return '-';
   return new Date(iso.replace(' ', 'T') + 'Z').toLocaleDateString('en-GB', {
     day: '2-digit', month: 'short', year: 'numeric',
   });
@@ -53,7 +53,7 @@ const STATUS_STYLE: Record<string, string> = {
 type Row = AgentTransaction & { cover_image?: string | null };
 type FilterTab = 'all' | 'requests' | 'buy' | 'rent' | 'pending';
 
-/** Now linked from the agent sidebar as "Transactions" — this is where
+/** Now linked from the agent sidebar as "Transactions", this is where
  * an agent approves/declines customer Buy/Rent requests (the
  * "Requests" tab) and confirms payment on already-approved ones.
  * AgentRevenue.tsx covers the same underlying data with a chart on top. */

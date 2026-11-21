@@ -1,3 +1,4 @@
+import { getMediaUrl } from '../utils/mediaUrl.ts';
 import { Star } from 'lucide-react';
 import team1 from '../assets/about/team-1.png';
 import team2 from '../assets/about/team-2.png';
@@ -5,8 +6,7 @@ import team4 from '../assets/about/team-4.png';
 import { useGetTestimonialsQuery } from '../redux/housebank.ts';
 
 function avatarUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 // Used when a testimonial has no avatar_path -- cycled so a page of

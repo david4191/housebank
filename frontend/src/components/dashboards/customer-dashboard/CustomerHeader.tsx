@@ -1,3 +1,4 @@
+import { getMediaUrl } from '../../../utils/mediaUrl.ts';
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Bell, ChevronDown, ExternalLink, LogOut, Search, Settings } from "lucide-react";
@@ -10,17 +11,16 @@ import {
 } from "../../../redux/housebank.ts";
 
 function avatarUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 
-/** Closes an open dropdown on an outside click — the standard pattern
+/** Closes an open dropdown on an outside click, the standard pattern
  * for a hand-rolled menu with no UI library backing it. One shared ref
  * on the whole controls row (not one ref per dropdown) is required:
  * mousedown fires before click, so per-menu refs would see a click on
  * a SIBLING dropdown's own button/link as "outside my scope" and close
- * it mid-click — which is exactly what was breaking Settings/Log Out. */
+ * it mid-click, which is exactly what was breaking Settings/Log Out. */
 function useClickOutside(onOutside: () => void) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -107,7 +107,7 @@ const CustomerHeader = () => {
             />
           </div>
 
-          {/* Language Selector — only English is actually supported today;
+          {/* Language Selector, only English is actually supported today;
               this makes the control honest (it opens/closes and shows what's
               selected) rather than pretending to switch languages. */}
           <div className="relative hidden sm:block">

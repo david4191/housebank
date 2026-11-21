@@ -43,12 +43,12 @@ function timeAgo(isoLike: string) {
 /**
  * Joan, Sep 2026: "the same notification and profile settings that
  * customer has, do same for Realtors (agents)". Agents previously had
- * no dedicated Notifications page at all — only the header bell's
+ * no dedicated Notifications page at all, only the header bell's
  * 5-item preview dropdown, with nowhere for "See all" to actually go.
  *
  * Same GET /notifications backend every role already uses, and the
  * same layout/search/mark-read UX as customer-dashboard/
- * NotificationPage.tsx and company-dashboard/CompanyNotification.tsx —
+ * NotificationPage.tsx and company-dashboard/CompanyNotification.tsx,
  * but NOT a field-for-field copy of their tabs (Joan, Sep 2026: "I
  * dont think a realtor needs to see transactions"). A realtor never
  * receives a transaction/payment/investment notification -- those are

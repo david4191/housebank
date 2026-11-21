@@ -1,12 +1,12 @@
 // src/components/dashboards/company-dashboard/CompanyRealtorRanking.tsx
+import { getMediaUrl } from '../../../utils/mediaUrl.ts';
 import { useState } from 'react';
 import { Search, Trophy } from 'lucide-react';
 import CustomerHeader from './CustomerHeader';
 import { useGetCompanyAgentRankingQuery } from '../../../redux/housebank.ts';
 
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 function initialsFor(name: string) {
@@ -22,7 +22,7 @@ const rankStyle = ['bg-yellow-400', 'bg-gray-400', 'bg-orange-400'];
  * The old page hardcoded exactly 3 podium entries with fields that
  * don't exist anywhere in this schema (a "HouseBank ID", "Year of
  * Experience", a "Bio / Motivation" tagline) and a fake "Request (11)"
- * button. A real roster can have 0, 1, 2 or many agents — forcing that
+ * button. A real roster can have 0, 1, 2 or many agents, forcing that
  * onto a fixed 3-slot podium either fabricates entries or hides real
  * ones, so this is a straightforward ranked list instead: agents on
  * this company's roster ordered by distinct customers reached (see
@@ -67,7 +67,7 @@ const CompanyRealtorRanking = () => {
               <Trophy className="w-8 h-8 text-gray-300 mx-auto mb-2" />
               <p className="text-sm text-gray-500">
                 {rows.length === 0
-                  ? 'No realtors on your roster yet — add one from the Manage Realtor page to see rankings here.'
+                  ? 'No realtors on your roster yet. Add one from the Manage Realtor page to see rankings here.'
                   : 'No realtors match your search.'}
               </p>
             </div>

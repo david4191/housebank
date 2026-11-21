@@ -1,3 +1,4 @@
+import { getMediaUrl } from '../utils/mediaUrl.ts';
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { ChevronDown, LayoutDashboard, LogOut } from 'lucide-react';
@@ -8,8 +9,7 @@ import { roleHomePath } from '../context/AuthContext.tsx';
 import { useGetMyProfileQuery } from '../redux/housebank.ts';
 
 function avatarUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>

@@ -18,14 +18,6 @@ async function findByPhone(phone) {
   return rows[0] || null;
 }
 
-/** Accepts either an email or a Nigerian phone number as the login identifier. */
-async function findByIdentifier(identifier) {
-  if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier)) {
-    return findByEmail(identifier);
-  }
-  return findByPhone(identifier);
-}
-
 async function findById(id) {
   const [rows] = await pool.execute('SELECT * FROM users WHERE id = ? AND deleted_at IS NULL LIMIT 1', [id]);
   return rows[0] || null;
@@ -161,7 +153,6 @@ module.exports = {
   uuid,
   findByEmail,
   findByPhone,
-  findByIdentifier,
   findById,
   create,
   markEmailVerified,

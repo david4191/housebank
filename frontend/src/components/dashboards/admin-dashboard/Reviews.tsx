@@ -12,11 +12,11 @@ import {
  * old page was 100% hardcoded (a fake REVIEWS array, a fake Reply
  * modal with no send handler, fake Delete confirm/success screens).
  * This is the real moderation inbox against the `reviews` table
- * (Review.js / reviews.routes.js) — hide, unhide, flag, or delete.
+ * (Review.js / reviews.routes.js), hide, unhide, flag, or delete.
  *
  * Scope note: the `reviews` table has existed in schema.sql since
  * early in the build, but there is no review-SUBMISSION surface
- * anywhere in the app yet — no "leave a review" button on any
+ * anywhere in the app yet, no "leave a review" button on any
  * customer/agent/company page. That's a real, separate gap (building
  * it means designing where a customer reviews an agent/company/
  * property, which wasn't part of what Joan asked to fix here), so
@@ -45,7 +45,7 @@ const REVIEWEE_LABEL: Record<string, string> = {
 };
 
 function formatDate(iso: string | null | undefined) {
-  if (!iso) return '—';
+  if (!iso) return '-';
   return new Date(iso.replace(' ', 'T') + 'Z').toLocaleString('en-GB', {
     day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit',
   });
@@ -135,15 +135,15 @@ const Reviews = () => {
                   {items.map((r: any) => (
                     <tr key={r.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4 text-gray-700">
-                        {r.reviewer_name || <span className="text-gray-400">—</span>}
+                        {r.reviewer_name || <span className="text-gray-400">, </span>}
                         <div className="text-xs text-gray-400">{r.reviewer_email}</div>
                       </td>
                       <td className="px-6 py-4 text-gray-600">
                         <span className="text-xs text-gray-400 block">{REVIEWEE_LABEL[r.reviewee_type] || r.reviewee_type}</span>
-                        {r.reviewee_name || <span className="text-gray-400">—</span>}
+                        {r.reviewee_name || <span className="text-gray-400">, </span>}
                       </td>
                       <td className="px-6 py-4"><Stars rating={r.rating} /></td>
-                      <td className="px-6 py-4 text-gray-500 text-xs max-w-xs truncate">{r.comment || '—'}</td>
+                      <td className="px-6 py-4 text-gray-500 text-xs max-w-xs truncate">{r.comment || '-'}</td>
                       <td className="px-6 py-4 text-gray-500 text-xs whitespace-nowrap">{formatDate(r.created_at)}</td>
                       <td className="px-6 py-4">
                         <span className={`px-3 py-1 rounded-full text-xs font-medium border ${STATUS_STYLE[r.status] || 'border-gray-300 text-gray-500 bg-white'}`}>
@@ -226,7 +226,7 @@ const ReviewManageModal = ({ review, onClose }: { review: any; onClose: () => vo
           </div>
           <div>
             <p className="text-xs font-medium text-gray-500 mb-1">About</p>
-            <p className="text-gray-800">{review.reviewee_name || '—'}</p>
+            <p className="text-gray-800">{review.reviewee_name || '-'}</p>
           </div>
           <div>
             <p className="text-xs font-medium text-gray-500 mb-1">Rating</p>

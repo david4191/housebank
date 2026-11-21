@@ -1,4 +1,4 @@
-# TESTING SUBDOMAIN (trade.technosphereinnovations.com) — block crawlers
+# TESTING SUBDOMAIN (trade.technosphereinnovations.com), block crawlers
 # entirely while this is a pre-launch test deployment, so Google doesn't
 # index a staging copy of the site under the company's main domain.
 #

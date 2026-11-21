@@ -1,3 +1,4 @@
+import { getMediaUrl } from '../utils/mediaUrl.ts';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
@@ -9,8 +10,7 @@ import arrowTop from '../assets/about/arrowTop.png';
 import { useGetPageContentQuery } from '../redux/housebank.ts';
 
 function imageUrl(path?: string | null) {
-  if (!path) return null;
-  return path.startsWith('http') ? path : `${import.meta.env.VITE_APP_BACKEND_HOST}${path}`;
+  return getMediaUrl(path);
 }
 
 const DEFAULT_TOP_FEATURES = [
@@ -34,7 +34,7 @@ const DEFAULT_WHY_CHOOSE_US = [
 ];
 
 const DEFAULT_BOTTOM_FEATURES = [
-  { id: 1, title: 'Our Mission', description: 'To connect people with properties that inspire them and meet their needs while ensuring a seamless and rewarding process for all our clients.', additionalText: "At HouseBank Real Estate, we don't just sell properties—we help you build a foundation for your future. Let's find your dream home today!" },
+  { id: 1, title: 'Our Mission', description: 'To connect people with properties that inspire them and meet their needs while ensuring a seamless and rewarding process for all our clients.', additionalText: "At HouseBank Real Estate, we help you build a foundation for your future. Let's find your dream home today!" },
   { id: 2, title: 'Our Vision', description: 'To be the trusted leader in real estate, transforming lives by providing exceptional properties and services that inspire dreams, build communities, and create lasting value for generations to come.' },
   { id: 3, title: 'Our Aim', description: 'At HouseBank Real Estate, our goal is to make property ownership and investment seamless, trustworthy, and rewarding. We strive to connect individuals and businesses with the perfect spaces while fostering lasting relationships built on transparency, expertise, and care. Your dream property is our mission.' },
 ];

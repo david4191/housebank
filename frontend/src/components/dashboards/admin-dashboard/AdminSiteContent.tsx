@@ -1,4 +1,5 @@
 // src/components/dashboards/admin-dashboard/AdminSiteContent.tsx
+import { getMediaUrl } from '../../../utils/mediaUrl.ts';
 import { useEffect, useState } from 'react';
 import {
   CheckCircle2,
@@ -32,25 +33,19 @@ import {
 } from '../../../redux/housebank.ts';
 
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
-// Page Content images can be either a relative /uploads path (an admin-
-// uploaded override, like avatar_path above) OR an already-absolute URL
-// (several seeded items -- e.g. the Services page's four service cards --
-// store a full https:// Unsplash URL directly), so this checks first
-// instead of always prefixing the backend host like imageUrl() above.
+// Page content can include uploaded paths or already-absolute image URLs.
 function pageContentImageUrl(path: string | null | undefined) {
-  if (!path) return null;
-  return path.startsWith('http') ? path : `${import.meta.env.VITE_APP_BACKEND_HOST}${path}`;
+  return getMediaUrl(path);
 }
 
 function formatDate(value: string | null | undefined) {
-  if (!value) return '—';
+  if (!value) return '-';
   const iso = value.includes('T') ? value : `${value.replace(' ', 'T')}Z`;
   const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return '—';
+  if (Number.isNaN(d.getTime())) return '-';
   return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
@@ -737,7 +732,7 @@ const TestimonialsPanel = () => {
                     </div>
                     <div className="min-w-0">
                       <p className="text-sm font-medium text-gray-900 truncate">{t.name}</p>
-                      <p className="text-xs text-gray-400 truncate">{t.role || '—'}</p>
+                      <p className="text-xs text-gray-400 truncate">{t.role || '-'}</p>
                     </div>
                   </div>
                   {!!t.is_featured && (

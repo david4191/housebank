@@ -56,7 +56,7 @@ const CustomerFAQz = ({ searchQuery = '' }: CustomerFAQzProps) => {
     );
   };
 
-  // Split into two columns, same layout as before — just driven by real
+  // Split into two columns, same layout as before, just driven by real
   // rows from help_topics now instead of a hardcoded, half-empty array.
   const mid = Math.ceil(filtered.length / 2);
   const leftColumnFAQs = filtered.slice(0, mid);

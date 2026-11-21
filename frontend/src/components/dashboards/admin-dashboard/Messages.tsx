@@ -1,3 +1,4 @@
+import { getMediaUrl } from '../../../utils/mediaUrl.ts';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Search, Plus, Paperclip, Send, User as UserIcon } from 'lucide-react';
 import CustomerHeader from './CustomerHeader';
@@ -12,8 +13,7 @@ import {
 } from '../../../redux/housebank.ts';
 
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 function initialsFor(name: string | undefined | null) {
@@ -47,17 +47,17 @@ function formatFullTimestamp(value: string | undefined | null) {
 /**
  * Joan, Sep 2026: "fix ... http://localhost:5173/admin/messages ...
  * the messaging should cut across, companies only." The old page
- * (admin-dashboard's own Messages.tsx) was 100% hardcoded — 8 fake
+ * (admin-dashboard's own Messages.tsx) was 100% hardcoded, 8 fake
  * conversations, fake messages, a fake "Media Files" tab that pointed
  * at nothing. This is the real thing: same messaging backend every
  * other role already uses (GET/POST /messages, GET /contacts/mine),
  * now with an admin branch on both. GET /contacts/mine returns every
- * company on the platform for admin (Contact.forAdmin() — see its doc
+ * company on the platform for admin (Contact.forAdmin(), see its doc
  * comment for why this is the one role whose messaging isn't gated to
  * an existing relationship), and POST /messages accepts a
  * target company with no relationship check for the same reason.
  * Structurally this is the agent/company dashboard's Messages.tsx with
- * the audience swapped from customers to companies — no fake tabs
+ * the audience swapped from customers to companies, no fake tabs
  * ("Company/Unread/Read" in the old mock) since every contact here
  * already is a company.
  */
@@ -101,7 +101,7 @@ const AdminMessagesChatPage = () => {
     return list.filter((c: any) => c.other_participant?.name?.toLowerCase().includes(q));
   }, [conversations, searchTerm]);
 
-  // Companies you can start a fresh thread with — i.e. not already an
+  // Companies you can start a fresh thread with, i.e. not already an
   // open conversation.
   const messageableContacts = useMemo(() => {
     const openWith = new Set((conversations || []).map((c: any) => c.other_participant?.user_id));
@@ -166,7 +166,7 @@ const AdminMessagesChatPage = () => {
                   <div className="absolute right-0 top-full mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-10 max-h-72 overflow-y-auto">
                     {messageableContacts.length === 0 ? (
                       <p className="p-4 text-xs text-gray-500">
-                        No companies to message yet — every registered company already has an open conversation with you.
+                        No companies to message yet, every registered company already has an open conversation with you.
                       </p>
                     ) : (
                       messageableContacts.map((c: any) => (

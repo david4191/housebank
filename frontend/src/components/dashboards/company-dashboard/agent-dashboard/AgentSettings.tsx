@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Building2 } from 'lucide-react';
+import { Building2, Clock, ShieldAlert, ShieldCheck } from 'lucide-react';
 import CustomerHeader from './CustomerHeader';
 import TwoFactorSection from '../../shared/TwoFactorSection.tsx';
 import ChangePasswordSection from '../../shared/ChangePasswordSection.tsx';
@@ -17,14 +17,20 @@ const companyVerificationBadge: Record<string, string> = {
   rejected: 'bg-red-100 text-red-800',
 };
 
+const agentVerificationStatus: Record<string, { label: string; className: string; Icon: typeof ShieldCheck }> = {
+  verified: { label: 'Verified', className: 'bg-green-100 text-green-800', Icon: ShieldCheck },
+  pending: { label: 'Pending review', className: 'bg-orange-100 text-orange-800', Icon: Clock },
+  rejected: { label: 'Review required', className: 'bg-red-100 text-red-800', Icon: ShieldAlert },
+};
+
 /**
- * The agent-side counterpart to the customer's My Settings page —
+ * The agent-side counterpart to the customer's My Settings page,
  * previously agents had no settings page at all, so there was nowhere
  * to turn on 2FA, edit a profile, or see which company they're
  * attached to. Profile + avatar + 2FA reuse the exact same shared
  * components and GET/PUT /profile/me, POST /profile/me/avatar
  * endpoints as the customer page; the company section is read-only
- * here on purpose — an agent's company affiliation is managed through
+ * here on purpose, an agent's company affiliation is managed through
  * the company/agent-transfer flow (company_agents,
  * realtor_transfer_requests), never by editing their own profile.
  */
@@ -63,6 +69,9 @@ const ProfileSection = () => {
   };
 
   const company = profile?.profile?.company;
+  const verificationStatus = profile?.profile?.verification_status;
+  const verificationInfo = agentVerificationStatus[verificationStatus];
+  const VerificationIcon = verificationInfo?.Icon;
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-6">
@@ -72,6 +81,23 @@ const ProfileSection = () => {
       </div>
 
       <AvatarUpload />
+
+      {verificationInfo && (
+        <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <h4 className="text-sm font-medium text-gray-900">Realtor verification</h4>
+              <p className="mt-1 text-xs text-gray-500">
+                This status reflects HouseBank's review of your identity document.
+              </p>
+            </div>
+            <span className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-1 text-xs font-medium ${verificationInfo.className}`}>
+              <VerificationIcon className="h-3 w-3" />
+              {verificationInfo.label}
+            </span>
+          </div>
+        </div>
+      )}
 
       {isLoading ? (
         <p className="text-sm text-gray-500">Loading…</p>
@@ -141,7 +167,7 @@ const ProfileSection = () => {
           </div>
         ) : (
           <p className="text-sm text-gray-500">
-            You're currently an independent agent — not attached to any company.
+            You're currently an independent agent, not attached to any company.
           </p>
         )}
       </div>

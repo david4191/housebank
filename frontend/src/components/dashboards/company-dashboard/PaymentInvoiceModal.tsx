@@ -60,7 +60,7 @@ const STATUS_STYLE: Record<string, string> = {
   cancelled: 'bg-gray-200 text-gray-700',
 };
 
-/** Real transaction detail panel — company-dashboard's copy of
+/** Real transaction detail panel, company-dashboard's copy of
  * agent-dashboard/PaymentInvoiceModal.tsx (same real purchase/rental
  * data, same confirm action). Kept as a per-role duplicate rather than
  * a cross-folder import, matching how CustomerHeader and the other
@@ -123,7 +123,7 @@ const PaymentInvoiceModal = ({
             <div className="flex justify-between py-2 border-b border-gray-100">
               <span className="text-gray-600 text-sm">Category</span>
               <span className="font-medium text-gray-900 text-sm">
-                {transaction.kind === 'purchase' ? 'Buy (outright)' : `Rent — ${transaction.rent_period_months ?? '—'} month(s)`}
+                {transaction.kind === 'purchase' ? 'Buy (outright)' : `Rent for ${transaction.rent_period_months ?? '-'} month(s)`}
               </span>
             </div>
             <div className="flex justify-between py-2 border-b border-gray-100">

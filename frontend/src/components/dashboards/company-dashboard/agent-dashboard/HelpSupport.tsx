@@ -21,7 +21,7 @@ interface GuideItem {
  * as-is. The one thing that doesn't carry over is "Get in Touch": that
  * form sends through POST /messages/contact-company, which is
  * customer-only by design (it resolves to the customer's own company
- * relationship) — there's no equivalent "contact platform support"
+ * relationship), there's no equivalent "contact platform support"
  * messaging endpoint for staff. Rather than fake a send, this page
  * offers a plain, honest mailto link instead. */
 const AgentHelpSupport = () => {
@@ -77,7 +77,7 @@ const AgentHelpSupport = () => {
             </p>
             <a
               href={`mailto:Support@housebank.com?subject=${encodeURIComponent('Realtor support request')}&body=${encodeURIComponent(
-                `— ${auth.user?.full_name || 'Realtor'} (${auth.user?.email || ''})`
+                `From: ${auth.user?.full_name || 'Realtor'} (${auth.user?.email || ''})`
               )}`}
               className="inline-flex items-center space-x-2 bg-green-700 text-white px-6 py-3 rounded-md font-medium hover:bg-green-800 transition"
             >
@@ -92,7 +92,7 @@ const AgentHelpSupport = () => {
               <div className="bg-gray-50 border border-gray-100 rounded-2xl p-6 sm:p-8 hover:shadow-md transition-shadow">
                 <h3 className="text-xl font-bold text-gray-900 mb-2">List a new property</h3>
                 <p className="text-gray-600 leading-relaxed mb-6">
-                  Add a property to your listings — it goes live for customers to view once an admin approves it.
+                  Add a property to your listings. Customers can view it once an admin approves it.
                 </p>
                 <a
                   href="/agent/add-property"

@@ -60,7 +60,7 @@ const STATUS_STYLE: Record<string, string> = {
   cancelled: 'bg-gray-200 text-gray-700',
 };
 
-/** Real transaction detail panel — replaces the old fake invoice modal
+/** Real transaction detail panel, replaces the old fake invoice modal
  * (which showed a made-up email, card number, VAT/commission split and
  * a non-functional download/share/report flow, none of which is data
  * this platform actually stores). Shows only fields that come from the
@@ -125,7 +125,7 @@ const PaymentInvoiceModal = ({
             <div className="flex justify-between py-2 border-b border-gray-100">
               <span className="text-gray-600 text-sm">Category</span>
               <span className="font-medium text-gray-900 text-sm">
-                {transaction.kind === 'purchase' ? 'Buy (outright)' : `Rent — ${transaction.rent_period_months ?? '—'} month(s)`}
+                {transaction.kind === 'purchase' ? 'Buy (outright)' : `Rent for ${transaction.rent_period_months ?? '-'} month(s)`}
               </span>
             </div>
             <div className="flex justify-between py-2 border-b border-gray-100">

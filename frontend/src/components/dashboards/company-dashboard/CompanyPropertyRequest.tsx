@@ -8,17 +8,17 @@ import CustomerHeader from './CustomerHeader';
  * "#HB111"-style rows all attributed to the same "Abubakar Isa", fake
  * "Request Reason" strings ("Rent Overdue", "Repayment Due") with no
  * real meaning, and Approve/Reject actions (via PropertyActionModals)
- * that updated nothing — the whole page was disconnected from the
+ * that updated nothing, the whole page was disconnected from the
  * database from top to bottom.
  *
  * There is no "property request" concept anywhere in HouseBank's
- * schema or backend — nothing generates a request when a customer
+ * schema or backend, nothing generates a request when a customer
  * views, favorites, or wants to buy/rent a property, and this route
  * isn't linked from anywhere else in the real product (no sidebar
  * entry points here). Rather than keep a page that looks
  * functional but silently does nothing, this is an honest
  * placeholder: it says plainly that the feature isn't built yet and
- * points to the two things a company can actually do today —
+ * points to the two things a company can actually do today,
  * approve/manage its own listings and roster.
  */
 const CompanyPropertyRequests = () => {
@@ -35,9 +35,8 @@ const CompanyPropertyRequests = () => {
           </div>
           <h1 className="text-lg font-bold text-gray-900 mb-2">Property Requests isn't available yet</h1>
           <p className="text-sm text-gray-500 leading-relaxed mb-8">
-            HouseBank doesn't have a request queue for properties today — there's nothing here to approve or
-            reject. If this is something your team needs, let us know and we'll scope it properly rather than
-            fake it.
+            HouseBank doesn't have a request queue for properties today. There's nothing here to approve or
+            reject. If your team needs one, let us know so we can plan it properly.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button

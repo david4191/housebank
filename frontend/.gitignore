@@ -1,4 +1,4 @@
-# Environment variables — secrets must never be committed
+# Environment variables, secrets must never be committed
 .env
 .env.local
 .env.development
@@ -12,7 +12,7 @@ node_modules/
 storage/logs/*.log
 *.log
 
-# Uploaded files — user content, never commit
+# Uploaded files, user content, never commit
 storage/uploads/**
 !storage/uploads/.gitkeep
 

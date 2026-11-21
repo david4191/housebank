@@ -36,7 +36,7 @@ function brandLabel(value: string) {
 /**
  * A well-detailed customer profile: name, contact address, and date of
  * birth, plus the avatar upload widget shared with the agent settings
- * page. Loads from and saves to GET/PUT /profile/me — nothing here is
+ * page. Loads from and saves to GET/PUT /profile/me, nothing here is
  * hardcoded or invented.
  */
 const ProfileSection = () => {
@@ -154,12 +154,12 @@ const ProfileSection = () => {
 };
 
 /**
- * "Card details" — deliberately reference-only. Only brand, last 4
+ * "Card details", deliberately reference-only. Only brand, last 4
  * digits, expiry and cardholder name are ever collected or stored; the
  * form has no full-card-number field and no CVV field at all, and
  * nothing here is wired to a live payment gateway yet. See the backend
  * comment on customer_payment_methods (database/schema.sql) for the
- * full reasoning — in short, storing a real PAN/CVV on shared hosting
+ * full reasoning, in short, storing a real PAN/CVV on shared hosting
  * with no PCI-DSS program behind it would be a security failure, not a
  * feature.
  */
@@ -219,7 +219,7 @@ const PaymentMethodsSection = () => {
           <h3 className="text-lg font-semibold text-gray-900 mb-1">Payment Methods</h3>
           <p className="text-sm text-gray-500 max-w-lg">
             Save a card here for reference on your account. This stores only the card brand, last 4
-            digits, expiry and cardholder name — never the full card number or security code — and
+            digits, expiry and cardholder name, never the full card number or security code, and
             no card here is charged automatically.
           </p>
         </div>

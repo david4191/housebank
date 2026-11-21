@@ -12,7 +12,7 @@ import {
 } from '../utils/cookie.ts';
 
 // Every backend response is { success, message, data } (or { success:false,
-// message, errors } on failure) — see docs/API_CONTRACT.md in hb-backend.
+// message, errors } on failure), see docs/API_CONTRACT.md in hb-backend.
 // transformResponse/transformErrorResponse below unwrap that envelope once,
 // here, so every component just gets the plain data/errors it needs.
 interface Envelope<T = any> {
@@ -83,10 +83,10 @@ export const houseBankApi = createApi({
       invalidatesTags: ['auth'],
     }),
 
-    // `body` is either a plain object (customer — JSON) or a FormData
-    // instance (agent/company — multipart, because idFile/cacFile ride
+    // `body` is either a plain object (customer, JSON) or a FormData
+    // instance (agent/company, multipart, because idFile/cacFile ride
     // along). fetchBaseQuery leaves FormData untouched and lets the browser
-    // set its own multipart Content-Type/boundary — do NOT spread it into a
+    // set its own multipart Content-Type/boundary, do NOT spread it into a
     // plain object here, that silently drops every file.
     registerUser: builder.mutation<{ user_id: number; email: string }, any>({
       query: (payload) => ({ url: 'auth/signup', method: 'POST', body: payload, timeout: 15000 }),
@@ -143,7 +143,7 @@ export const houseBankApi = createApi({
       providesTags: ['auth'],
     }),
 
-    // Second half of signing in on a 2FA-enabled account — body carries the
+    // Second half of signing in on a 2FA-enabled account, body carries the
     // short-lived pending_token from loginInUser's requires_2fa response,
     // plus the emailed code (or a recovery code).
     verifyTwoFactorLogin: builder.mutation<
@@ -157,7 +157,7 @@ export const houseBankApi = createApi({
     }),
 
     // Proves the caller knows the current password before emailing a fresh
-    // login_2fa code — used both to start enabling 2FA and to authorize
+    // login_2fa code, used both to start enabling 2FA and to authorize
     // disabling it.
     requestTwoFactorCode: builder.mutation<null, { current_password: string }>({
       query: (body) => ({ url: 'auth/2fa/request-code', method: 'POST', body }),
@@ -165,7 +165,7 @@ export const houseBankApi = createApi({
       transformErrorResponse: (response) => response.data as Envelope,
     }),
 
-    // Enables 2FA and returns one-time recovery codes — call
+    // Enables 2FA and returns one-time recovery codes, call
     // requestTwoFactorCode first.
     confirmTwoFactor: builder.mutation<{ recovery_codes: string[] }, { code: string }>({
       query: (body) => ({ url: 'auth/2fa/confirm', method: 'POST', body }),
@@ -228,7 +228,7 @@ export const houseBankApi = createApi({
       providesTags: ['properties'],
     }),
 
-    // Owner-scoped single property — unlike getProperty above (public,
+    // Owner-scoped single property, unlike getProperty above (public,
     // approved-only), this returns the caller's own listing regardless
     // of status, including rejection_reason on a rejected one.
     getMyProperty: builder.query<any, number | string>({
@@ -898,7 +898,7 @@ export const houseBankApi = createApi({
       providesTags: ['purchases'],
     }),
 
-    // Staff-initiated (agent/company/admin) — a sale is agreed and
+    // Staff-initiated (agent/company/admin), a sale is agreed and
     // processed at the office after a viewing, not self-checkout by the
     // customer. Kept here for whenever that staff-facing screen is built.
     createPurchase: builder.mutation<
@@ -912,7 +912,7 @@ export const houseBankApi = createApi({
     }),
 
     // Agent/company view of purchases against properties THEY list (not
-    // their own purchases as a buyer — that's getMyPurchases above).
+    // their own purchases as a buyer, that's getMyPurchases above).
     // Powers Agent Revenue/Transactions. Optional status filter (e.g.
     // 'requested') matches the backend's ?status= support, though the
     // Transactions pages currently fetch everything and filter client-side.
@@ -922,7 +922,7 @@ export const houseBankApi = createApi({
       providesTags: ['purchases'],
     }),
 
-    // Customer-facing front door — creates a 'requested' row for staff
+    // Customer-facing front door, creates a 'requested' row for staff
     // to approve/decline below, instead of the staff-only createPurchase
     // above (which 403's for a customer). See BuyPropertyDetails.tsx.
     requestPurchase: builder.mutation<{ id: number }, { property_id: number | string }>({
@@ -940,7 +940,7 @@ export const houseBankApi = createApi({
       invalidatesTags: ['purchases'],
     }),
 
-    // Staff approves a customer's purchase request — promotes it to
+    // Staff approves a customer's purchase request, promotes it to
     // pending_payment (same state createPurchase starts at directly).
     approvePurchaseRequest: builder.mutation<null, { id: number | string; note?: string }>({
       query: ({ id, note }) => ({ url: `purchases/${id}/approve`, method: 'POST', body: note ? { note } : {} }),
@@ -971,7 +971,7 @@ export const houseBankApi = createApi({
       providesTags: ['rentals'],
     }),
 
-    // Staff-initiated (agent/company/admin) — same reasoning as
+    // Staff-initiated (agent/company/admin), same reasoning as
     // createPurchase above.
     createRental: builder.mutation<
       { id: number },
@@ -989,7 +989,7 @@ export const houseBankApi = createApi({
       providesTags: ['rentals'],
     }),
 
-    // Customer-facing front door — same reasoning as requestPurchase above.
+    // Customer-facing front door, same reasoning as requestPurchase above.
     requestRental: builder.mutation<
       { id: number },
       { property_id: number | string; rent_period_months?: number }
@@ -1008,7 +1008,7 @@ export const houseBankApi = createApi({
       invalidatesTags: ['rentals'],
     }),
 
-    // Staff approves a customer's rental request — promotes it to
+    // Staff approves a customer's rental request, promotes it to
     // pending_payment (same state createRental starts at directly).
     approveRentalRequest: builder.mutation<null, { id: number | string; note?: string }>({
       query: ({ id, note }) => ({ url: `rentals/${id}/approve`, method: 'POST', body: note ? { note } : {} }),
@@ -1070,7 +1070,7 @@ export const houseBankApi = createApi({
     // Staff view: viewing requests against properties this agent/company
     // lists (optionally filtered by status, e.g. 'requested' for a
     // "needs your action" list). Closes the gap noted since the viewings
-    // module was built — confirm/complete existed with nothing to call
+    // module was built, confirm/complete existed with nothing to call
     // them from.
     getViewingsForMyProperties: builder.query<any[], { status?: string } | void>({
       query: (filters) => ({ url: 'viewings/for-my-properties', params: filters ?? {} }),
@@ -1097,7 +1097,7 @@ export const houseBankApi = createApi({
     }),
 
     // ------------------------------------------------------------ contacts / messages
-    // "My realtor" isn't a directory of every agent on the platform —
+    // "My realtor" isn't a directory of every agent on the platform,
     // it's the real agents/companies this customer has actually dealt
     // with (booked a viewing, bought, rented, or invested), and it's
     // also the only set of people a customer is allowed to message
@@ -1121,7 +1121,7 @@ export const houseBankApi = createApi({
     }),
 
     // Starts a new thread with target_user_id, or continues the
-    // existing one with that same contact if there already is one —
+    // existing one with that same contact if there already is one,
     // the backend decides which, so the frontend never has to track it.
     startConversation: builder.mutation<
       { id: number },
@@ -1149,7 +1149,7 @@ export const houseBankApi = createApi({
       invalidatesTags: ['conversations'],
     }),
 
-    // Backs the Help page's "Get in Touch" form — the recipient (the
+    // Backs the Help page's "Get in Touch" form, the recipient (the
     // customer's own company relationship) is resolved server-side,
     // never passed from here. An automated acknowledgment lands in the
     // same conversation immediately; the real reply comes later.
@@ -1174,7 +1174,7 @@ export const houseBankApi = createApi({
       invalidatesTags: ['profile', 'auth'],
     }),
 
-    // FormData with a single "avatar" file field — fetchBaseQuery leaves
+    // FormData with a single "avatar" file field, fetchBaseQuery leaves
     // FormData untouched and lets the browser set its own multipart
     // Content-Type/boundary (see uploadPropertyImages above for the same
     // pattern already used for property photos).
@@ -1185,7 +1185,7 @@ export const houseBankApi = createApi({
       invalidatesTags: ['profile'],
     }),
 
-    // Public — no auth, the invited realtor has no account yet. Backs
+    // Public, no auth, the invited realtor has no account yet. Backs
     // the /realtor-onboarding/:token page: shows which company sent the
     // invite and locks the signup form's email to the one that was
     // actually invited.
@@ -1196,7 +1196,7 @@ export const houseBankApi = createApi({
     }),
 
     // -------------------------------------------------- payment methods (customer)
-    // Reference-only saved-card metadata — brand, last 4, expiry, name.
+    // Reference-only saved-card metadata, brand, last 4, expiry, name.
     // There is no full card number or CVV field anywhere in this API by
     // design; see the backend's payment-methods.routes.js for why.
     getMyPaymentMethods: builder.query<any[], void>({
@@ -1230,7 +1230,7 @@ export const houseBankApi = createApi({
     }),
 
     // ------------------------------------------------------- company-agents
-    // A company's realtor roster — see company-agents.routes.js in
+    // A company's realtor roster, see company-agents.routes.js in
     // hb-backend. Agent-attach is staff-initiated (company adds an
     // independent agent by email), so there's no agent-facing hook here.
     getMyCompanyAgents: builder.query<any[], void>({
@@ -1278,7 +1278,7 @@ export const houseBankApi = createApi({
     }),
 
     // Reassigns one of the company's own listings to a different roster
-    // agent (or back to the company itself when agent_user_id is null) —
+    // agent (or back to the company itself when agent_user_id is null),
     // see PATCH /properties/:id/reassign-agent in properties.routes.js.
     reassignPropertyAgent: builder.mutation<null, { id: number | string; agent_user_id?: number | string | null }>({
       query: ({ id, agent_user_id }) => ({

@@ -55,7 +55,7 @@ const STATUS_DONUT_COLORS: Record<string, string> = {
 };
 
 function formatDate(iso: string | null | undefined) {
-  if (!iso) return '—';
+  if (!iso) return '-';
   return new Date(iso.replace(' ', 'T') + 'Z').toLocaleString('en-GB', {
     day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit',
   });
@@ -90,7 +90,7 @@ const ReportsAnalytics = () => {
   const total = data?.total || 0;
   const newCount = items.filter((r: any) => r.status === 'new').length;
 
-  const trend = (stats?.trend || []).length > 0 ? stats!.trend : [{ month: '—', concerns: 0, scams: 0 }];
+  const trend = (stats?.trend || []).length > 0 ? stats!.trend : [{ month: '-', concerns: 0, scams: 0 }];
   const byStatus = (stats?.by_status || []).filter((s) => s.count > 0);
 
   return (
@@ -111,7 +111,7 @@ const ReportsAnalytics = () => {
           </select>
         </div>
 
-        {/* Real charts, driven by GET /reports/stats — replaced a
+        {/* Real charts, driven by GET /reports/stats, replaced a
             fabricated bar chart on fake data in an earlier pass of this
             page; Joan, Sep 2026: "I didn't see the graphs and charts
             anymore" after that pass swapped the chart for a table with
@@ -212,7 +212,7 @@ const ReportsAnalytics = () => {
                         {r.reporter_email && <div className="text-xs text-gray-400">{r.reporter_email}</div>}
                       </td>
                       <td className="px-6 py-4 text-gray-600">
-                        {r.type === 'scam' ? (r.scammer_name || <span className="text-gray-400">—</span>) : (r.company_name || <span className="text-gray-400">—</span>)}
+                        {r.type === 'scam' ? (r.scammer_name || <span className="text-gray-400">, </span>) : (r.company_name || <span className="text-gray-400">, </span>)}
                       </td>
                       <td className="px-6 py-4 text-gray-500 text-xs max-w-xs truncate">{r.description}</td>
                       <td className="px-6 py-4 text-gray-500 text-xs whitespace-nowrap">{formatDate(r.created_at)}</td>

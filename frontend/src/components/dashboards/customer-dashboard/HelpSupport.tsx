@@ -33,7 +33,7 @@ const CustomerHelpSupport = () => {
     { ok: true; companyName: string } | { ok: false; message: string } | null
   >(null);
 
-  // Who "Get in Touch" will actually message — resolved the same way
+  // Who "Get in Touch" will actually message, resolved the same way
   // the backend resolves it (Contact.forCustomer), so the form can be
   // honest up front about whether there's anyone real to send this to,
   // instead of only finding out after the customer types a message.
@@ -55,13 +55,13 @@ const CustomerHelpSupport = () => {
   const mailtoFallback = () => {
     const subject = encodeURIComponent('HouseBank support request');
     const body = encodeURIComponent(
-      `${contactMessage}\n\n— ${auth.user?.full_name || 'Customer'} (${auth.user?.email || ''})`
+      `${contactMessage}\n\nFrom: ${auth.user?.full_name || 'Customer'} (${auth.user?.email || ''})`
     );
     window.location.href = `mailto:Support@housebank.com?subject=${subject}&body=${body}`;
   };
 
   // Sends the message for real through the Messages system, to the
-  // customer's actual company relationship — not a fake "sent" state.
+  // customer's actual company relationship, not a fake "sent" state.
   // An automated acknowledgment lands in that same conversation right
   // away (see hb-backend's POST /messages/contact-company); if there's
   // no company relationship yet, or the send fails for any reason, the
@@ -130,7 +130,7 @@ const CustomerHelpSupport = () => {
           </div>
         </div>
 
-        {/* FAQ Section — real data from help_topics via useGetHelpTopicsQuery,
+        {/* FAQ Section, real data from help_topics via useGetHelpTopicsQuery,
             filtered live by the search box above */}
         <CustomerFAQz searchQuery={searchQuery} />
 
@@ -143,13 +143,13 @@ const CustomerHelpSupport = () => {
 
             {!contactsLoading && companyContact && (
               <p className="text-sm text-gray-500 mb-6">
-                This goes straight to <span className="font-medium text-gray-700">{companyContact.name}</span> —
+                This goes straight to <span className="font-medium text-gray-700">{companyContact.name}</span>,
                 you'll get an instant confirmation, and their real reply lands in Messages.
               </p>
             )}
             {!contactsLoading && !companyContact && (
               <p className="text-sm text-gray-500 mb-6">
-                You don't have an active company relationship yet — book a property viewing first, or
+                You don't have an active company relationship yet, book a property viewing first, or
                 email us directly below.
               </p>
             )}
@@ -159,7 +159,7 @@ const CustomerHelpSupport = () => {
                 <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
                 <p className="text-sm text-green-800">
                   Sent to {sendResult.companyName}. Check <span className="font-medium">Messages</span> for
-                  their reply — you already got an instant confirmation there.
+                  their reply. You already got an instant confirmation there.
                 </p>
               </div>
             ) : (
@@ -251,7 +251,7 @@ const CustomerHelpSupport = () => {
                   </h4>
                   <p className="text-gray-600 leading-relaxed">
                     We connect you directly with the person who knows the most
-                    about the property for sale — the listing realtor.
+                    about the property for sale, the listing realtor.
                   </p>
                 </div>
 
@@ -283,7 +283,7 @@ const CustomerHelpSupport = () => {
 
             <div className='block px-4'>
              <h1 className='text-2xl font-bold mb-3'>Contact us with</h1>
-        {/* Social Icons — no social accounts are configured for HouseBank
+        {/* Social Icons, no social accounts are configured for HouseBank
             yet, so these stay visual-only rather than link to guessed
             handles that might not exist or belong to someone else. */}
         <div className="flex space-x-6 text-blue-300 text-2xl cursor-not-allowed" title="Coming soon">

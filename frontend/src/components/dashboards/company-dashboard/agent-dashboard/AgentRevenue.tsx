@@ -1,3 +1,4 @@
+import { getMediaUrl } from '../../../../utils/mediaUrl.ts';
 import { useMemo, useState } from 'react';
 import { MoreVertical, TrendingUp, Home } from 'lucide-react';
 import CustomerHeader from './CustomerHeader';
@@ -15,12 +16,11 @@ function formatNaira(value: number | string | undefined | null) {
 }
 
 function imageUrl(relativePath: string | null | undefined) {
-  if (!relativePath) return null;
-  return `${import.meta.env.VITE_APP_BACKEND_HOST}${relativePath}`;
+  return getMediaUrl(relativePath);
 }
 
 function formatDate(iso: string | null | undefined) {
-  if (!iso) return '—';
+  if (!iso) return '-';
   return new Date(iso.replace(' ', 'T') + 'Z').toLocaleDateString('en-GB', {
     day: '2-digit', month: 'short', year: 'numeric',
   });
@@ -140,7 +140,7 @@ const AgentRevenueDashboard = () => {
             <button
               type="button"
               disabled
-              title="Withdrawals aren't available yet — coming soon"
+              title="Withdrawals are coming soon."
               className="text-white px-4 py-2 rounded-lg text-sm font-medium opacity-50 cursor-not-allowed"
               style={{ backgroundColor: '#58745A' }}
             >
@@ -157,7 +157,7 @@ const AgentRevenueDashboard = () => {
             {totalRevenue === 0 ? (
               <div className="py-10 text-center">
                 <TrendingUp className="w-8 h-8 text-gray-300 mx-auto mb-2" />
-                <p className="text-sm text-gray-500">No completed transactions yet — the chart will fill in as sales and leases complete.</p>
+                <p className="text-sm text-gray-500">No completed transactions yet. The chart will fill in as sales and leases complete.</p>
               </div>
             ) : (
               <div className="mb-2 overflow-x-auto">
